@@ -45,8 +45,8 @@ class InitialSeeder extends Seeder
         ]);
 
         $event1->categories()->createMany([
-            ['name' => '5KM Individual', 'distance' => '5km', 'price' => 89.90, 'max_participants' => 400, 'available_tickets' => 400, 'status' => 'active'],
-            ['name' => '10KM Individual', 'distance' => '10km', 'price' => 109.90, 'max_participants' => 400, 'available_tickets' => 400, 'status' => 'active'],
+            ['name' => '5KM Individual', 'distance' => '5km', 'price' => 89.90, 'max_participants' => 400, 'status' => 'active'],
+            ['name' => '10KM Individual', 'distance' => '10km', 'price' => 109.90, 'max_participants' => 400, 'status' => 'active'],
         ]);
 
         // Evento 2: Rio Trail 21k
@@ -68,8 +68,8 @@ class InitialSeeder extends Seeder
         ]);
 
         $event2->categories()->createMany([
-            ['name' => '12KM Trail', 'distance' => '12km', 'price' => 115.00, 'max_participants' => 250, 'available_tickets' => 250, 'status' => 'active'],
-            ['name' => '21KM Trail', 'distance' => '21km', 'price' => 145.00, 'max_participants' => 250, 'available_tickets' => 250, 'status' => 'active'],
+            ['name' => '12KM Trail', 'distance' => '12km', 'price' => 115.00, 'max_participants' => 250, 'status' => 'active'],
+            ['name' => '21KM Trail', 'distance' => '21km', 'price' => 145.00, 'max_participants' => 250, 'status' => 'active'],
         ]);
 
         // Evento 3: Curitiba Marathon
@@ -91,8 +91,8 @@ class InitialSeeder extends Seeder
         ]);
 
         $event3->categories()->createMany([
-            ['name' => '42KM Marathon', 'distance' => '42km', 'price' => 189.90, 'max_participants' => 1000, 'available_tickets' => 1000, 'status' => 'active'],
-            ['name' => '21KM Half Marathon', 'distance' => '21km', 'price' => 129.90, 'max_participants' => 1000, 'available_tickets' => 1000, 'status' => 'active'],
+            ['name' => '42KM Marathon', 'distance' => '42km', 'price' => 189.90, 'max_participants' => 1000, 'status' => 'active'],
+            ['name' => '21KM Half Marathon', 'distance' => '21km', 'price' => 129.90, 'max_participants' => 1000, 'status' => 'active'],
         ]);
 
         // Evento 4: SP Night Run
@@ -114,8 +114,8 @@ class InitialSeeder extends Seeder
         ]);
 
         $event4->categories()->createMany([
-            ['name' => '5KM Night', 'distance' => '5km', 'price' => 95.00, 'max_participants' => 1500, 'available_tickets' => 1500, 'status' => 'active'],
-            ['name' => '10KM Night', 'distance' => '10km', 'price' => 110.00, 'max_participants' => 1500, 'available_tickets' => 1500, 'status' => 'active'],
+            ['name' => '5KM Night', 'distance' => '5km', 'price' => 95.00, 'max_participants' => 1500, 'status' => 'active'],
+            ['name' => '10KM Night', 'distance' => '10km', 'price' => 110.00, 'max_participants' => 1500, 'status' => 'active'],
         ]);
     }
 }

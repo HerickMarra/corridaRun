@@ -96,7 +96,6 @@ class DummyDataSeeder extends Seeder
         $category = Category::factory()->create([
             'event_id' => $soldOutEvent->id,
             'max_participants' => 30,
-            'available_tickets' => 0,
         ]);
 
         for ($i = 0; $i < 30; $i++) {

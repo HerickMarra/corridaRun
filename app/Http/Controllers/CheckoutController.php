@@ -99,9 +99,6 @@ class CheckoutController extends Controller
                 'status' => \App\Enums\TicketStatus::Active,
             ]);
 
-            // DECREMENT AVAILABLE TICKETS
-            $category->decrement('available_tickets');
-
             return redirect()->route('checkout.confirmation', $order->id)->with('success', 'Inscrição confirmada com sucesso! Bem-vindo à prova.');
         });
     }

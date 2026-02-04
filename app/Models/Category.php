@@ -42,4 +42,10 @@ class Category extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+
+    public function getAvailableTicketsAttribute(): int
+    {
+        $soldCount = $this->orderItems()->where('status', 'paid')->count();
+        return max(0, $this->max_participants - $soldCount);
+    }
 }

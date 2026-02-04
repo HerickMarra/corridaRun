@@ -145,7 +145,8 @@
                                         @elseif($isExpired)
                                             <p class="text-[10px] text-red-500 font-black uppercase tracking-widest mt-0.5">Inscrições Encerradas</p>
                                         @else
-                                            <p class="text-xs text-slate-500 font-medium mt-0.5">Distância: {{ $category->distance }} • Vagas: {{ $category->available_tickets }}</p>
+                                            <p class="text-xs text-slate-500 font-medium mt-0.5">Distância: {{ $category->distance }}</p>
+                                            <!-- <p class="text-xs text-slate-500 font-medium mt-0.5">Distância: {{ $category->distance }} • Vagas: {{ $category->available_tickets }}</p> -->
                                         @endif
                                     </div>
                                 </div>
