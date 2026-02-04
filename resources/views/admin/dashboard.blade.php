@@ -23,7 +23,7 @@
                 </div>
                 <span class="text-green-500 text-xs font-bold">+8%</span>
             </div>
-            <p class="text-slate-500 text-xs font-bold uppercase tracking-widest mb-1">Inscrições</p>
+            <p class="text-slate-500 text-xs font-bold uppercase tracking-widest mb-1">Inscrições Hoje</p>
             <h3 class="text-2xl font-black text-slate-800">{{ $totalInscriptions }}</h3>
         </div>
 

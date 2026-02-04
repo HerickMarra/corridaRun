@@ -309,18 +309,52 @@ class RaceController extends Controller
 
         // KPIs
         $totalInscriptions = $event->orderItems()->where('order_items.status', 'paid')->count();
-        $totalRevenue = $event->orderItems()->where('order_items.status', 'paid')->sum('order_items.price');
+        $totalRevenue = (float) $event->orderItems()->where('order_items.status', 'paid')->sum('order_items.price');
         $serviceFee = $totalRevenue * 0.07;
         $avgTicket = $totalInscriptions > 0 ? ($totalRevenue / $totalInscriptions) : 0;
 
-        // Sales by Day (last 30 days)
-        $salesByDay = \App\Models\OrderItem::whereIn('category_id', $event->categories->pluck('id'))
+        // Sales by Day - Intelligent Dynamic Range
+        $categoryIds = $event->categories->pluck('id');
+        $salesQuery = \App\Models\OrderItem::whereIn('category_id', $categoryIds)
+            ->where('order_items.status', 'paid');
+
+        $firstSale = $salesQuery->min('order_items.created_at');
+        $lastSale = $salesQuery->max('order_items.created_at');
+
+        if ($firstSale) {
+            $startDate = \Carbon\Carbon::parse($firstSale)->startOfDay();
+            $endDate = \Carbon\Carbon::parse($lastSale)->endOfDay();
+
+            // If the range is very short (e.g., same day), show at least 7 days for perspective
+            if ($startDate->diffInDays($endDate) < 7) {
+                $startDate = $startDate->copy()->subDays(7);
+            }
+        } else {
+            $startDate = now()->subDays(30)->startOfDay();
+            $endDate = now()->endOfDay();
+        }
+
+        $rawSales = \App\Models\OrderItem::whereIn('category_id', $categoryIds)
             ->where('order_items.status', 'paid')
-            ->where('order_items.created_at', '>=', now()->subDays(30))
+            ->whereBetween('order_items.created_at', [$startDate, $endDate])
             ->selectRaw('DATE(order_items.created_at) as date, count(*) as count, sum(order_items.price) as revenue')
             ->groupBy('date')
-            ->orderBy('date')
-            ->get();
+            ->get()
+            ->keyBy('date');
+
+        $salesByDay = collect();
+        $currentDate = $startDate->copy();
+        while ($currentDate <= $endDate) {
+            $dateStr = $currentDate->format('Y-m-d');
+            $dayData = $rawSales->get($dateStr);
+
+            $salesByDay->push([
+                'date' => $dateStr,
+                'count' => $dayData ? $dayData->count : 0,
+                'revenue' => (float) ($dayData ? $dayData->revenue : 0)
+            ]);
+            $currentDate->addDay();
+        }
 
         // Category Stats
         $categoryStats = $event->categories->map(function ($category) {
@@ -330,7 +364,7 @@ class RaceController extends Controller
                 'sold' => $sold,
                 'max' => $category->max_participants,
                 'percent' => $category->max_participants > 0 ? min(100, ($sold / $category->max_participants) * 100) : 0,
-                'revenue' => $category->orderItems()->where('order_items.status', 'paid')->sum('order_items.price')
+                'revenue' => (float) $category->orderItems()->where('order_items.status', 'paid')->sum('order_items.price')
             ];
         });
 

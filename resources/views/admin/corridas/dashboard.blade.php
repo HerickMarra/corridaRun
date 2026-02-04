@@ -102,7 +102,7 @@
             <div class="flex justify-between items-center mb-8">
                 <div>
                     <h3 class="text-lg font-black text-slate-800 uppercase italic tracking-tighter">Fluxo de Inscrições</h3>
-                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Performance dos últimos 30 dias</p>
+                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Tendência histórica de performance</p>
                 </div>
                 <div class="flex gap-2">
                     <span class="flex items-center gap-2 text-[10px] font-black uppercase text-slate-400">
@@ -213,7 +213,7 @@
             const salesData = @json($salesByDay);
             
             const labels = salesData.map(d => {
-                const date = new Date(d.date);
+                const date = new Date(d.date + 'T00:00:00');
                 return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
             });
             const values = salesData.map(d => d.count);
@@ -235,7 +235,7 @@
                         pointBackgroundColor: '#ffffff',
                         pointBorderColor: '#0d59f2',
                         pointBorderWidth: 2,
-                        pointRadius: 4,
+                        pointRadius: values.length > 31 ? 2 : 4,
                         pointHoverRadius: 6,
                         tension: 0.4,
                         fill: true,
@@ -245,6 +245,10 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
                     plugins: {
                         legend: { display: false },
                         tooltip: {
@@ -268,11 +272,21 @@
                         y: {
                             beginAtZero: true,
                             grid: { color: '#f1f5f9' },
-                            ticks: { font: { family: 'Inter', weight: 'bold', size: 10 }, color: '#94a3b8' }
+                            ticks: { 
+                                font: { family: 'Inter', weight: 'bold', size: 10 }, 
+                                color: '#94a3b8',
+                                precision: 0
+                            }
                         },
                         x: {
                             grid: { display: false },
-                            ticks: { font: { family: 'Inter', weight: 'bold', size: 10 }, color: '#94a3b8' }
+                            ticks: { 
+                                font: { family: 'Inter', weight: 'bold', size: 10 }, 
+                                color: '#94a3b8',
+                                maxRotation: 0,
+                                autoSkip: true,
+                                maxTicksLimit: 10
+                            }
                         }
                     }
                 }
@@ -281,4 +295,3 @@
     </script>
     @endpush
 @endsection
-
