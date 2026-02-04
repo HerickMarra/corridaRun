@@ -45,6 +45,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/atletas/{athlete}', [App\Http\Controllers\Admin\AthleteController::class, 'show'])->name('athletes.show');
         Route::get('/atletas/{athlete}/edit', [App\Http\Controllers\Admin\AthleteController::class, 'edit'])->name('athletes.edit');
         Route::put('/atletas/{athlete}', [App\Http\Controllers\Admin\AthleteController::class, 'update'])->name('athletes.update');
+
+        // Sales
+        Route::get('/vendas', [App\Http\Controllers\Admin\SalesController::class, 'index'])->name('sales.index');
     });
 
     // Client Hub
