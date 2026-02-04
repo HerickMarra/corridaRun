@@ -158,6 +158,26 @@
                     @endforeach
                 </div>
             </div>
+
+            <!-- Coupons Summary -->
+            <div class="mt-6 p-6 rounded-2xl bg-slate-50/50 border border-slate-100">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Uso de Cupons</p>
+                <div class="space-y-3">
+                    @forelse($event->coupons as $coupon)
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <span class="size-1.5 rounded-full {{ $coupon->is_active ? 'bg-green-500' : 'bg-slate-300' }}"></span>
+                                <span class="text-xs font-bold text-slate-600 truncate mr-4">{{ $coupon->code }}</span>
+                            </div>
+                            <span class="text-xs font-black text-slate-800 italic">
+                                {{ $coupon->used_count }}/{{ $coupon->usage_limit ?? 0 }}
+                            </span>
+                        </div>
+                    @empty
+                        <p class="text-[10px] font-bold text-slate-300 uppercase italic">Nenhum cupom cadastrado</p>
+                    @endforelse
+                </div>
+            </div>
         </div>
     </div>
 

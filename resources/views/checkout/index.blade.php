@@ -16,6 +16,7 @@
 
                     <form action="{{ route('checkout.process', $category->id) }}" method="POST" id="checkout-form">
                         @csrf
+                        <input type="hidden" name="coupon_code" id="hidden-coupon-code">
                         <section class="bg-white rounded-3xl p-8 card-shadow border border-slate-50 mb-8">
                             <div class="flex items-center gap-4 mb-8">
                                 <div class="size-10 rounded-xl bg-slate-50 flex items-center justify-center text-primary">
@@ -326,6 +327,7 @@
                     document.getElementById('final-total').innerText = data.new_total.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
 
                     // Prevenir re-aplicação
+                    document.getElementById('hidden-coupon-code').value = data.code;
                     document.getElementById('coupon-code').readOnly = true;
                     btn.disabled = true;
                 } else {

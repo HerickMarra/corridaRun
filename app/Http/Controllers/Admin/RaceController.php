@@ -349,7 +349,7 @@ class RaceController extends Controller
             }
         }
 
-        $event->load(['categories', 'orderItems.order']);
+        $event->load(['categories', 'orderItems.order', 'coupons']);
 
         // KPIs
         $totalInscriptions = $event->orderItems()->where('order_items.status', 'paid')->count();
