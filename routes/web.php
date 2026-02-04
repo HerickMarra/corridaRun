@@ -36,6 +36,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/corridas/create', [App\Http\Controllers\Admin\RaceController::class, 'create'])->name('corridas.create');
         Route::post('/corridas', [App\Http\Controllers\Admin\RaceController::class, 'store'])->name('corridas.store');
         Route::get('/corridas/{event}/edit', [App\Http\Controllers\Admin\RaceController::class, 'edit'])->name('corridas.edit');
+        Route::get('/corridas/{event}/dashboard', [App\Http\Controllers\Admin\RaceController::class, 'dashboard'])->name('corridas.dashboard');
         Route::put('/corridas/{event}', [App\Http\Controllers\Admin\RaceController::class, 'update'])->name('corridas.update');
         Route::delete('/corridas/{event}', [App\Http\Controllers\Admin\RaceController::class, 'destroy'])->name('corridas.destroy');
 

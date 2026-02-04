@@ -302,4 +302,55 @@ class RaceController extends Controller
         $event->delete();
         return redirect()->route('admin.corridas.index')->with('success', 'Corrida movida para a lixeira!');
     }
+
+    public function dashboard(Event $event)
+    {
+        $event->load(['categories', 'orderItems.order']);
+
+        // KPIs
+        $totalInscriptions = $event->orderItems()->where('order_items.status', 'paid')->count();
+        $totalRevenue = $event->orderItems()->where('order_items.status', 'paid')->sum('order_items.price');
+        $serviceFee = $totalRevenue * 0.07;
+        $avgTicket = $totalInscriptions > 0 ? ($totalRevenue / $totalInscriptions) : 0;
+
+        // Sales by Day (last 30 days)
+        $salesByDay = \App\Models\OrderItem::whereIn('category_id', $event->categories->pluck('id'))
+            ->where('order_items.status', 'paid')
+            ->where('order_items.created_at', '>=', now()->subDays(30))
+            ->selectRaw('DATE(order_items.created_at) as date, count(*) as count, sum(order_items.price) as revenue')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        // Category Stats
+        $categoryStats = $event->categories->map(function ($category) {
+            $sold = $category->orderItems()->where('order_items.status', 'paid')->count();
+            return [
+                'name' => $category->name,
+                'sold' => $sold,
+                'max' => $category->max_participants,
+                'percent' => $category->max_participants > 0 ? min(100, ($sold / $category->max_participants) * 100) : 0,
+                'revenue' => $category->orderItems()->where('order_items.status', 'paid')->sum('order_items.price')
+            ];
+        });
+
+        // Recent Inscriptions
+        $recentInscriptions = $event->orderItems()
+            ->with('order.user')
+            ->where('order_items.status', 'paid')
+            ->latest('order_items.created_at')
+            ->take(10)
+            ->get();
+
+        return view('admin.corridas.dashboard', compact(
+            'event',
+            'totalInscriptions',
+            'totalRevenue',
+            'serviceFee',
+            'avgTicket',
+            'salesByDay',
+            'categoryStats',
+            'recentInscriptions'
+        ));
+    }
 }

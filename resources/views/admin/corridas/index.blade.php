@@ -71,6 +71,11 @@
                                         title="Ver página pública">
                                         <span class="material-symbols-outlined text-lg">visibility</span>
                                     </a>
+                                    <a href="{{ route('admin.corridas.dashboard', $event->id) }}"
+                                        class="size-8 rounded-lg border border-slate-100 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/30 transition-all"
+                                        title="Painel de Vendas">
+                                        <span class="material-symbols-outlined text-lg">monitoring</span>
+                                    </a>
                                     <a href="{{ route('admin.corridas.edit', $event->id) }}"
                                         class="size-8 rounded-lg border border-slate-100 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/30 transition-all">
                                         <span class="material-symbols-outlined text-lg">edit</span>
