@@ -111,8 +111,8 @@
                 <span class="material-symbols-outlined">shopping_cart</span>
                 <span class="text-sm font-semibold">Vendas</span>
             </a>
-            <a href="#"
-                class="flex items-center gap-4 px-6 py-4 hover:bg-white/5 transition-all text-white/70 hover:text-white">
+            <a href="{{ route('admin.settings.index') }}"
+                class="flex items-center gap-4 px-6 py-4 hover:bg-white/5 transition-all {{ request()->routeIs('admin.settings.*') ? 'sidebar-active' : 'text-white/70 hover:text-white' }}">
                 <span class="material-symbols-outlined">settings</span>
                 <span class="text-sm font-semibold">Configurações</span>
             </a>

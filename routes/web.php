@@ -48,6 +48,10 @@ Route::middleware(['auth'])->group(function () {
 
         // Sales
         Route::get('/vendas', [App\Http\Controllers\Admin\SalesController::class, 'index'])->name('sales.index');
+
+        // Settings
+        Route::get('/configuracoes', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
+        Route::put('/configuracoes', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
     });
 
     // Client Hub
