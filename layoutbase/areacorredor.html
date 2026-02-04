@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CORREDOR HUB - Run Platform</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0052FF",
+                        "secondary": "#111111",
+                        "background-light": "#FFFFFF",
+                        "background-soft": "#F9FAFB",
+                        "card-light": "#FFFFFF",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.75rem",
+                        "lg": "1.5rem",
+                        "xl": "2.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body {
+                font-family: 'Space Grotesk', sans-serif;
+                @apply bg-white text-secondary;
+            }
+        }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 40px -15px rgba(0, 0, 0, 0.05);
+        }
+        .card-shadow-hover {
+            box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.1);
+        }
+        .timeline-line {
+            background: linear-gradient(180deg, #0052FF 0%, #E2E8F0 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen overflow-x-hidden antialiased">
+<header class="fixed top-0 w-full z-50 border-b border-slate-100 glass-nav">
+<div class="max-w-[1440px] mx-auto px-6 lg:px-12 flex items-center justify-between h-20">
+<div class="flex items-center gap-12">
+<div class="flex items-center gap-2">
+<div class="size-7 text-primary">
+<svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z"></path>
+</svg>
+</div>
+<h2 class="text-xl font-bold tracking-tight text-secondary uppercase">Run Platform</h2>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors" href="#">Eventos</a>
+<a class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors" href="#">Resultados</a>
+<a class="text-sm font-semibold text-primary" href="#">Minha Área</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<button class="relative">
+<span class="material-symbols-outlined text-slate-400">notifications</span>
+<span class="absolute top-0 right-0 size-2 bg-primary rounded-full border-2 border-white"></span>
+</button>
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-slate-100 border border-slate-200 overflow-hidden">
+<img alt="Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuALYmOxOrQaKLIWHdDPNzIMx9UbkECLY66exaJznZnIOKUM7CkmC_-MmEJuU0dH9wyBLKPEBrPa4c24dfwMQvxfOAvccBnNvIJJk1FzB-gy_TfB_ySrYhnXqx8-p1sJ-69BqyXW4CpwleaQU99GC9fRQ2rg0n3Pw-Jp7fzItZJZpTcOsN4oSsCUmLVVaYIjRu8S46kZ_mO7VoVxOZsWsni_DLTI9mPsZL-q3ZwiKrNwCI4vZmu0aAUmdbHxChMLOxmEkICn5kMWtXU"/>
+</div>
+<span class="text-sm font-bold">Ricardo Silva</span>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-32 pb-24 px-6 lg:px-12 bg-white">
+<div class="max-w-[1440px] mx-auto">
+<section class="mb-16">
+<span class="text-primary font-black uppercase tracking-[0.3em] text-[10px] mb-3 block">Membro Premium</span>
+<h1 class="text-5xl md:text-6xl font-black text-secondary uppercase italic leading-[0.95] tracking-tighter">
+                Olá, Ricardo,<br/>sua próxima meta <span class="text-primary">está próxima.</span>
+</h1>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+<div class="lg:col-span-8 space-y-20">
+<div>
+<div class="flex items-center justify-between mb-8">
+<h2 class="text-2xl font-black uppercase italic tracking-tight">Inscrições Ativas</h2>
+<a class="text-sm font-bold text-primary hover:underline" href="#">Ver todas</a>
+</div>
+<div class="space-y-6">
+<div class="group relative bg-white border border-slate-100 rounded-3xl overflow-hidden card-shadow hover:card-shadow-hover transition-all duration-500">
+<div class="flex flex-col md:flex-row">
+<div class="md:w-2/5 relative h-64 md:h-auto overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-1000" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBBxl_-4-yh1caRnhCLD7I4Dg1TWx0pSX_QgNCsjLfcULXS8CgHtyF7TExd8oE1an_iJjvh34hxahnhOEVhTdlXAX4GnR5fEwP4rRkeIAWrsnmAPuBddzDN9h3y-dPh56jzlVIELrr1hphv8ggL3WrylwE2yFeADM-6_poiGKfVqoUOguwfXiZv3KgBSGBFJgPozfMiDJKoMY7fhp0Cl1Fb4QU_GqDLh3AEKDFelFcDJpRS_gV5vyAKdFiqPfLBnprWUx4ioEWv5pA");'></div>
+<div class="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent"></div>
+</div>
+<div class="md:w-3/5 p-8 lg:p-10 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-primary/10 text-primary text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">Major Event</span>
+<div class="text-right">
+<p class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Faltam</p>
+<p class="text-2xl font-black italic text-secondary leading-none">45 DIAS</p>
+</div>
+</div>
+<h3 class="text-3xl font-black uppercase italic leading-tight mb-2">São Paulo City Marathon</h3>
+<p class="text-slate-500 font-medium mb-6">24 de Julho • 42K • Pelotão A</p>
+</div>
+<div class="flex gap-4">
+<button class="bg-secondary text-white px-8 py-3 rounded-full text-xs font-black uppercase tracking-widest hover:bg-black transition-all">Ver Guia da Prova</button>
+<button class="border border-slate-200 px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all">Voucher</button>
+</div>
+</div>
+</div>
+</div>
+<div class="group relative bg-white border border-slate-100 rounded-3xl overflow-hidden card-shadow hover:card-shadow-hover transition-all duration-500">
+<div class="flex flex-col md:flex-row">
+<div class="md:w-2/5 relative h-64 md:h-auto overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-1000" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBzJ6V1Ehs-JCoXsBp0_-DyKYAVr-G6ofabfLHVZnxGtktRkR53eJOVFLoK16JK4L8tNkyN5k8JOV7f_AtcHFYtdoAG4jWIIBiDYKxlExjCIbRBXUNZt5raBKIPNFHQcc7A-ImBwoYH06h5RTUSX9woZ4f4aiD1IXrYqnDpfIXtUvnATvvugrQAtwKRl4853vrSUH-M_h-Hxe5tZ7IGwPPfVyzQexFEIt1IFs_vP37u8VuuT-CGzLMNJ08b9PIIhIe40e67BFPJOug");'></div>
+<div class="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent"></div>
+</div>
+<div class="md:w-3/5 p-8 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-slate-100 text-slate-600 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">Trail Series</span>
+<div class="text-right">
+<p class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Faltam</p>
+<p class="text-2xl font-black italic text-secondary leading-none">12 DIAS</p>
+</div>
+</div>
+<h3 class="text-2xl font-black uppercase italic leading-tight mb-2">Rio Trail 21k</h3>
+<p class="text-slate-500 font-medium mb-6">08 de Maio • 21K • Montanha</p>
+</div>
+<div class="flex gap-4">
+<button class="bg-secondary text-white px-8 py-3 rounded-full text-xs font-black uppercase tracking-widest hover:bg-black transition-all">Ver Guia da Prova</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div>
+<h2 class="text-2xl font-black uppercase italic tracking-tight mb-12">Minha Jornada</h2>
+<div class="relative pl-12">
+<div class="absolute left-[23px] top-0 bottom-0 w-px timeline-line"></div>
+<div class="space-y-12">
+<div class="relative group">
+<div class="absolute -left-[54px] top-0 size-11 bg-white border-2 border-primary rounded-full flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-primary text-xl">workspace_premium</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+<div class="aspect-[16/9] rounded-2xl overflow-hidden shadow-lg">
+<img alt="Past Race" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRtGZ2mrAs-saSWAihjeRaTnwzFCoItB2zAzdDo3KT6l1tgpsihCTyK9v8xvnFcvnO0uUbnFbCBbaQjVYkZfJzf1ZhvZoxN3DsvfIywZghgWRppvQe09hSTEeuiPbkj5tSiXwDWJBMZimfTy1Wa9vdM1ZkuD-kpcUN5Y0uMdGJkXzO4JSduJ8KrNrTIfL1H-IjAMNy1KnDy5hfER4h8fzA8lAoD3y4ZmuWBSlc2nYuVrYc6B0_xGXKqwPaYwapofwJraGuKw4aNcA"/>
+</div>
+<div>
+<p class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-2">Dezembro 2023</p>
+<h4 class="text-xl font-black uppercase italic mb-2">Curitiba Marathon</h4>
+<p class="text-slate-500 text-sm mb-4 leading-relaxed">Sua primeira maratona completada em 03:45:12. Uma performance excepcional sob chuva.</p>
+<div class="flex gap-4">
+<span class="text-[10px] font-black bg-slate-100 px-3 py-1 rounded uppercase">Pace 5'20"</span>
+<span class="text-[10px] font-black bg-slate-100 px-3 py-1 rounded uppercase">Rank #142</span>
+</div>
+</div>
+</div>
+</div>
+<div class="relative group">
+<div class="absolute -left-[54px] top-0 size-11 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-slate-400 text-xl">timer</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+<div class="aspect-[16/9] rounded-2xl overflow-hidden shadow-lg">
+<img alt="Past Race" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDr30PifqegbaOoOlSWV__tN4YiGzCcg4n_Kp5mIo-ZmOLgZCllgI6GcOWegX_JI2Pmfu5jFy9hgHvwpNoLLpIMXlzoQGU1KpSRetPZiA1_Fl0kUAjzJbPRE10w-6-fScpFYqmgSdb6sQ_FJ26rL6D7p5nzqLgqbmT_QrQ20nSAz2CyQsBxfqaRbK5itm24PbKFg4LLqklAulF6J6pdViWUIYPPvpG2ePtkSHmqgj3bnLyugFoYS7XWY4gfUKTTKoDwsWkt7X_tDmM"/>
+</div>
+<div>
+<p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Outubro 2023</p>
+<h4 class="text-xl font-black uppercase italic mb-2">SP Night Run 10k</h4>
+<p class="text-slate-500 text-sm mb-4 leading-relaxed">Recorde pessoal nos 10km. 44 minutos e 15 segundos nas ruas iluminadas de São Paulo.</p>
+<div class="flex gap-4">
+<span class="text-[10px] font-black bg-slate-100 px-3 py-1 rounded uppercase">Pace 4'25"</span>
+<span class="text-[10px] font-black bg-slate-100 px-3 py-1 rounded uppercase">PB 10K</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-4">
+<div class="sticky top-32 space-y-8">
+<div class="bg-white border border-slate-100 rounded-3xl p-10 card-shadow">
+<div class="flex items-center justify-between mb-8">
+<h3 class="text-xl font-black uppercase italic tracking-tight">Perfil e Preferências</h3>
+<button class="text-primary"><span class="material-symbols-outlined">edit_note</span></button>
+</div>
+<div class="space-y-8">
+<div>
+<label class="text-[10px] font-black uppercase text-slate-400 tracking-widest block mb-2">Informações Pessoais</label>
+<div class="space-y-4">
+<div class="flex justify-between border-b border-slate-50 pb-3">
+<span class="text-sm font-medium text-slate-500">CPF</span>
+<span class="text-sm font-bold">123.***.***-00</span>
+</div>
+<div class="flex justify-between border-b border-slate-50 pb-3">
+<span class="text-sm font-medium text-slate-500">Nascimento</span>
+<span class="text-sm font-bold">15/05/1992</span>
+</div>
+<div class="flex justify-between border-b border-slate-50 pb-3">
+<span class="text-sm font-medium text-slate-500">Equipe</span>
+<span class="text-sm font-bold text-primary">Elite Runners</span>
+</div>
+</div>
+</div>
+<div>
+<label class="text-[10px] font-black uppercase text-slate-400 tracking-widest block mb-4">Medidas do Kit</label>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+<p class="text-[10px] font-black text-slate-400 uppercase mb-1">Camiseta</p>
+<p class="text-lg font-black italic">MASCULINO G</p>
+</div>
+<div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+<p class="text-[10px] font-black text-slate-400 uppercase mb-1">Tênis</p>
+<p class="text-lg font-black italic">42 BR</p>
+</div>
+</div>
+</div>
+<div>
+<label class="text-[10px] font-black uppercase text-slate-400 tracking-widest block mb-4">Saúde e Emergência</label>
+<div class="bg-primary/5 border border-primary/10 p-6 rounded-2xl">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-primary">medical_services</span>
+<span class="text-sm font-bold uppercase tracking-tight">Tipo Sanguíneo: O+</span>
+</div>
+<div class="text-xs font-medium text-slate-600">
+<p class="mb-1">Contato de Emergência:</p>
+<p class="font-bold text-secondary">Mariana Silva (Esposa)</p>
+<p class="font-bold text-secondary">(11) 98888-7777</p>
+</div>
+</div>
+</div>
+</div>
+<button class="w-full mt-10 py-4 bg-slate-50 hover:bg-slate-100 text-slate-500 font-black text-[10px] uppercase tracking-[0.2em] rounded-full transition-all">
+                            Gerenciar Conta
+                        </button>
+</div>
+<div class="bg-secondary rounded-3xl p-8 text-white relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-700">
+<svg class="size-24" fill="currentColor" viewBox="0 0 48 48">
+<path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z"></path>
+</svg>
+</div>
+<div class="relative z-10">
+<p class="text-[10px] font-black uppercase text-primary tracking-[0.3em] mb-2">Pontos Acumulados</p>
+<p class="text-4xl font-black italic mb-6">12.450 <span class="text-xs uppercase not-italic tracking-normal text-white/40">pts</span></p>
+<p class="text-xs text-white/60 mb-6 font-medium leading-relaxed">Você está a 500 pontos de desbloquear a pré-venda exclusiva para a Maratona do Rio.</p>
+<button class="text-xs font-black uppercase tracking-widest text-primary hover:text-white transition-colors">Resgatar Benefícios →</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="bg-white border-t border-slate-100 py-24 px-6 lg:px-12">
+<div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-16">
+<div class="col-span-1 md:col-span-2">
+<div class="flex items-center gap-2 mb-8">
+<div class="size-8 text-primary">
+<svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z"></path>
+</svg>
+</div>
+<h2 class="text-2xl font-black tracking-tight text-secondary uppercase italic">Run Platform</h2>
+</div>
+<p class="text-slate-500 font-medium max-w-sm mb-10 leading-relaxed">
+                A maior comunidade de corredores do Brasil. Performance, tecnologia e conexões reais em cada quilômetro.
+            </p>
+</div>
+<div>
+<h4 class="text-secondary font-black uppercase tracking-[0.2em] text-[10px] mb-8">Área do Atleta</h4>
+<ul class="space-y-4 text-slate-500 text-sm font-semibold">
+<li><a class="hover:text-primary transition-colors" href="#">Minhas Provas</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Certificados</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Treinamento</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Ajuda</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-secondary font-black uppercase tracking-[0.2em] text-[10px] mb-8">Redes Sociais</h4>
+<div class="flex gap-4">
+<div class="size-11 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center hover:bg-primary hover:text-white transition-all cursor-pointer">
+<svg class="size-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg>
+</div>
+</div>
+</div>
+</div>
+<div class="max-w-[1440px] mx-auto mt-24 pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6">
+<p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">© 2024 RUN PLATFORM. HUB DO ATLETA.</p>
+<div class="flex gap-8 text-slate-400 text-[10px] font-bold uppercase tracking-widest">
+<a class="hover:text-secondary transition-colors" href="#">Termos</a>
+<a class="hover:text-secondary transition-colors" href="#">Privacidade</a>
+</div>
+</div>
+</footer>
+
+</body></html>

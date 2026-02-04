@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Checkout - São Paulo City Marathon | Run Platform</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0052FF",
+                        "secondary": "#111111",
+                        "background-light": "#FFFFFF",
+                        "background-soft": "#F9FAFB",
+                        "card-light": "#FFFFFF",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.75rem",
+                        "lg": "1.5rem",
+                        "xl": "2.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body {
+                font-family: 'Space Grotesk', sans-serif;
+                @apply bg-background-soft text-secondary;
+            }
+        }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 40px -15px rgba(0, 0, 0, 0.05);
+        }
+        input:focus {
+            @apply ring-primary border-primary;
+        }
+        .payment-radio:checked + label {
+            @apply border-primary bg-primary/5 ring-1 ring-primary;
+        }
+    </style>
+</head>
+<body class="min-h-screen antialiased">
+<header class="fixed top-0 w-full z-50 border-b border-slate-100 glass-nav">
+<div class="max-w-[1440px] mx-auto px-6 lg:px-12 flex items-center justify-between h-20">
+<div class="flex items-center gap-4">
+<div class="size-7 text-primary">
+<svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z"></path>
+</svg>
+</div>
+<h2 class="text-xl font-bold tracking-tight text-secondary uppercase italic">Run Platform</h2>
+</div>
+<div class="hidden md:flex items-center gap-4">
+<span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Checkout Seguro</span>
+<span class="material-symbols-outlined text-emerald-500 text-lg">lock</span>
+</div>
+</div>
+</header>
+<main class="pt-32 pb-24 px-6 lg:px-12">
+<div class="max-w-[1200px] mx-auto">
+<div class="flex flex-col lg:flex-row gap-12">
+<div class="lg:flex-1 space-y-8">
+<div>
+<h1 class="text-3xl font-black uppercase italic tracking-tighter mb-2">Finalizar <span class="text-primary">Inscrição</span></h1>
+<p class="text-slate-500 text-sm font-medium">Complete seus dados para garantir sua vaga na largada.</p>
+</div>
+<section class="bg-white rounded-3xl p-8 card-shadow border border-slate-50">
+<div class="flex items-center gap-4 mb-8">
+<div class="size-10 rounded-xl bg-slate-50 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">person</span>
+</div>
+<h2 class="text-lg font-black uppercase italic">Identificação do Atleta</h2>
+</div>
+<div class="grid md:grid-cols-2 gap-6">
+<div class="space-y-1.5">
+<label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Nome Completo</label>
+<input class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all" readonly="" type="text" value="Ricardo Silva"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">E-mail</label>
+<input class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all" readonly="" type="email" value="ricardo.silva@email.com"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">CPF</label>
+<input class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all" placeholder="000.000.000-00" type="text"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Data de Nascimento</label>
+<input class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all" placeholder="DD/MM/AAAA" type="text"/>
+</div>
+</div>
+</section>
+<section class="bg-white rounded-3xl p-8 card-shadow border border-slate-50">
+<div class="flex items-center gap-4 mb-8">
+<div class="size-10 rounded-xl bg-slate-50 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<h2 class="text-lg font-black uppercase italic">Método de Pagamento</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+<div>
+<input checked="" class="hidden payment-radio" id="credit" name="payment" type="radio"/>
+<label class="flex flex-col items-center justify-center gap-3 p-6 border-2 border-slate-100 rounded-2xl cursor-pointer hover:border-primary/30 transition-all" for="credit">
+<span class="material-symbols-outlined text-primary">credit_card</span>
+<span class="text-xs font-black uppercase tracking-widest">Cartão de Crédito</span>
+</label>
+</div>
+<div>
+<input class="hidden payment-radio" id="debit" name="payment" type="radio"/>
+<label class="flex flex-col items-center justify-center gap-3 p-6 border-2 border-slate-100 rounded-2xl cursor-pointer hover:border-primary/30 transition-all" for="debit">
+<span class="material-symbols-outlined text-slate-400">account_balance</span>
+<span class="text-xs font-black uppercase tracking-widest">Cartão de Débito</span>
+</label>
+</div>
+<div>
+<input class="hidden payment-radio" id="pix" name="payment" type="radio"/>
+<label class="flex flex-col items-center justify-center gap-3 p-6 border-2 border-slate-100 rounded-2xl cursor-pointer hover:border-primary/30 transition-all" for="pix">
+<span class="material-symbols-outlined text-slate-400">qr_code_2</span>
+<span class="text-xs font-black uppercase tracking-widest">Pix</span>
+</label>
+</div>
+</div>
+<div class="space-y-6">
+<div class="space-y-1.5">
+<label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Número do Cartão</label>
+<div class="relative">
+<input class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all" placeholder="0000 0000 0000 0000" type="text"/>
+<div class="absolute right-5 top-1/2 -translate-y-1/2 flex gap-2">
+<div class="h-6 w-10 bg-slate-200 rounded-md"></div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-6">
+<div class="space-y-1.5">
+<label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Validade</label>
+<input class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all" placeholder="MM/AA" type="text"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">CVV</label>
+<input class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all" placeholder="123" type="text"/>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Parcelamento</label>
+<select class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all focus:ring-primary">
+<option>1x de R$ 277,13 sem juros</option>
+<option>2x de R$ 138,57 sem juros</option>
+<option>3x de R$ 92,38 sem juros</option>
+</select>
+</div>
+</div>
+<div class="hidden mt-6 p-6 bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-center">
+<p class="text-sm font-bold text-slate-600">O QR Code será gerado após clicar em finalizar.</p>
+</div>
+</section>
+</div>
+<aside class="lg:w-[400px]">
+<div class="sticky top-32 space-y-6">
+<div class="bg-white rounded-3xl p-8 card-shadow border border-slate-50 overflow-hidden relative">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+<h2 class="text-xl font-black uppercase italic tracking-tight mb-8">Resumo do <span class="text-primary">Pedido</span></h2>
+<div class="flex items-start gap-4 mb-8">
+<div class="size-16 rounded-2xl bg-slate-100 overflow-hidden flex-shrink-0">
+<img alt="Maratona" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBxl_-4-yh1caRnhCLD7I4Dg1TWx0pSX_QgNCsjLfcULXS8CgHtyF7TExd8oE1an_iJjvh34hxahnhOEVhTdlXAX4GnR5fEwP4rRkeIAWrsnmAPuBddzDN9h3y-dPh56jzlVIELrr1hphv8ggL3WrylwE2yFeADM-6_poiGKfVqoUOguwfXiZv3KgBSGBFJgPozfMiDJKoMY7fhp0Cl1Fb4QU_GqDLh3AEKDFelFcDJpRS_gV5vyAKdFiqPfLBnprWUx4ioEWv5pA"/>
+</div>
+<div>
+<p class="text-[10px] font-black uppercase tracking-widest text-primary mb-1">São Paulo City Marathon</p>
+<p class="text-sm font-bold leading-tight">Kit Pro Performance 42K</p>
+<p class="text-xs text-slate-400 font-medium mt-1 italic">24 de Julho, 2024</p>
+</div>
+</div>
+<div class="space-y-4 border-t border-slate-100 pt-8 mb-8">
+<div class="flex justify-between items-center text-sm">
+<span class="font-medium text-slate-500 uppercase tracking-widest text-[10px]">Inscrição</span>
+<span class="font-bold">R$ 259,00</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="font-medium text-slate-500 uppercase tracking-widest text-[10px]">Taxa de Serviço (7%)</span>
+<span class="font-bold">R$ 18,13</span>
+</div>
+</div>
+<div class="flex justify-between items-center mb-10">
+<span class="text-xs font-black uppercase tracking-widest">Total a pagar</span>
+<span class="text-3xl font-black italic text-secondary">R$ 277,13</span>
+</div>
+<button class="w-full bg-primary text-white py-6 rounded-full text-xs font-black uppercase tracking-[0.2em] shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                            Finalizar Inscrição
+                        </button>
+<div class="mt-6 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-slate-300 text-lg">verified_user</span>
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Ambiente 100% Criptografado</p>
+</div>
+</div>
+<div class="flex items-center justify-center gap-8 opacity-40 grayscale hover:grayscale-0 transition-all">
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-2xl">security</span>
+<span class="text-[8px] font-black uppercase mt-1">SSL Secure</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-2xl">gpp_maybe</span>
+<span class="text-[8px] font-black uppercase mt-1">PCI Compliant</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-2xl">encrypted</span>
+<span class="text-[8px] font-black uppercase mt-1">Safe Pay</span>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</div>
+</main>
+<footer class="bg-white border-t border-slate-100 py-16 px-6 lg:px-12">
+<div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-2">
+<div class="size-6 text-slate-400">
+<svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z"></path>
+</svg>
+</div>
+<p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em]">Run Platform Premium Checkout</p>
+</div>
+<div class="flex gap-8">
+<a class="text-slate-400 text-[10px] font-black uppercase tracking-widest hover:text-primary transition-colors" href="#">Termos de Uso</a>
+<a class="text-slate-400 text-[10px] font-black uppercase tracking-widest hover:text-primary transition-colors" href="#">Política de Privacidade</a>
+<a class="text-slate-400 text-[10px] font-black uppercase tracking-widest hover:text-primary transition-colors" href="#">Ajuda</a>
+</div>
+</div>
+</footer>
+
+</body></html>
