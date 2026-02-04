@@ -73,6 +73,7 @@ class RaceController extends Controller
                 'sort_order' => $index,
                 'is_public' => $isPublic,
                 'access_hash' => $isPublic ? null : \Illuminate\Support\Str::random(16),
+                'items_included' => !empty($categoryData['items_included']) ? array_filter(array_map('trim', explode(',', $categoryData['items_included']))) : null,
             ]);
         }
 
@@ -172,6 +173,7 @@ class RaceController extends Controller
                         'sort_order' => $index,
                         'is_public' => $isPublic,
                         'access_hash' => $hash,
+                        'items_included' => !empty($categoryData['items_included']) ? array_filter(array_map('trim', explode(',', $categoryData['items_included']))) : null,
                     ]);
                 } else {
                     $event->categories()->create([
@@ -184,6 +186,7 @@ class RaceController extends Controller
                         'sort_order' => $index,
                         'is_public' => $isPublic,
                         'access_hash' => $isPublic ? null : \Illuminate\Support\Str::random(16),
+                        'items_included' => !empty($categoryData['items_included']) ? array_filter(array_map('trim', explode(',', $categoryData['items_included']))) : null,
                     ]);
                 }
             }

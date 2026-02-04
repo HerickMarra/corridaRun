@@ -24,11 +24,13 @@ class Category extends Model
         'sort_order',
         'is_public',
         'access_hash',
+        'items_included',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'is_public' => 'boolean',
+        'items_included' => 'array',
     ];
 
     public function event(): BelongsTo

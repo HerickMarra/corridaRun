@@ -114,6 +114,10 @@
                                         <option value="0">Privado (Link Hash)</option>
                                     </select>
                                 </div>
+                                <div class="space-y-1.5 lg:col-span-4">
+                                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">O que está incluso (Separe por vírgula)</label>
+                                    <textarea name="categories[0][items_included]" class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold" placeholder="Ex: Medalha, Camiseta, Chip, Hidratação" rows="2"></textarea>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -253,6 +257,10 @@
                                                         <option value="1">Público</option>
                                                         <option value="0">Privado (Link Hash)</option>
                                                     </select>
+                                                </div>
+                                                <div class="space-y-1.5 lg:col-span-4">
+                                                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">O que está incluso (Separe por vírgula)</label>
+                                                    <textarea name="categories[${categoryIndex}][items_included]" class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold" placeholder="Ex: Medalha, Camiseta, Chip, Hidratação" rows="2"></textarea>
                                                 </div>
                                             </div>
                                         </div>
