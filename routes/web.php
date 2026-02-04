@@ -9,6 +9,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/calendario', [App\Http\Controllers\CalendarController::class, 'index'])->name('calendar');
 Route::get('/event/{slug}', [EventController::class, 'show'])->name('events.show');
 // Auth Routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

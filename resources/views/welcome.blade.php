@@ -36,10 +36,10 @@
                             <span class="material-symbols-outlined">trending_flat</span>
                         </a>
                     @endauth
-                    <button
+                    <a href="{{ route('calendar') }}"
                         class="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/40 px-10 py-5 rounded-full text-lg font-bold tracking-tight transition-all">
                         Ver Calendário
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
