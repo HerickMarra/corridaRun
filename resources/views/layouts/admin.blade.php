@@ -91,26 +91,32 @@
         </div>
 
         <nav class="flex-grow mt-6">
-            <a href="{{ route('admin.dashboard') }}"
-                class="flex items-center gap-4 px-6 py-4 {{ request()->routeIs('admin.dashboard') ? 'sidebar-active' : 'text-white/70 hover:text-white' }}">
-                <span class="material-symbols-outlined">dashboard</span>
-                <span class="text-sm font-semibold">Dashboard</span>
-            </a>
+            @if(in_array(auth()->user()->role->value, ['super-admin', 'admin']))
+                <a href="{{ route('admin.dashboard') }}"
+                    class="flex items-center gap-4 px-6 py-4 {{ request()->routeIs('admin.dashboard') ? 'sidebar-active' : 'text-white/70 hover:text-white' }}">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span class="text-sm font-semibold">Dashboard</span>
+                </a>
+            @endif
+
             <a href="{{ route('admin.corridas.index') }}"
                 class="flex items-center gap-4 px-6 py-4 hover:bg-white/5 transition-all {{ request()->routeIs('admin.corridas.*') ? 'sidebar-active' : 'text-white/70 hover:text-white' }}">
                 <span class="material-symbols-outlined">directions_run</span>
                 <span class="text-sm font-semibold">Corridas</span>
             </a>
-            <a href="{{ route('admin.athletes.index') }}"
-                class="flex items-center gap-4 px-6 py-4 hover:bg-white/5 transition-all {{ request()->routeIs('admin.athletes.*') ? 'sidebar-active' : 'text-white/70 hover:text-white' }}">
-                <span class="material-symbols-outlined">groups</span>
-                <span class="text-sm font-semibold">Atletas</span>
-            </a>
-            <a href="{{ route('admin.sales.index') }}"
-                class="flex items-center gap-4 px-6 py-4 hover:bg-white/5 transition-all {{ request()->routeIs('admin.sales.*') ? 'sidebar-active' : 'text-white/70 hover:text-white' }}">
-                <span class="material-symbols-outlined">shopping_cart</span>
-                <span class="text-sm font-semibold">Vendas</span>
-            </a>
+
+            @if(in_array(auth()->user()->role->value, ['super-admin', 'admin']))
+                <a href="{{ route('admin.athletes.index') }}"
+                    class="flex items-center gap-4 px-6 py-4 hover:bg-white/5 transition-all {{ request()->routeIs('admin.athletes.*') ? 'sidebar-active' : 'text-white/70 hover:text-white' }}">
+                    <span class="material-symbols-outlined">groups</span>
+                    <span class="text-sm font-semibold">Atletas</span>
+                </a>
+                <a href="{{ route('admin.sales.index') }}"
+                    class="flex items-center gap-4 px-6 py-4 hover:bg-white/5 transition-all {{ request()->routeIs('admin.sales.*') ? 'sidebar-active' : 'text-white/70 hover:text-white' }}">
+                    <span class="material-symbols-outlined">shopping_cart</span>
+                    <span class="text-sm font-semibold">Vendas</span>
+                </a>
+            @endif
             @if(auth()->user()->role->isAdmin() && in_array(auth()->user()->role->value, ['super-admin', 'admin']))
                 <a href="{{ route('admin.users.index') }}"
                     class="flex items-center gap-4 px-6 py-4 hover:bg-white/5 transition-all {{ request()->routeIs('admin.users.*') ? 'sidebar-active' : 'text-white/70 hover:text-white' }}">
