@@ -98,10 +98,10 @@ class CheckoutController extends Controller
 
             // Create Payment
             $order->payments()->create([
-                'payment_gateway' => 'fake',
+                'payment_gateway' => $total > 0 ? 'fake' : 'free',
                 'amount' => $total,
                 'status' => \App\Enums\PaymentStatus::Approved,
-                'payment_method' => $request->payment_method,
+                'payment_method' => $total > 0 ? $request->payment_method : 'free',
                 'paid_at' => now(),
             ]);
 

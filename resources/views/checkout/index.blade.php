@@ -109,71 +109,88 @@
                                 <h2 class="text-lg font-black uppercase italic">Método de Pagamento</h2>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                                <div>
-                                    <input checked class="hidden payment-radio" id="credit" name="payment_method"
-                                        type="radio" value="credit_card" />
-                                    <label
-                                        class="flex flex-col items-center justify-center gap-3 p-6 border-2 border-slate-100 rounded-2xl cursor-pointer hover:border-primary/30 transition-all"
-                                        for="credit">
-                                        <span class="material-symbols-outlined text-primary">credit_card</span>
-                                        <span class="text-xs font-black uppercase tracking-widest">Cartão de Crédito</span>
-                                    </label>
-                                </div>
-                                <div>
-                                    <input class="hidden payment-radio" id="pix" name="payment_method" type="radio"
-                                        value="pix" />
-                                    <label
-                                        class="flex flex-col items-center justify-center gap-3 p-6 border-2 border-slate-100 rounded-2xl cursor-pointer hover:border-primary/30 transition-all"
-                                        for="pix">
-                                        <span class="material-symbols-outlined text-slate-400">qr_code_2</span>
-                                        <span class="text-xs font-black uppercase tracking-widest">Pix</span>
-                                    </label>
-                                </div>
-                            </div>
+                            <div id="payment-methods-wrapper">
+                                <div id="payment-selection-container">
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                                        <div>
+                                            <input checked class="hidden payment-radio" id="credit" name="payment_method"
+                                                type="radio" value="credit_card" />
+                                            <label
+                                                class="flex flex-col items-center justify-center gap-3 p-6 border-2 border-slate-100 rounded-2xl cursor-pointer hover:border-primary/30 transition-all"
+                                                for="credit">
+                                                <span class="material-symbols-outlined text-primary">credit_card</span>
+                                                <span class="text-xs font-black uppercase tracking-widest">Cartão de
+                                                    Crédito</span>
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <input class="hidden payment-radio" id="pix" name="payment_method" type="radio"
+                                                value="pix" />
+                                            <label
+                                                class="flex flex-col items-center justify-center gap-3 p-6 border-2 border-slate-100 rounded-2xl cursor-pointer hover:border-primary/30 transition-all"
+                                                for="pix">
+                                                <span class="material-symbols-outlined text-slate-400">qr_code_2</span>
+                                                <span class="text-xs font-black uppercase tracking-widest">Pix</span>
+                                            </label>
+                                        </div>
+                                    </div>
 
-                            <div id="credit-card-section" class="space-y-6">
-                                <div class="space-y-1.5">
-                                    <label
-                                        class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Número
-                                        do Cartão</label>
-                                    <div class="relative">
-                                        <input
-                                            class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all"
-                                            placeholder="0000 0000 0000 0000" type="text" />
-                                        <div class="absolute right-5 top-1/2 -translate-y-1/2 flex gap-2">
-                                            <div class="h-6 w-10 bg-slate-200 rounded-md"></div>
+                                    <div id="credit-card-section" class="space-y-6">
+                                        <div class="space-y-1.5">
+                                            <label
+                                                class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Número
+                                                do Cartão</label>
+                                            <div class="relative">
+                                                <input
+                                                    class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all"
+                                                    placeholder="0000 0000 0000 0000" type="text" />
+                                                <div class="absolute right-5 top-1/2 -translate-y-1/2 flex gap-2">
+                                                    <div class="h-6 w-10 bg-slate-200 rounded-md"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-6">
+                                            <div class="space-y-1.5">
+                                                <label
+                                                    class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Validade</label>
+                                                <input
+                                                    class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all"
+                                                    placeholder="MM/AA" type="text" />
+                                            </div>
+                                            <div class="space-y-1.5">
+                                                <label
+                                                    class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">CVV</label>
+                                                <input
+                                                    class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all"
+                                                    placeholder="123" type="text" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="pix-section"
+                                        class="hidden mt-6 p-10 bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-center">
+                                        <div class="flex flex-col items-center">
+                                            <span
+                                                class="material-symbols-outlined text-primary text-5xl mb-4">qr_code_2</span>
+                                            <p class="text-sm font-bold text-slate-600">O QR Code será gerado após clicar em
+                                                finalizar.</p>
+                                            <p class="text-[10px] uppercase font-black tracking-widest text-slate-400 mt-2">
+                                                Pagamento instantâneo via Pix</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="grid grid-cols-2 gap-6">
-                                    <div class="space-y-1.5">
-                                        <label
-                                            class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Validade</label>
-                                        <input
-                                            class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all"
-                                            placeholder="MM/AA" type="text" />
-                                    </div>
-                                    <div class="space-y-1.5">
-                                        <label
-                                            class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">CVV</label>
-                                        <input
-                                            class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all"
-                                            placeholder="123" type="text" />
-                                    </div>
-                                </div>
-                            </div>
 
-                            <div id="pix-section"
-                                class="hidden mt-6 p-10 bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-center">
-                                <div class="flex flex-col items-center">
-                                    <span class="material-symbols-outlined text-primary text-5xl mb-4">qr_code_2</span>
-                                    <p class="text-sm font-bold text-slate-600">O QR Code será gerado após clicar em
-                                        finalizar.</p>
-                                    <p class="text-[10px] uppercase font-black tracking-widest text-slate-400 mt-2">
-                                        Pagamento instantâneo via Pix</p>
+                                <div id="free-registration-section"
+                                    class="hidden py-10 bg-green-50 rounded-2xl border border-dashed border-green-200 text-center">
+                                    <div class="flex flex-col items-center">
+                                        <span class="material-symbols-outlined text-green-600 text-5xl mb-4">redeem</span>
+                                        <p class="text-sm font-bold text-green-700">Inscrição 100% Gratuita!</p>
+                                        <p class="text-[10px] uppercase font-black tracking-widest text-green-500 mt-2">
+                                            Clique em finalizar para garantir sua vaga sem custos.</p>
+                                        <input type="hidden" name="payment_method" value="free" id="free-method-input"
+                                            disabled>
+                                    </div>
                                 </div>
-                            </div>
                         </section>
                     </form>
                 </div>
@@ -325,6 +342,14 @@
                     document.getElementById('discount-value').innerText = data.discount.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
                     document.getElementById('service-fee-value').innerText = data.new_service_fee.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
                     document.getElementById('final-total').innerText = data.new_total.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+
+                    if (data.new_total <= 0) {
+                        document.getElementById('payment-selection-container').classList.add('hidden');
+                        document.getElementById('free-registration-section').classList.remove('hidden');
+                        document.getElementById('free-method-input').disabled = false;
+                        document.getElementById('credit').disabled = true;
+                        document.getElementById('pix').disabled = true;
+                    }
 
                     // Prevenir re-aplicação
                     document.getElementById('hidden-coupon-code').value = data.code;
