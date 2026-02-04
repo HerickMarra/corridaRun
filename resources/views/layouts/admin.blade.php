@@ -123,6 +123,11 @@
                     <span class="material-symbols-outlined">shield_person</span>
                     <span class="text-sm font-semibold">Administradores</span>
                 </a>
+                <a href="{{ route('admin.emails.index') }}"
+                    class="flex items-center gap-4 px-6 py-4 hover:bg-white/5 transition-all {{ request()->routeIs('admin.emails.*') ? 'sidebar-active' : 'text-white/70 hover:text-white' }}">
+                    <span class="material-symbols-outlined">mail</span>
+                    <span class="text-sm font-semibold">E-mails (Modelos)</span>
+                </a>
             @endif
 
             @if(auth()->user()->role === \App\Enums\UserRole::SuperAdmin)

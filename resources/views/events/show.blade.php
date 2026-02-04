@@ -144,7 +144,7 @@
                                         <span class="material-symbols-outlined">{{ $isSoldOut ? 'block' : ($isExpired ? 'timer_off' : 'check_circle') }}</span>
                                     </div>
                                     <div>
-                                        <h3 class="text-lg font-black uppercase italic {{ $isDisabled ? 'text-slate-400' : '' }}">Kit {{ $category->name }}</h3>
+                                        <h3 class="text-lg font-black uppercase italic {{ $isDisabled ? 'text-slate-400' : '' }}">{{ $category->name }}</h3>
                                         @if($isBlocked)
                                             <p class="text-[10px] text-amber-600 font-black uppercase tracking-widest mt-0.5">Indisponível (Evento {{ $event->status === \App\Enums\EventStatus::Closed ? 'Encerrado' : 'Cancelado' }})</p>
                                         @elseif($isSoldOut)

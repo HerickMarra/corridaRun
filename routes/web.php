@@ -60,6 +60,11 @@ Route::middleware(['auth'])->group(function () {
 
             // API Routes for Admin UI
             Route::get('/api/corridas/search', [App\Http\Controllers\Admin\RaceController::class, 'search'])->name('api.corridas.search');
+
+            // Email Templates Management
+            Route::resource('emails', App\Http\Controllers\Admin\EmailTemplateController::class)
+                ->names('emails')
+                ->parameters(['emails' => 'user_email_template']);
         });
 
         // Pagamentos/Vendas e Detalhes Atletas (Admin, SuperAdmin)
