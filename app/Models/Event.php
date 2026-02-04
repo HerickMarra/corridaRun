@@ -65,4 +65,9 @@ class Event extends Model
     {
         return $this->belongsToMany(User::class);
     }
+
+    public function kanbanColumns()
+    {
+        return $this->hasMany(KanbanColumn::class)->orderBy('order');
+    }
 }

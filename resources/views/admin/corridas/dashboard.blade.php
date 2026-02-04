@@ -20,9 +20,14 @@
                 Página Pública
             </a>
             <a href="{{ route('admin.corridas.edit', $event->id) }}"
-                class="bg-slate-900 text-white px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all flex items-center gap-2 shadow-lg shadow-slate-900/20">
+                class="bg-white border border-slate-200 text-slate-600 px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all flex items-center gap-2">
                 <span class="material-symbols-outlined text-lg">edit</span>
                 Editar Corrida
+            </a>
+            <a href="{{ route('admin.corridas.kanban', $event->id) }}"
+                class="bg-primary text-white px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all flex items-center gap-2 shadow-lg shadow-primary/20">
+                <span class="material-symbols-outlined text-lg">view_kanban</span>
+                Gestão de Tarefas
             </a>
         </div>
     </div>

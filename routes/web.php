@@ -47,6 +47,17 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/corridas', [App\Http\Controllers\Admin\RaceController::class, 'index'])->name('corridas.index');
         Route::get('/corridas/{event}/dashboard', [App\Http\Controllers\Admin\RaceController::class, 'dashboard'])->name('corridas.dashboard');
 
+        // Kanban Hub e Geral
+        Route::get('/kanban/hub', [App\Http\Controllers\Admin\KanbanController::class, 'hub'])->name('kanban.hub');
+
+        // Kanban por Corrida
+        Route::get('/corridas/{event}/kanban', [App\Http\Controllers\Admin\KanbanController::class, 'index'])->name('corridas.kanban');
+        Route::post('/corridas/{event}/kanban/columns', [App\Http\Controllers\Admin\KanbanController::class, 'storeColumn'])->name('kanban.columns.store');
+        Route::post('/kanban/columns/update-order', [App\Http\Controllers\Admin\KanbanController::class, 'updateColumnOrder'])->name('kanban.columns.update-order');
+        Route::post('/corridas/{event}/kanban/tasks', [App\Http\Controllers\Admin\KanbanController::class, 'storeTask'])->name('kanban.tasks.store');
+        Route::put('/kanban/tasks/{task}', [App\Http\Controllers\Admin\KanbanController::class, 'updateTask'])->name('kanban.tasks.update');
+        Route::post('/kanban/update-order', [App\Http\Controllers\Admin\KanbanController::class, 'updateOrder'])->name('kanban.update-order');
+
         // Corridas - Escrita (Apenas SuperAdmin e Admin)
         Route::middleware(['role:super-admin,admin'])->group(function () {
             Route::get('/corridas/create', [App\Http\Controllers\Admin\RaceController::class, 'create'])->name('corridas.create');

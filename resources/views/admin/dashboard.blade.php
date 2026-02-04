@@ -110,7 +110,7 @@
         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
             <h4 class="font-bold text-slate-800 uppercase tracking-tight mb-6">Ações Rápidas</h4>
             <div class="space-y-4">
-                <button
+                <a href="{{ route('admin.corridas.create') }}"
                     class="w-full flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-primary/30 hover:bg-blue-50/30 transition-all text-left group">
                     <div
                         class="size-10 bg-blue-50 text-primary rounded-lg flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
@@ -120,7 +120,7 @@
                         <p class="text-sm font-bold text-slate-800">Novo Evento</p>
                         <p class="text-[10px] text-slate-500 font-medium">Cadastrar corrida no sistema</p>
                     </div>
-                </button>
+                </a>
                 <button
                     class="w-full flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-primary/30 hover:bg-blue-50/30 transition-all text-left group">
                     <div

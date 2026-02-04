@@ -104,6 +104,11 @@
                 <span class="material-symbols-outlined">directions_run</span>
                 <span class="text-sm font-semibold">Corridas</span>
             </a>
+            <a href="{{ route('admin.kanban.hub') }}"
+                class="flex items-center gap-4 px-6 py-4 hover:bg-white/5 transition-all {{ request()->routeIs('admin.kanban.*') ? 'sidebar-active' : 'text-white/70 hover:text-white' }}">
+                <span class="material-symbols-outlined">assignment</span>
+                <span class="text-sm font-semibold">Produção (Hub)</span>
+            </a>
 
             @if(in_array(auth()->user()->role->value, ['super-admin', 'admin']))
                 <a href="{{ route('admin.athletes.index') }}"
@@ -129,6 +134,8 @@
                     <span class="text-sm font-semibold">E-mails (Modelos)</span>
                 </a>
             @endif
+
+
 
             @if(auth()->user()->role === \App\Enums\UserRole::SuperAdmin)
                 <a href="{{ route('admin.settings.index') }}"
