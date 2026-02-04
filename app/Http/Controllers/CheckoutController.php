@@ -81,7 +81,7 @@ class CheckoutController extends Controller
                 'order_number' => 'ORD-' . strtoupper(uniqid()),
                 'total_amount' => $total,
                 'status' => \App\Enums\OrderStatus::Paid,
-                'payment_method' => $request->payment_method,
+                'payment_method' => $total <= 0 ? 'free' : ($request->payment_method ?? 'credit_card'),
             ]);
 
             // Create Order Item (Subscription)
