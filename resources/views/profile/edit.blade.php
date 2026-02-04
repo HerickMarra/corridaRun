@@ -61,9 +61,10 @@
                             @error('email') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                         </div>
                         <div class="flex flex-col">
-                            <label for="cpf">CPF (Inalterável)</label>
-                            <input class="bg-transparent border-slate-100 text-slate-400 cursor-not-allowed" disabled
-                                id="cpf" type="text" value="{{ $user->cpf ?? 'Não informado' }}" />
+                            <label for="cpf">CPF</label>
+                            <input id="cpf" name="cpf" placeholder="000.000.000-00" type="text"
+                                value="{{ old('cpf', $user->cpf) }}" maxlength="14" oninput="maskCPF(this)" />
+                            @error('cpf') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                         </div>
                         <div class="flex flex-col">
                             <label for="birth_date">Data de Nascimento</label>
@@ -238,11 +239,11 @@
             };
 
             toast.innerHTML = `
-                    <div class="${bgColors[type]} border px-6 py-4 rounded-2xl shadow-xl flex items-center gap-3 min-w-[300px]">
-                        <span class="material-symbols-outlined text-xl">${icons[type]}</span>
-                        <p class="text-sm font-bold">${message}</p>
-                    </div>
-                `;
+                        <div class="${bgColors[type]} border px-6 py-4 rounded-2xl shadow-xl flex items-center gap-3 min-w-[300px]">
+                            <span class="material-symbols-outlined text-xl">${icons[type]}</span>
+                            <p class="text-sm font-bold">${message}</p>
+                        </div>
+                    `;
 
             document.body.appendChild(toast);
 
@@ -258,6 +259,18 @@
                 toast.style.opacity = '0';
                 setTimeout(() => toast.remove(), 500);
             }, 3000);
+        }
+
+        function maskCPF(input) {
+            let value = input.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+
+            if (value.length <= 11) {
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            }
+
+            input.value = value;
         }
     </script>
 

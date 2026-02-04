@@ -22,6 +22,7 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'cpf' => ['nullable', 'string', 'max:14', Rule::unique('users')->ignore($user->id)],
             'phone' => 'nullable|string|max:20',
             'birth_date' => 'nullable|date',
             'team' => 'nullable|string|max:255',
