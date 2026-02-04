@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -54,7 +55,9 @@ class AdminUserController extends Controller
             return back()->with('error', 'Apenas SuperAdmins podem editar outros SuperAdmins.');
         }
 
-        return view('admin.users.edit', compact('user'));
+        $events = Event::orderBy('name')->get();
+
+        return view('admin.users.edit', compact('user', 'events'));
     }
 
     public function update(Request $request, User $user)
@@ -85,6 +88,14 @@ class AdminUserController extends Controller
         }
 
         $user->update($data);
+
+        // Sync managed events if role is organizer
+        if ($user->role === UserRole::Organizer) {
+            $user->managedEvents()->sync($request->input('events', []));
+        } else {
+            // Remove all assignments if role changed from organizer to something else
+            $user->managedEvents()->detach();
+        }
 
         return redirect()->route('admin.users.index')->with('success', 'Administrador atualizado com sucesso!');
     }

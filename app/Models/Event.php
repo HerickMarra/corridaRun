@@ -60,4 +60,9 @@ class Event extends Model
     {
         return $this->hasMany(EventRoute::class);
     }
+
+    public function managers(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(User::class);
+    }
 }

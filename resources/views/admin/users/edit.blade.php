@@ -87,6 +87,40 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Provas Vinculadas (Apenas para Organizador) -->
+                <div id="events-selection-section" class="md:col-span-2 bg-white p-8 rounded-2xl shadow-sm border border-slate-100 {{ old('role', $user->role->value) === 'organizador' ? '' : 'hidden' }}">
+                    <h3 class="text-lg font-black uppercase italic tracking-tight mb-6 border-b border-slate-50 pb-4">Provas Vinculadas</h3>
+                    <p class="text-slate-500 text-xs font-medium mb-6 italic">Selecione as corridas que este organizador poderá gerenciar.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        @php
+                            $selectedEvents = old('events', $user->managedEvents->pluck('id')->toArray());
+                        @endphp
+                        @foreach($events as $event)
+                            <label class="flex items-center gap-3 p-4 bg-slate-50 rounded-xl border border-transparent hover:border-primary transition-all cursor-pointer group">
+                                <input type="checkbox" name="events[]" value="{{ $event->id }}" 
+                                    class="size-5 rounded border-slate-300 text-primary focus:ring-primary transition-all"
+                                    {{ in_array($event->id, $selectedEvents) ? 'checked' : '' }}>
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-bold text-slate-700 group-hover:text-primary transition-colors uppercase italic tracking-tight">{{ $event->name }}</span>
+                                    <span class="text-[10px] font-medium text-slate-400">{{ $event->event_date->format('d/m/Y') }} • {{ $event->city }}/{{ $event->state }}</span>
+                                </div>
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                document.querySelector('select[name="role"]').addEventListener('change', function() {
+                    const section = document.getElementById('events-selection-section');
+                    if (this.value === 'organizador') {
+                        section.classList.remove('hidden');
+                    } else {
+                        section.classList.add('hidden');
+                    }
+                });
+            </script>
             </div>
 
             <div class="mt-8 flex justify-end gap-4">

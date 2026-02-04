@@ -13,9 +13,9 @@ class RaceController extends Controller
         $user = auth()->user();
         $query = Event::withCount('categories')->latest();
 
-        // O organizador por enquanto não vê nenhum evento (requisito)
+        // O organizador vê apenas as provas vinculadas a ele
         if ($user->role === \App\Enums\UserRole::Organizer) {
-            $query->where('id', 0); // Força retorno vazio
+            $query->whereIn('id', $user->managedEvents->pluck('id'));
         }
 
         $events = $query->get();
@@ -118,12 +118,22 @@ class RaceController extends Controller
 
     public function edit(Event $event)
     {
+        // Organizadores não podem editar provas
+        if (auth()->user()->role === \App\Enums\UserRole::Organizer) {
+            abort(403, 'Você não tem permissão para editar esta corrida.');
+        }
+
         $event->load(['categories', 'customFields', 'coupons', 'routes']);
         return view('admin.corridas.edit', compact('event'));
     }
 
     public function update(Request $request, Event $event)
     {
+        // Organizadores não podem editar provas
+        if (auth()->user()->role === \App\Enums\UserRole::Organizer) {
+            abort(403, 'Você não tem permissão para editar esta corrida.');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
@@ -310,12 +320,26 @@ class RaceController extends Controller
 
     public function destroy(Event $event)
     {
+        // Organizadores não podem excluir provas
+        if (auth()->user()->role === \App\Enums\UserRole::Organizer) {
+            abort(403, 'Você não tem permissão para excluir esta corrida.');
+        }
+
         $event->delete();
         return redirect()->route('admin.corridas.index')->with('success', 'Corrida movida para a lixeira!');
     }
 
     public function dashboard(Event $event)
     {
+        $user = auth()->user();
+
+        // Verificar permissão do organizador
+        if ($user->role === \App\Enums\UserRole::Organizer) {
+            if (!$user->managedEvents->contains($event->id)) {
+                abort(403, 'Você não tem permissão para gerenciar esta corrida.');
+            }
+        }
+
         $event->load(['categories', 'orderItems.order']);
 
         // KPIs
