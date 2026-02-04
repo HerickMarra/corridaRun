@@ -23,11 +23,19 @@
                     tecnologia e paixão.
                 </p>
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <button
-                        class="bg-primary hover:bg-blue-600 text-white px-10 py-5 rounded-full text-lg font-bold tracking-tight transition-all flex items-center gap-3 shadow-xl shadow-primary/30">
-                        Inscreva-se Agora
-                        <span class="material-symbols-outlined">trending_flat</span>
-                    </button>
+                    @auth
+                        <a href="{{ route('dashboard') }}"
+                            class="bg-primary hover:bg-blue-600 text-white px-10 py-5 rounded-full text-lg font-bold tracking-tight transition-all flex items-center gap-3 shadow-xl shadow-primary/30">
+                            Área do Corredor
+                            <span class="material-symbols-outlined">trending_flat</span>
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}"
+                            class="bg-primary hover:bg-blue-600 text-white px-10 py-5 rounded-full text-lg font-bold tracking-tight transition-all flex items-center gap-3 shadow-xl shadow-primary/30">
+                            Inscreva-se Agora
+                            <span class="material-symbols-outlined">trending_flat</span>
+                        </a>
+                    @endauth
                     <button
                         class="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/40 px-10 py-5 rounded-full text-lg font-bold tracking-tight transition-all">
                         Ver Calendário
