@@ -47,6 +47,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/corridas', [App\Http\Controllers\Admin\RaceController::class, 'index'])->name('corridas.index');
         Route::get('/corridas/{event}/dashboard', [App\Http\Controllers\Admin\RaceController::class, 'dashboard'])->name('corridas.dashboard');
 
+        // Tags de Evento
+        Route::resource('tags', App\Http\Controllers\Admin\EventTagController::class)->except(['create', 'show', 'edit']);
+
         // Kanban Hub e Geral
         Route::get('/kanban/hub', [App\Http\Controllers\Admin\KanbanController::class, 'hub'])->name('kanban.hub');
 

@@ -24,7 +24,8 @@ class RaceController extends Controller
 
     public function create()
     {
-        return view('admin.corridas.create');
+        $tags = \App\Models\EventTag::all();
+        return view('admin.corridas.create', compact('tags'));
     }
 
     public function store(Request $request)
@@ -113,6 +114,10 @@ class RaceController extends Controller
             }
         }
 
+        if ($request->has('tags')) {
+            $event->tags()->sync($request->tags);
+        }
+
         return redirect()->route('admin.corridas.index')->with('success', 'Corrida criada com sucesso!');
     }
 
@@ -123,8 +128,9 @@ class RaceController extends Controller
             abort(403, 'Você não tem permissão para editar esta corrida.');
         }
 
-        $event->load(['categories', 'customFields', 'coupons', 'routes']);
-        return view('admin.corridas.edit', compact('event'));
+        $event->load(['categories', 'customFields', 'coupons', 'routes', 'tags']);
+        $tags = \App\Models\EventTag::all();
+        return view('admin.corridas.edit', compact('event', 'tags'));
     }
 
     public function update(Request $request, Event $event)
@@ -314,6 +320,9 @@ class RaceController extends Controller
                 }
             }
         }
+
+        // Sync Tags
+        $event->tags()->sync($request->tags ?? []);
 
         return redirect()->route('admin.corridas.index')->with('success', 'Corrida atualizada com sucesso!');
     }

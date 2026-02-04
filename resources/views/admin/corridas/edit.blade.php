@@ -63,6 +63,30 @@
                     </div>
                 </div>
 
+                <!-- Tags do Evento -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="text-lg font-black uppercase italic tracking-tight mb-6 border-b border-slate-50 pb-4">
+                        Tags do Evento</h3>
+                    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 ml-1">Selecione as categorias que definem esta prova (Ex: Trail, Street, MTB)</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        @foreach($tags as $tag)
+                            @php $isChecked = $event->tags->contains($tag->id); @endphp
+                            <label class="relative group cursor-pointer">
+                                <input type="checkbox" name="tags[]" value="{{ $tag->id }}" class="peer hidden" {{ $isChecked ? 'checked' : '' }}>
+                                <div class="px-4 py-3 rounded-xl border border-slate-100 bg-slate-50 text-slate-400 font-bold text-[10px] uppercase tracking-widest transition-all peer-checked:bg-white peer-checked:border-primary peer-checked:text-primary peer-checked:shadow-sm flex items-center gap-2 group-hover:border-primary/30">
+                                    <div class="size-2 rounded-full" style="background-color: {{ $tag->color_hex }}"></div>
+                                    {{ $tag->name }}
+                                </div>
+                            </label>
+                        @endforeach
+                    </div>
+                    @if($tags->isEmpty())
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 text-center">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic">Nenhuma tag cadastrada. <a href="{{ route('admin.tags.index') }}" class="text-primary hover:underline" target="_blank">Criar agora</a></p>
+                        </div>
+                    @endif
+                </div>
+
                 <!-- Regulamento -->
                 <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
                     <h3 class="text-lg font-black uppercase italic tracking-tight mb-6 border-b border-slate-50 pb-4">

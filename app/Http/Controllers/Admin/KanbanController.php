@@ -26,18 +26,29 @@ class KanbanController extends Controller
             'kanbanColumns.tasks' => function ($q) {
                 $q->orderBy('order');
             },
-            'kanbanColumns.tasks.assignee'
+            'kanbanColumns.tasks.assignee',
+            'managers'
         ])->get();
 
-        // Calcular estatísticas rápidas
+        $allTaskIds = $events->flatMap(fn($e) => $e->kanbanColumns->flatMap->tasks->pluck('id'));
+        $allTasks = KanbanTask::whereIn('id', $allTaskIds);
+
+        $totalTasks = $allTasks->count();
+        $doneTasks = (clone $allTasks)->whereHas('column', fn($q) => $q->where('name', 'Concluído'))->count();
+
+        $priorityDist = [
+            'high' => (clone $allTasks)->where('priority', 'high')->count(),
+            'medium' => (clone $allTasks)->where('priority', 'medium')->count(),
+            'low' => (clone $allTasks)->where('priority', 'low')->count(),
+        ];
+
         $stats = [
-            'total_tasks' => KanbanTask::whereIn('event_id', $events->pluck('id'))->count(),
-            'pending_tasks' => KanbanTask::whereIn('event_id', $events->pluck('id'))
-                ->whereHas('column', fn($q) => $q->where('name', '!=', 'Concluído'))
-                ->count(),
-            'high_priority' => KanbanTask::whereIn('event_id', $events->pluck('id'))
-                ->where('priority', 'high')
-                ->count(),
+            'total_tasks' => $totalTasks,
+            'done_tasks' => $doneTasks,
+            'pending_tasks' => $totalTasks - $doneTasks,
+            'high_priority' => $priorityDist['high'],
+            'priority_dist' => $priorityDist,
+            'completion_rate' => $totalTasks > 0 ? round(($doneTasks / $totalTasks) * 100) : 0,
         ];
 
         return view('admin.kanban.hub', compact('events', 'stats'));

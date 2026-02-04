@@ -70,4 +70,9 @@ class Event extends Model
     {
         return $this->hasMany(KanbanColumn::class)->orderBy('order');
     }
+
+    public function tags()
+    {
+        return $this->belongsToMany(EventTag::class);
+    }
 }
