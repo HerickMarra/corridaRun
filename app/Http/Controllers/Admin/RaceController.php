@@ -422,4 +422,35 @@ class RaceController extends Controller
             'recentInscriptions'
         ));
     }
+
+    public function search(Request $request)
+    {
+        $term = $request->query('q');
+
+        $query = Event::query();
+
+        if ($term) {
+            $query->where(function ($q) use ($term) {
+                $q->where('name', 'like', "%{$term}%")
+                    ->orWhere('city', 'like', "%{$term}%")
+                    ->orWhere('state', 'like', "%{$term}%");
+            });
+        }
+
+        $events = $query->latest('event_date')
+            ->take(10)
+            ->get()
+            ->map(function ($event) {
+                return [
+                    'id' => $event->id,
+                    'name' => $event->name,
+                    'city' => $event->city,
+                    'state' => $event->state,
+                    'event_date' => $event->event_date->format('d/m/Y'),
+                    'banner_image' => $event->banner_image ?? 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e'
+                ];
+            });
+
+        return response()->json($events);
+    }
 }

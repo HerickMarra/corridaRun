@@ -57,6 +57,9 @@ Route::middleware(['auth'])->group(function () {
 
             // Admin Users Management (Apenas SuperAdmin e Admin)
             Route::resource('users', App\Http\Controllers\Admin\AdminUserController::class)->names('users');
+
+            // API Routes for Admin UI
+            Route::get('/api/corridas/search', [App\Http\Controllers\Admin\RaceController::class, 'search'])->name('api.corridas.search');
         });
 
         // Pagamentos/Vendas e Detalhes Atletas (Admin, SuperAdmin)

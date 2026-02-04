@@ -162,55 +162,123 @@
                     }
                 });
 
-                // Search Filter
+                // AJAX Search Filter
                 const searchInput = document.getElementById('event-search-input');
-                const eventCards = document.querySelectorAll('.event-selection-card');
+                const eventsGrid = document.getElementById('events-grid');
                 const noEventsMessage = document.getElementById('no-events-found');
+                let searchTimeout;
 
-                searchInput.addEventListener('input', function() {
-                    const term = this.value.toLowerCase().trim();
-                    let hasResults = false;
-
-                    eventCards.forEach(card => {
-                        const name = card.dataset.name;
-                        const location = card.dataset.location;
-                        
-                        if (name.includes(term) || location.includes(term)) {
-                            card.classList.remove('hidden');
-                            hasResults = true;
-                        } else {
-                            card.classList.add('hidden');
-                        }
-                    });
-
-                    if (hasResults) {
-                        noEventsMessage.classList.add('hidden');
-                    } else {
-                        noEventsMessage.classList.remove('hidden');
-                    }
+                // Storage for checked events to ensure they remain in the form
+                const checkedEvents = new Map();
+                
+                // Initialize checkedEvents map with initially checked inputs
+                document.querySelectorAll('input[name="events[]"]:checked').forEach(input => {
+                    const card = input.closest('.event-selection-card');
+                    checkedEvents.set(input.value, card.outerHTML);
                 });
 
-                // Dynamic Border on Check
-                eventCards.forEach(card => {
+                function renderEventCard(event, isChecked = false) {
+                    const checkedClass = isChecked ? 'opacity-100' : 'opacity-0';
+                    const bgClass = isChecked ? 'bg-blue-50/30' : '';
+                    
+                    return `
+                        <label class="event-selection-card flex items-center gap-4 p-3 bg-slate-50 rounded-2xl border-2 border-transparent hover:border-primary/30 transition-all cursor-pointer group relative overflow-hidden ${bgClass}" 
+                            data-id="${event.id}">
+                            
+                            <div class="relative size-16 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
+                                <img src="${event.banner_image}" 
+                                    class="absolute inset-0 size-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+                            </div>
+
+                            <div class="flex flex-col flex-grow min-w-0">
+                                <span class="text-sm font-bold text-slate-800 truncate uppercase italic tracking-tight group-hover:text-primary transition-colors">${event.name}</span>
+                                <div class="flex items-center gap-1.5 mt-0.5">
+                                    <span class="material-symbols-outlined text-[10px] text-primary">calendar_today</span>
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">${event.event_date}</span>
+                                </div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-[10px] text-slate-300">location_on</span>
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter truncate">${event.city}/${event.state}</span>
+                                </div>
+                            </div>
+
+                            <div class="flex-shrink-0 pr-2">
+                                <input type="checkbox" name="events[]" value="${event.id}" 
+                                    class="size-5 rounded-lg border-slate-300 text-primary focus:ring-primary transition-all cursor-pointer"
+                                    ${isChecked ? 'checked' : ''}>
+                            </div>
+
+                            <div class="absolute inset-0 border-2 border-primary rounded-2xl pointer-events-none transition-opacity ${checkedClass} checked-border"></div>
+                        </label>
+                    `;
+                }
+
+                function attachCardListeners(card) {
                     const checkbox = card.querySelector('input[type="checkbox"]');
                     const border = card.querySelector('.checked-border');
-                    
+                    const eventId = checkbox.value;
+
                     checkbox.addEventListener('change', function() {
                         if (this.checked) {
                             border.classList.remove('opacity-0');
                             border.classList.add('opacity-100');
                             card.classList.add('bg-blue-50/30');
+                            // Store the template of the checked card
+                            checkedEvents.set(eventId, card.outerHTML);
                         } else {
                             border.classList.add('opacity-0');
                             border.classList.remove('opacity-100');
                             card.classList.remove('bg-blue-50/30');
+                            // Remove from storage
+                            checkedEvents.delete(eventId);
                         }
                     });
+                }
 
-                    // Set initial background if checked
-                    if (checkbox.checked) {
-                        card.classList.add('bg-blue-50/30');
-                    }
+                // Initial attachment for server-rendered cards
+                document.querySelectorAll('.event-selection-card').forEach(attachCardListeners);
+
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    const query = this.value.trim();
+
+                    searchTimeout = setTimeout(() => {
+                        fetch(`{{ route('admin.api.corridas.search') }}?q=${encodeURIComponent(query)}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                eventsGrid.innerHTML = '';
+                                
+                                // 1. Always show checked events first (so they aren't lost)
+                                checkedEvents.forEach((html, id) => {
+                                    const temp = document.createElement('div');
+                                    temp.innerHTML = html;
+                                    const card = temp.firstElementChild;
+                                    eventsGrid.appendChild(card);
+                                    attachCardListeners(card);
+                                });
+
+                                // 2. Show search results (excluding those already checked)
+                                if (data.length > 0) {
+                                    data.forEach(event => {
+                                        if (!checkedEvents.has(event.id.toString())) {
+                                            const html = renderEventCard(event);
+                                            const temp = document.createElement('div');
+                                            temp.innerHTML = html;
+                                            const card = temp.firstElementChild;
+                                            eventsGrid.appendChild(card);
+                                            attachCardListeners(card);
+                                        }
+                                    });
+                                    noEventsMessage.classList.add('hidden');
+                                } else if (checkedEvents.size === 0) {
+                                    noEventsMessage.classList.remove('hidden');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error fetching events:', error);
+                            });
+                    }, 300);
                 });
             </script>
 

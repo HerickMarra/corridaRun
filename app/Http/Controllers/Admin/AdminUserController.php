@@ -23,7 +23,7 @@ class AdminUserController extends Controller
 
     public function create()
     {
-        $events = Event::orderBy('name')->get();
+        $events = Event::latest('event_date')->take(5)->get();
         return view('admin.users.create', compact('events'));
     }
 
@@ -61,7 +61,11 @@ class AdminUserController extends Controller
             return back()->with('error', 'Apenas SuperAdmins podem editar outros SuperAdmins.');
         }
 
-        $events = Event::orderBy('name')->get();
+        // Get recent events + already assigned events
+        $assignedEventIds = $user->managedEvents->pluck('id')->toArray();
+        $recentEvents = Event::latest('event_date')->take(5)->get();
+
+        $events = $recentEvents->merge($user->managedEvents)->unique('id');
 
         return view('admin.users.edit', compact('user', 'events'));
     }
