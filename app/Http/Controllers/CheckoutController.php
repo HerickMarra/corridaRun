@@ -17,6 +17,11 @@ class CheckoutController extends Controller
             }
         }
 
+        // Verifica se ainda há vagas
+        if ($category->available_tickets <= 0) {
+            return redirect()->route('events.show', $category->event->slug)
+                ->with('error', 'Desculpe, as vagas para este kit acabaram de se esgotar!');
+        }
         $event = $category->event->load('customFields');
         $serviceFee = $category->price > 0 ? ($category->price * 0.07) : 0;
         $total = $category->price + $serviceFee;
@@ -28,66 +33,77 @@ class CheckoutController extends Controller
     {
         $user = auth()->user();
 
-        // Calculate Discount first
-        $originalPrice = $category->price;
-        $discountValue = 0;
-        $couponId = null;
+        return \DB::transaction(function () use ($request, $category, $user) {
+            // Reload category with lock to prevent race conditions
+            $category = Category::where('id', $category->id)->lockForUpdate()->first();
 
-        if ($request->filled('coupon_code')) {
-            $coupon = \App\Models\EventCoupon::where('event_id', $category->event_id)
-                ->where('code', strtoupper($request->coupon_code))
-                ->first();
-
-            if ($coupon && $coupon->isValid()) {
-                $discountValue = $coupon->calculateDiscount($originalPrice);
-                $couponId = $coupon->id;
-                $coupon->increment('used_count');
+            if ($category->available_tickets <= 0) {
+                return redirect()->route('events.show', $category->event->slug)
+                    ->with('error', 'Infelizmente as vagas para este kit acabaram de esgotar.');
             }
-        }
 
-        $finalPrice = $originalPrice - $discountValue;
-        $serviceFee = $finalPrice > 0 ? ($finalPrice * 0.07) : 0;
-        $total = $finalPrice + $serviceFee;
+            // Calculate Discount first
+            $originalPrice = $category->price;
+            $discountValue = 0;
+            $couponId = null;
 
-        // Create Order
-        $order = \App\Models\Order::create([
-            'user_id' => $user->id,
-            'order_number' => 'ORD-' . strtoupper(uniqid()),
-            'total_amount' => $total,
-            'status' => \App\Enums\OrderStatus::Paid,
-            'payment_method' => $request->payment_method,
-        ]);
+            if ($request->filled('coupon_code')) {
+                $coupon = \App\Models\EventCoupon::where('event_id', $category->event_id)
+                    ->where('code', strtoupper($request->coupon_code))
+                    ->first();
 
-        $finalPrice = $originalPrice - $discountValue;
+                if ($coupon && $coupon->isValid()) {
+                    $discountValue = $coupon->calculateDiscount($originalPrice);
+                    $couponId = $coupon->id;
+                    $coupon->increment('used_count');
+                }
+            }
 
-        // Create Order Item (Subscription)
-        $orderItem = $order->items()->create([
-            'category_id' => $category->id,
-            'participant_name' => $user->name,
-            'participant_cpf' => $request->cpf ?? $user->cpf ?? '000.000.000-00',
-            'participant_email' => $user->email,
-            'participant_birth_date' => $user->birth_date ?? now()->subYears(20),
-            'price' => $finalPrice,
-            'status' => 'paid',
-            'custom_responses' => $request->custom_responses,
-        ]);
+            $finalPrice = $originalPrice - $discountValue;
+            $serviceFee = $finalPrice > 0 ? ($finalPrice * 0.07) : 0;
+            $total = $finalPrice + $serviceFee;
 
-        // Create Payment
-        $order->payments()->create([
-            'payment_gateway' => 'fake',
-            'amount' => $total,
-            'status' => \App\Enums\PaymentStatus::Approved,
-            'payment_method' => $request->payment_method,
-            'paid_at' => now(),
-        ]);
+            // Create Order
+            $order = \App\Models\Order::create([
+                'user_id' => $user->id,
+                'order_number' => 'ORD-' . strtoupper(uniqid()),
+                'total_amount' => $total,
+                'status' => \App\Enums\OrderStatus::Paid,
+                'payment_method' => $request->payment_method,
+            ]);
 
-        // Create Ticket (Subscription Badge)
-        $orderItem->ticket()->create([
-            'ticket_number' => 'TKT-' . strtoupper(uniqid()),
-            'status' => \App\Enums\TicketStatus::Active,
-        ]);
+            // Create Order Item (Subscription)
+            $orderItem = $order->items()->create([
+                'category_id' => $category->id,
+                'participant_name' => $user->name,
+                'participant_cpf' => $request->cpf ?? $user->cpf ?? '000.000.000-00',
+                'participant_email' => $user->email,
+                'participant_birth_date' => $user->birth_date ?? now()->subYears(20),
+                'price' => $finalPrice,
+                'status' => 'paid',
+                'custom_responses' => $request->custom_responses,
+            ]);
 
-        return redirect()->route('checkout.confirmation', $order->id)->with('success', 'Inscrição confirmada com sucesso! Bem-vindo à prova.');
+            // Create Payment
+            $order->payments()->create([
+                'payment_gateway' => 'fake',
+                'amount' => $total,
+                'status' => \App\Enums\PaymentStatus::Approved,
+                'payment_method' => $request->payment_method,
+                'paid_at' => now(),
+            ]);
+
+            // Create Ticket (Subscription Badge)
+            $orderItem->ticket()->create([
+                'ticket_number' => 'TKT-' . strtoupper(uniqid()),
+                'status' => \App\Enums\TicketStatus::Active,
+            ]);
+
+            // DECREMENT AVAILABLE TICKETS
+            $category->decrement('available_tickets');
+
+            return redirect()->route('checkout.confirmation', $order->id)->with('success', 'Inscrição confirmada com sucesso! Bem-vindo à prova.');
+        });
     }
 
     public function confirmation(\App\Models\Order $order)
