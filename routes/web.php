@@ -31,7 +31,11 @@ Route::middleware(['auth'])->group(function () {
 
     // Admin Panel
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/dashboard', [DashboardController::class, 'admin'])->name('dashboard');
+
+        // Dashboard Principal e Gestão de Admins (Apenas SuperAdmin e Admin)
+        Route::middleware(['role:super-admin,admin'])->group(function () {
+            Route::get('/dashboard', [DashboardController::class, 'admin'])->name('dashboard');
+        });
 
         // Corridas - Listagem e Dashboard (Acesso para Gestor/Organizador tb)
         Route::get('/corridas', [App\Http\Controllers\Admin\RaceController::class, 'index'])->name('corridas.index');
@@ -49,8 +53,8 @@ Route::middleware(['auth'])->group(function () {
             Route::resource('users', App\Http\Controllers\Admin\AdminUserController::class)->names('users');
         });
 
-        // Pagamentos/Vendas e Detalhes Atletas (Admin, SuperAdmin, Gestor)
-        Route::middleware(['role:super-admin,admin,gestor'])->group(function () {
+        // Pagamentos/Vendas e Detalhes Atletas (Admin, SuperAdmin)
+        Route::middleware(['role:super-admin,admin'])->group(function () {
             Route::get('/atletas', [App\Http\Controllers\Admin\AthleteController::class, 'index'])->name('athletes.index');
             Route::get('/atletas/{athlete}', [App\Http\Controllers\Admin\AthleteController::class, 'show'])->name('athletes.show');
             Route::get('/atletas/{athlete}/edit', [App\Http\Controllers\Admin\AthleteController::class, 'edit'])->name('athletes.edit');
