@@ -101,10 +101,7 @@
                             </section>
                         @endif
 
-                        @endif
-                        
-                        <div id="payment-methods-wrapper" class="{{ $total <= 0 ? 'hidden' : '' }}">
-                            <section class="bg-white rounded-3xl p-8 card-shadow border border-slate-50 mb-8">
+                        <section class="bg-white rounded-3xl p-8 card-shadow border border-slate-50">
                             <div class="flex items-center gap-4 mb-8">
                                 <div class="size-10 rounded-xl bg-slate-50 flex items-center justify-center text-primary">
                                     <span class="material-symbols-outlined">payments</span>
@@ -177,17 +174,7 @@
                                         Pagamento instantâneo via Pix</p>
                                 </div>
                             </div>
-                            </div>
                         </section>
-                        </div>
-
-                        <div id="free-registration-wrapper" class="{{ $total > 0 ? 'hidden' : '' }} mb-8">
-                            <section class="bg-white rounded-3xl p-8 card-shadow border border-primary/20 bg-primary/5 text-center">
-                                <span class="material-symbols-outlined text-primary text-5xl mb-4">celebration</span>
-                                <h2 class="text-xl font-black uppercase italic text-slate-800">Inscrição Gratuita!</h2>
-                                <p class="text-sm font-medium text-slate-500 mt-2">Clique no botão ao lado para confirmar sua presença sem nenhum custo.</p>
-                            </section>
-                        </div>
                     </form>
                 </div>
 
@@ -338,14 +325,6 @@
                     document.getElementById('discount-value').innerText = data.discount.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
                     document.getElementById('service-fee-value').innerText = data.new_service_fee.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
                     document.getElementById('final-total').innerText = data.new_total.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-
-                    if (data.new_total <= 0) {
-                        document.getElementById('payment-methods-wrapper').classList.add('hidden');
-                        document.getElementById('free-registration-wrapper').classList.remove('hidden');
-                    } else {
-                        document.getElementById('payment-methods-wrapper').classList.remove('hidden');
-                        document.getElementById('free-registration-wrapper').classList.add('hidden');
-                    }
 
                     // Prevenir re-aplicação
                     document.getElementById('hidden-coupon-code').value = data.code;
