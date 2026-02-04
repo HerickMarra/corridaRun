@@ -23,7 +23,8 @@ class AdminUserController extends Controller
 
     public function create()
     {
-        return view('admin.users.create');
+        $events = Event::orderBy('name')->get();
+        return view('admin.users.create', compact('events'));
     }
 
     public function store(Request $request)
@@ -35,12 +36,17 @@ class AdminUserController extends Controller
             'role' => ['required', Rule::enum(UserRole::class)],
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
         ]);
+
+        // Sync managed events if role is organizer
+        if ($user->role === UserRole::Organizer) {
+            $user->managedEvents()->sync($request->input('events', []));
+        }
 
         return redirect()->route('admin.users.index')->with('success', 'Administrador criado com sucesso!');
     }
