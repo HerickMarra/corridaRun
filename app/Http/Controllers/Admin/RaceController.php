@@ -39,6 +39,7 @@ class RaceController extends Controller
             'custom_fields.*.type' => 'required|in:text,number,select,textarea',
             'custom_fields.*.options' => 'nullable|string',
             'custom_fields.*.is_required' => 'nullable|boolean',
+            'regulation' => 'nullable|string',
         ]);
 
         $bannerPath = 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e';
@@ -59,6 +60,7 @@ class RaceController extends Controller
             'max_participants' => $request->max_participants,
             'status' => 'published',
             'banner_image' => $bannerPath,
+            'regulation' => $request->regulation,
         ]);
 
         foreach ($request->categories as $index => $categoryData) {
@@ -140,6 +142,7 @@ class RaceController extends Controller
             'coupons.*.value' => 'required|numeric|min:0',
             'coupons.*.usage_limit' => 'nullable|integer|min:1',
             'coupons.*.is_active' => 'nullable|boolean',
+            'regulation' => 'nullable|string',
         ]);
 
         if ($request->hasFile('banner_image')) {
@@ -157,6 +160,7 @@ class RaceController extends Controller
             'city' => $request->city,
             'state' => $request->state,
             'max_participants' => $request->max_participants,
+            'regulation' => $request->regulation,
         ]);
 
         // Sync Categories

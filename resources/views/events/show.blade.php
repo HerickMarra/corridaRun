@@ -212,6 +212,44 @@
             </div>
         </section>
     @endif
+ 
+     @if($event->regulation)
+         <!-- Regulamento da Prova -->
+         <section class="max-w-7xl mx-auto px-4 py-20 border-t border-slate-100">
+             <div class="bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden group">
+                 <details class="group">
+                     <summary class="flex items-center justify-between p-10 cursor-pointer list-none bg-white hover:bg-slate-50/50 transition-colors">
+                         <div class="flex items-center gap-8">
+                             <div class="size-16 rounded-3xl bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-lg shadow-primary/5">
+                                 <span class="material-symbols-outlined text-3xl">description</span>
+                             </div>
+                             <div>
+                                 <h3 class="text-2xl font-black uppercase italic tracking-tighter">Regulamento <span class="text-primary">Oficial</span></h3>
+                                 <p class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mt-1 flex items-center gap-2">
+                                     <span class="size-1.5 bg-primary rounded-full animate-pulse"></span>
+                                     Clique para expandir as regras reais da prova
+                                 </p>
+                             </div>
+                         </div>
+                         <div class="size-12 rounded-full border border-slate-100 flex items-center justify-center text-slate-400 group-open:rotate-180 group-open:bg-primary group-open:text-white group-open:border-primary transition-all duration-500">
+                             <span class="material-symbols-outlined">expand_more</span>
+                         </div>
+                     </summary>
+                     <div class="px-10 pb-16 pt-10 border-t border-slate-50 bg-slate-50/30">
+                         <div class="prose prose-slate prose-lg max-w-none 
+                             prose-headings:font-black prose-headings:uppercase prose-headings:italic prose-headings:tracking-tighter prose-headings:text-slate-900
+                             prose-p:text-slate-600 prose-p:font-medium prose-p:leading-relaxed
+                             prose-li:text-slate-600 prose-li:font-medium
+                             prose-strong:text-slate-900 prose-strong:font-black
+                             prose-a:text-primary prose-a:no-underline hover:prose-a:underline
+                             prose-img:rounded-[32px] prose-img:shadow-2xl prose-img:border-4 prose-img:border-white">
+                             {!! $event->regulation !!}
+                         </div>
+                     </div>
+                 </details>
+             </div>
+         </section>
+     @endif
 
     @push('scripts')
     @if($event->routes->count() > 0)

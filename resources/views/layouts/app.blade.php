@@ -7,7 +7,7 @@
     <title>{{ config('app.name', 'RUN PLATFORM') }} - Supere Seus Limites</title>
 
     <!-- Scripts and Fonts from layouthome.html -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries,typography"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap"
         rel="stylesheet" />
     <link
@@ -77,7 +77,8 @@
                         </svg>
                     </div>
                     <h2 class="text-xl font-bold tracking-tight text-secondary uppercase">
-                        {{ config('app.name', 'Run Platform') }}</h2>
+                        {{ config('app.name', 'Run Platform') }}
+                    </h2>
                 </div>
                 <nav class="hidden md:flex items-center gap-8">
                     <a class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors"
@@ -126,7 +127,8 @@
                         </svg>
                     </div>
                     <h2 class="text-2xl font-black tracking-tight text-secondary uppercase italic">
-                        {{ config('app.name', 'Run Platform') }}</h2>
+                        {{ config('app.name', 'Run Platform') }}
+                    </h2>
                 </div>
                 <p class="text-slate-500 font-medium max-w-sm mb-10 leading-relaxed">
                     A maior comunidade de corredores do Brasil. Performance, tecnologia e conexões reais em cada
@@ -163,7 +165,8 @@
         <div
             class="max-w-[1440px] mx-auto mt-24 pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6">
             <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">© {{ date('Y') }}
-                {{ strtoupper(config('app.name', 'Run Platform')) }}. Todos os direitos reservados.</p>
+                {{ strtoupper(config('app.name', 'Run Platform')) }}. Todos os direitos reservados.
+            </p>
             <div class="flex gap-8 text-slate-400 text-[10px] font-bold uppercase tracking-widest">
                 <a class="hover:text-secondary transition-colors" href="#">Termos de Uso</a>
                 <a class="hover:text-secondary transition-colors" href="#">Privacidade</a>

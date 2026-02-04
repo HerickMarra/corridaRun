@@ -26,6 +26,7 @@ class Event extends Model
         'status',
         'banner_image',
         'terms_and_conditions',
+        'regulation',
     ];
 
     protected $casts = [
