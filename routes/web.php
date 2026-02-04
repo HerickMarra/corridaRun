@@ -32,29 +32,37 @@ Route::middleware(['auth'])->group(function () {
     // Admin Panel
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'admin'])->name('dashboard');
+
+        // Corridas - Listagem e Dashboard (Acesso para Gestor/Organizador tb)
         Route::get('/corridas', [App\Http\Controllers\Admin\RaceController::class, 'index'])->name('corridas.index');
-        Route::get('/corridas/create', [App\Http\Controllers\Admin\RaceController::class, 'create'])->name('corridas.create');
-        Route::post('/corridas', [App\Http\Controllers\Admin\RaceController::class, 'store'])->name('corridas.store');
-        Route::get('/corridas/{event}/edit', [App\Http\Controllers\Admin\RaceController::class, 'edit'])->name('corridas.edit');
         Route::get('/corridas/{event}/dashboard', [App\Http\Controllers\Admin\RaceController::class, 'dashboard'])->name('corridas.dashboard');
-        Route::put('/corridas/{event}', [App\Http\Controllers\Admin\RaceController::class, 'update'])->name('corridas.update');
-        Route::delete('/corridas/{event}', [App\Http\Controllers\Admin\RaceController::class, 'destroy'])->name('corridas.destroy');
 
-        // Athletes
-        Route::get('/atletas', [App\Http\Controllers\Admin\AthleteController::class, 'index'])->name('athletes.index');
-        Route::get('/atletas/{athlete}', [App\Http\Controllers\Admin\AthleteController::class, 'show'])->name('athletes.show');
-        Route::get('/atletas/{athlete}/edit', [App\Http\Controllers\Admin\AthleteController::class, 'edit'])->name('athletes.edit');
-        Route::put('/atletas/{athlete}', [App\Http\Controllers\Admin\AthleteController::class, 'update'])->name('athletes.update');
+        // Corridas - Escrita (Apenas SuperAdmin e Admin)
+        Route::middleware(['role:super-admin,admin'])->group(function () {
+            Route::get('/corridas/create', [App\Http\Controllers\Admin\RaceController::class, 'create'])->name('corridas.create');
+            Route::post('/corridas', [App\Http\Controllers\Admin\RaceController::class, 'store'])->name('corridas.store');
+            Route::get('/corridas/{event}/edit', [App\Http\Controllers\Admin\RaceController::class, 'edit'])->name('corridas.edit');
+            Route::put('/corridas/{event}', [App\Http\Controllers\Admin\RaceController::class, 'update'])->name('corridas.update');
+            Route::delete('/corridas/{event}', [App\Http\Controllers\Admin\RaceController::class, 'destroy'])->name('corridas.destroy');
 
-        // Sales
-        Route::get('/vendas', [App\Http\Controllers\Admin\SalesController::class, 'index'])->name('sales.index');
+            // Admin Users Management (Apenas SuperAdmin e Admin)
+            Route::resource('users', App\Http\Controllers\Admin\AdminUserController::class)->names('users');
+        });
 
-        // Settings
-        Route::get('/configuracoes', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
-        Route::put('/configuracoes', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
+        // Pagamentos/Vendas e Detalhes Atletas (Admin, SuperAdmin, Gestor)
+        Route::middleware(['role:super-admin,admin,gestor'])->group(function () {
+            Route::get('/atletas', [App\Http\Controllers\Admin\AthleteController::class, 'index'])->name('athletes.index');
+            Route::get('/atletas/{athlete}', [App\Http\Controllers\Admin\AthleteController::class, 'show'])->name('athletes.show');
+            Route::get('/atletas/{athlete}/edit', [App\Http\Controllers\Admin\AthleteController::class, 'edit'])->name('athletes.edit');
+            Route::put('/atletas/{athlete}', [App\Http\Controllers\Admin\AthleteController::class, 'update'])->name('athletes.update');
+            Route::get('/vendas', [App\Http\Controllers\Admin\SalesController::class, 'index'])->name('sales.index');
+        });
 
-        // Admin Users Management
-        Route::resource('users', App\Http\Controllers\Admin\AdminUserController::class)->names('users');
+        // Configurações e Dados Sensíveis (Apenas SuperAdmin)
+        Route::middleware(['role:super-admin'])->group(function () {
+            Route::get('/configuracoes', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
+            Route::put('/configuracoes', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
+        });
     });
 
     // Client Hub

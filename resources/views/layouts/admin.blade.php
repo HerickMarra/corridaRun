@@ -111,16 +111,21 @@
                 <span class="material-symbols-outlined">shopping_cart</span>
                 <span class="text-sm font-semibold">Vendas</span>
             </a>
-            <a href="{{ route('admin.users.index') }}"
-                class="flex items-center gap-4 px-6 py-4 hover:bg-white/5 transition-all {{ request()->routeIs('admin.users.*') ? 'sidebar-active' : 'text-white/70 hover:text-white' }}">
-                <span class="material-symbols-outlined">shield_person</span>
-                <span class="text-sm font-semibold">Administradores</span>
-            </a>
-            <a href="{{ route('admin.settings.index') }}"
-                class="flex items-center gap-4 px-6 py-4 hover:bg-white/5 transition-all {{ request()->routeIs('admin.settings.*') ? 'sidebar-active' : 'text-white/70 hover:text-white' }}">
-                <span class="material-symbols-outlined">settings</span>
-                <span class="text-sm font-semibold">Configurações</span>
-            </a>
+            @if(auth()->user()->role->isAdmin() && in_array(auth()->user()->role->value, ['super-admin', 'admin']))
+                <a href="{{ route('admin.users.index') }}"
+                    class="flex items-center gap-4 px-6 py-4 hover:bg-white/5 transition-all {{ request()->routeIs('admin.users.*') ? 'sidebar-active' : 'text-white/70 hover:text-white' }}">
+                    <span class="material-symbols-outlined">shield_person</span>
+                    <span class="text-sm font-semibold">Administradores</span>
+                </a>
+            @endif
+
+            @if(auth()->user()->role === \App\Enums\UserRole::SuperAdmin)
+                <a href="{{ route('admin.settings.index') }}"
+                    class="flex items-center gap-4 px-6 py-4 hover:bg-white/5 transition-all {{ request()->routeIs('admin.settings.*') ? 'sidebar-active' : 'text-white/70 hover:text-white' }}">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span class="text-sm font-semibold">Configurações</span>
+                </a>
+            @endif
         </nav>
 
         <div class="p-6 border-t border-white/10">

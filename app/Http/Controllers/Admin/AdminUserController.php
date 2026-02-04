@@ -50,6 +50,10 @@ class AdminUserController extends Controller
             abort(403, 'Você não pode editar um cliente através deste módulo.');
         }
 
+        if ($user->role === UserRole::SuperAdmin && auth()->user()->role !== UserRole::SuperAdmin) {
+            return back()->with('error', 'Apenas SuperAdmins podem editar outros SuperAdmins.');
+        }
+
         return view('admin.users.edit', compact('user'));
     }
 
@@ -57,6 +61,10 @@ class AdminUserController extends Controller
     {
         if ($user->role === UserRole::Client) {
             abort(403);
+        }
+
+        if ($user->role === UserRole::SuperAdmin && auth()->user()->role !== UserRole::SuperAdmin) {
+            return back()->with('error', 'Apenas SuperAdmins podem editar outros SuperAdmins.');
         }
 
         $request->validate([

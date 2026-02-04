@@ -10,7 +10,15 @@ class RaceController extends Controller
 {
     public function index()
     {
-        $events = Event::withCount('categories')->latest()->get();
+        $user = auth()->user();
+        $query = Event::withCount('categories')->latest();
+
+        // O organizador por enquanto não vê nenhum evento (requisito)
+        if ($user->role === \App\Enums\UserRole::Organizer) {
+            $query->where('id', 0); // Força retorno vazio
+        }
+
+        $events = $query->get();
         return view('admin.corridas.index', compact('events'));
     }
 
