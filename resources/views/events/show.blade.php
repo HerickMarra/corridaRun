@@ -186,9 +186,12 @@
                     
                     <div class="flex flex-col gap-3">
                         @foreach($event->routes as $index => $route)
-                            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center gap-3">
+                            <div class="route-selector p-4 rounded-2xl bg-white border border-slate-100 flex items-center gap-3 cursor-pointer hover:border-primary/30 transition-all group" 
+                                 data-index="{{ $index }}" 
+                                 onclick="switchRoute({{ $index }})">
                                 <div class="size-3 rounded-full flex-shrink-0" style="background-color: {{ $route->color }}"></div>
-                                <span class="font-black uppercase italic text-xs tracking-wider text-slate-700">{{ $route->name }}</span>
+                                <span class="font-black uppercase italic text-xs tracking-wider text-slate-700 group-hover:text-primary transition-colors">{{ $route->name }}</span>
+                                <span class="material-symbols-outlined ml-auto text-slate-300 group-hover:text-primary text-sm opacity-0 group-hover:opacity-100 transition-all">chevron_right</span>
                             </div>
                         @endforeach
                     </div>
@@ -213,9 +216,13 @@
     @push('scripts')
     @if($event->routes->count() > 0)
     <script>
+        let map;
+        let routeObjects = [];
+        let activeRouteIndex = 0;
+
         function initRouteMap() {
             const routes = @json($event->routes);
-            const map = new google.maps.Map(document.getElementById("route-map"), {
+            map = new google.maps.Map(document.getElementById("route-map"), {
                 zoom: 14,
                 center: { lat: -15.7942, lng: -47.8822 },
                 mapId: 'RUNPACE_PUBLIC_MAP',
@@ -223,30 +230,65 @@
                 scrollwheel: false,
             });
 
-            const bounds = new google.maps.LatLngBounds();
-            let hasPoints = false;
-            
-            routes.forEach(route => {
+            routes.forEach((route, index) => {
                 const path = Array.isArray(route.path) ? route.path : JSON.parse(route.path);
                 if (path && path.length > 0) {
-                    new google.maps.Polyline({
+                    const polyline = new google.maps.Polyline({
                         path: path,
                         strokeColor: route.color || "#0d59f2",
                         strokeOpacity: 0.8,
                         strokeWeight: 6,
-                        map: map
+                        map: null // Hidden by default
                     });
 
-                    path.forEach(point => {
-                        bounds.extend(point);
-                        hasPoints = true;
+                    const bounds = new google.maps.LatLngBounds();
+                    path.forEach(point => bounds.extend(point));
+
+                    routeObjects.push({
+                        polyline: polyline,
+                        bounds: bounds,
+                        path: path
                     });
                 }
             });
 
-            if (hasPoints) {
-                map.fitBounds(bounds);
+            // Select first route by default
+            if (routeObjects.length > 0) {
+                switchRoute(0);
             }
+        }
+
+        function switchRoute(index) {
+            if (!routeObjects[index]) return;
+
+            // Update Map
+            routeObjects.forEach((obj, idx) => {
+                if (idx === index) {
+                    obj.polyline.setMap(map);
+                    map.fitBounds(obj.bounds);
+                    
+                    // Add some padding to bounds
+                    setTimeout(() => {
+                        const currentZoom = map.getZoom();
+                        if (currentZoom > 16) map.setZoom(16);
+                    }, 50);
+                } else {
+                    obj.polyline.setMap(null);
+                }
+            });
+
+            // Update UI list
+            document.querySelectorAll('.route-selector').forEach((el, idx) => {
+                if (idx === index) {
+                    el.classList.add('border-primary', 'bg-primary/5', 'ring-2', 'ring-primary/10');
+                    el.classList.remove('bg-white', 'border-slate-100');
+                } else {
+                    el.classList.remove('border-primary', 'bg-primary/5', 'ring-2', 'ring-primary/10');
+                    el.classList.add('bg-white', 'border-slate-100');
+                }
+            });
+
+            activeRouteIndex = index;
         }
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.maps_api_key') }}&callback=initRouteMap" async defer></script>
