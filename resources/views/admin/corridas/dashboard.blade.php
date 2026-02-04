@@ -15,12 +15,12 @@
         </div>
         <div class="flex gap-3 ml-8 md:ml-0">
             <a href="{{ route('events.show', $event->slug) }}" target="_blank"
-                class="bg-white border border-slate-200 text-slate-600 px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all flex items-center gap-2">
+                class="bg-white border border-slate-200 text-slate-600 px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-primary hover:text-white hover:border-primary transition-all flex items-center gap-2">
                 <span class="material-symbols-outlined text-lg">visibility</span>
                 Página Pública
             </a>
             <a href="{{ route('admin.corridas.edit', $event->id) }}"
-                class="bg-secondary text-white px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all flex items-center gap-2 shadow-lg shadow-secondary/20">
+                class="bg-slate-900 text-white px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all flex items-center gap-2 shadow-lg shadow-slate-900/20">
                 <span class="material-symbols-outlined text-lg">edit</span>
                 Editar Corrida
             </a>
@@ -84,7 +84,7 @@
                 <div>
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1 text-nowrap">Dias Restantes</p>
                     @php 
-                        $diff = now()->diffInDays($event->event_date, false);
+                        $diff = (int) now()->diffInDays(\Carbon\Carbon::parse($event->event_date), false);
                     @endphp
                     <p class="text-2xl font-black text-slate-800 italic">{{ $diff > 0 ? $diff : 'Evento Realizado' }}</p>
                 </div>
