@@ -96,6 +96,7 @@ class RaceController extends Controller
                         'name' => $routeData['name'],
                         'color' => $routeData['color'],
                         'path' => json_decode($routeData['path'], true),
+                        'markers' => !empty($routeData['markers']) ? json_decode($routeData['markers'], true) : null,
                     ]);
                 }
             }
@@ -268,6 +269,7 @@ class RaceController extends Controller
                     continue;
 
                 $path = is_string($routeData['path']) ? json_decode($routeData['path'], true) : $routeData['path'];
+                $markers = !empty($routeData['markers']) ? (is_string($routeData['markers']) ? json_decode($routeData['markers'], true) : $routeData['markers']) : null;
 
                 if (isset($routeData['id'])) {
                     $route = $event->routes()->find($routeData['id']);
@@ -275,12 +277,14 @@ class RaceController extends Controller
                         'name' => $routeData['name'],
                         'color' => $routeData['color'],
                         'path' => $path,
+                        'markers' => $markers,
                     ]);
                 } else {
                     $event->routes()->create([
                         'name' => $routeData['name'],
                         'color' => $routeData['color'],
                         'path' => $path,
+                        'markers' => $markers,
                     ]);
                 }
             }

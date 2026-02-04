@@ -15,10 +15,12 @@ class EventRoute extends Model
         'name',
         'color',
         'path',
+        'markers',
     ];
 
     protected $casts = [
         'path' => 'array',
+        'markers' => 'array',
     ];
 
     public function event(): BelongsTo

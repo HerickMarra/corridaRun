@@ -238,14 +238,51 @@
                         strokeColor: route.color || "#0d59f2",
                         strokeOpacity: 0.8,
                         strokeWeight: 6,
-                        map: null // Hidden by default
+                        map: null, // Hidden by default
+                        clickable: false
+                    });
+
+                    const markerObjects = [];
+                    const markers = route.markers || {};
+                    Object.keys(markers).forEach(type => {
+                        if (markers[type]) {
+                            let iconColor, symbol, isSymbol = false;
+                            if (type === 'start') { iconColor = "#22c55e"; symbol = "1"; }
+                            if (type === 'end') { iconColor = "#ef4444"; symbol = "2"; }
+                            if (type === 'both') { iconColor = "#0d59f2"; symbol = "flag_circle"; isSymbol = true; }
+
+                            markerObjects.push(new google.maps.Marker({
+                                position: markers[type],
+                                map: null, // Hidden by default
+                                label: {
+                                    text: symbol,
+                                    fontFamily: isSymbol ? "'Material Symbols Outlined'" : "Inter, sans-serif",
+                                    color: "#ffffff",
+                                    fontSize: isSymbol ? "18px" : "14px",
+                                    fontWeight: isSymbol ? "normal" : "900"
+                                },
+                                icon: {
+                                    path: "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z",
+                                    fillColor: iconColor,
+                                    fillOpacity: 1,
+                                    strokeWeight: 2,
+                                    strokeColor: "#ffffff",
+                                    scale: 1.8,
+                                    anchor: new google.maps.Point(12, 22),
+                                    labelOrigin: new google.maps.Point(12, 9)
+                                }
+                            }));
+                        }
                     });
 
                     const bounds = new google.maps.LatLngBounds();
                     path.forEach(point => bounds.extend(point));
+                    // Also extend bounds to include markers if any
+                    Object.values(markers).forEach(m => { if(m) bounds.extend(m); });
 
                     routeObjects.push({
                         polyline: polyline,
+                        markerObjects: markerObjects,
                         bounds: bounds,
                         path: path
                     });
@@ -265,6 +302,7 @@
             routeObjects.forEach((obj, idx) => {
                 if (idx === index) {
                     obj.polyline.setMap(map);
+                    obj.markerObjects.forEach(m => m.setMap(map));
                     map.fitBounds(obj.bounds);
                     
                     // Add some padding to bounds
@@ -274,6 +312,7 @@
                     }, 50);
                 } else {
                     obj.polyline.setMap(null);
+                    obj.markerObjects.forEach(m => m.setMap(null));
                 }
             });
 
