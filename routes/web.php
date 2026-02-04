@@ -52,6 +52,9 @@ Route::middleware(['auth'])->group(function () {
         // Settings
         Route::get('/configuracoes', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
         Route::put('/configuracoes', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
+
+        // Admin Users Management
+        Route::resource('users', App\Http\Controllers\Admin\AdminUserController::class)->names('users');
     });
 
     // Client Hub
