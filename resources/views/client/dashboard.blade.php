@@ -115,7 +115,7 @@
                 <div class="bg-white border border-slate-100 rounded-3xl p-10 card-shadow">
                     <div class="flex items-center justify-between mb-8">
                         <h3 class="text-xl font-black uppercase italic tracking-tight">Perfil e Preferências</h3>
-                        <button class="text-primary"><span class="material-symbols-outlined">edit_note</span></button>
+                        <a href="{{ route('profile.edit') }}" class="text-primary hover:text-blue-700 transition-colors"><span class="material-symbols-outlined">edit_note</span></a>
                     </div>
                     <div class="space-y-8">
                         <div>
@@ -134,15 +134,15 @@
                                 </div>
                                 <div class="flex justify-between border-b border-slate-50 pb-3">
                                     <span class="text-sm font-medium text-slate-500">Equipe</span>
-                                    <span class="text-sm font-bold text-primary">Elite Runners</span>
+                                    <span class="text-sm font-bold text-primary">{{ auth()->user()->team ?? 'Não informado' }}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <button
-                        class="w-full mt-10 py-4 bg-slate-50 hover:bg-slate-100 text-slate-500 font-black text-[10px] uppercase tracking-[0.2em] rounded-full transition-all">
-                        Gerenciar Conta
-                    </button>
+                    <a href="{{ route('profile.edit') }}"
+                        class="block w-full mt-10 py-4 bg-slate-50 hover:bg-slate-100 text-slate-500 font-black text-[10px] uppercase tracking-[0.2em] rounded-full transition-all text-center">
+                        Editar Perfil
+                    </a>
                 </div>
 
                 <!-- Pontos -->

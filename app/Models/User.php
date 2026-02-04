@@ -29,6 +29,14 @@ class User extends Authenticatable
         'state',
         'zip_code',
         'role',
+        'profile_photo',
+        'team',
+        'shirt_size',
+        'shoe_size',
+        'blood_type',
+        'emergency_contact_name',
+        'emergency_contact_phone',
+        'allergies',
     ];
 
     /**
