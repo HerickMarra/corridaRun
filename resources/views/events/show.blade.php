@@ -102,7 +102,11 @@
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm font-bold text-slate-500 uppercase">Inscrições</span>
-                                @if($event->registration_end < now())
+                                @if($event->status === \App\Enums\EventStatus::Closed)
+                                    <span class="text-lg font-black italic text-amber-500 uppercase">Encerradas</span>
+                                @elseif($event->status === \App\Enums\EventStatus::Cancelled)
+                                    <span class="text-lg font-black italic text-red-500 uppercase">Canceladas</span>
+                                @elseif($event->registration_end < now())
                                     <span class="text-lg font-black italic text-red-500 uppercase">Encerradas</span>
                                 @elseif($event->categories->sum('available_tickets') <= 0)
                                     <span class="text-lg font-black italic text-orange-500 uppercase">Esgotadas</span>
@@ -129,7 +133,8 @@
                     @php
                         $isSoldOut = $category->available_tickets <= 0;
                         $isExpired = $event->registration_end < now();
-                        $isDisabled = $isSoldOut || $isExpired;
+                        $isBlocked = in_array($event->status->value, ['closed', 'cancelled']);
+                        $isDisabled = $isSoldOut || $isExpired || $isBlocked;
                     @endphp
                     <div class="bg-white rounded-2xl overflow-hidden border border-slate-100 card-shadow transition-all {{ $isDisabled ? 'opacity-75 grayscale-[0.5]' : 'hover:border-primary/30' }}" style="box-shadow: 0 10px 40px -15px rgba(0, 0, 0, 0.05);">
                         <details class="group" {{ $isDisabled ? 'disabled' : '' }}>
@@ -140,13 +145,14 @@
                                     </div>
                                     <div>
                                         <h3 class="text-lg font-black uppercase italic {{ $isDisabled ? 'text-slate-400' : '' }}">Kit {{ $category->name }}</h3>
-                                        @if($isSoldOut)
+                                        @if($isBlocked)
+                                            <p class="text-[10px] text-amber-600 font-black uppercase tracking-widest mt-0.5">Indisponível (Evento {{ $event->status === \App\Enums\EventStatus::Closed ? 'Encerrado' : 'Cancelado' }})</p>
+                                        @elseif($isSoldOut)
                                             <p class="text-[10px] text-orange-500 font-black uppercase tracking-widest mt-0.5">Vagas Esgotadas</p>
                                         @elseif($isExpired)
                                             <p class="text-[10px] text-red-500 font-black uppercase tracking-widest mt-0.5">Inscrições Encerradas</p>
                                         @else
                                             <p class="text-xs text-slate-500 font-medium mt-0.5">Distância: {{ $category->distance }}</p>
-                                            <!-- <p class="text-xs text-slate-500 font-medium mt-0.5">Distância: {{ $category->distance }} • Vagas: {{ $category->available_tickets }}</p> -->
                                         @endif
                                     </div>
                                 </div>

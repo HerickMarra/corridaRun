@@ -474,6 +474,26 @@
                     </div>
                 </div>
 
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="text-lg font-black uppercase italic tracking-tight mb-6 border-b border-slate-50 pb-4">Status da Corrida</h3>
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Estado Atual</label>
+                        <select name="status" required class="w-full bg-slate-50 border-transparent rounded-xl px-5 py-4 text-sm font-bold focus:bg-white transition-all cursor-pointer">
+                            @foreach(\App\Enums\EventStatus::cases() as $status)
+                                <option value="{{ $status->value }}" {{ $event->status === $status ? 'selected' : '' }}>
+                                    @switch($status->value)
+                                        @case('draft') Rascunho @break
+                                        @case('published') Publicado @break
+                                        @case('closed') Encerrado @break
+                                        @case('cancelled') Cancelado @break
+                                    @endswitch
+                                </option>
+                            @endforeach
+                        </select>
+                        <p class="text-[9px] text-slate-400 mt-2 font-medium">Controle a visibilidade e o estado das inscrições.</p>
+                    </div>
+                </div>
+
                 <!-- Banner -->
                 <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
                     <h3 class="text-lg font-black uppercase italic tracking-tight mb-6 border-b border-slate-50 pb-4">Banner

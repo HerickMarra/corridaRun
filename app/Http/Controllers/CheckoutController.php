@@ -17,6 +17,18 @@ class CheckoutController extends Controller
             }
         }
 
+        // Bloqueia se o evento não estiver publicado
+        if ($category->event->status !== \App\Enums\EventStatus::Published) {
+            $statusLabel = match ($category->event->status->value) {
+                'closed' => 'encerradas',
+                'cancelled' => 'canceladas',
+                'draft' => 'indisponíveis',
+                default => 'indisponíveis'
+            };
+            return redirect()->route('events.show', $category->event->slug)
+                ->with('error', "Desculpe, as inscrições para este evento estão {$statusLabel}.");
+        }
+
         // Verifica se ainda há vagas
         if ($category->available_tickets <= 0) {
             return redirect()->route('events.show', $category->event->slug)
