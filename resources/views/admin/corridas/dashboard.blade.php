@@ -29,6 +29,11 @@
                 <span class="material-symbols-outlined text-lg">view_kanban</span>
                 Gestão de Tarefas
             </a>
+            <a href="{{ route('admin.corridas.export-participants', $event->id) }}"
+                class="bg-green-500 text-white px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all flex items-center gap-2 shadow-lg shadow-green-500/20">
+                <span class="material-symbols-outlined text-lg">download</span>
+                Exportar Inscrições
+            </a>
         </div>
     </div>
 

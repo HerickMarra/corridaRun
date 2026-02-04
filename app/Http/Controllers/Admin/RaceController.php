@@ -432,6 +432,20 @@ class RaceController extends Controller
         ));
     }
 
+    public function exportParticipants(Event $event)
+    {
+        $user = auth()->user();
+        if ($user->role === \App\Enums\UserRole::Organizer) {
+            if (!$user->managedEvents->contains($event->id)) {
+                abort(403);
+            }
+        }
+
+        $fileName = 'inscritos-' . \Illuminate\Support\Str::slug($event->name) . '-' . now()->format('Y-m-d-His') . '.xlsx';
+
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\InscriptionsExport($event), $fileName);
+    }
+
     public function search(Request $request)
     {
         $term = $request->query('q');

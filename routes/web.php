@@ -53,6 +53,9 @@ Route::middleware(['auth'])->group(function () {
         // Kanban Hub e Geral
         Route::get('/kanban/hub', [App\Http\Controllers\Admin\KanbanController::class, 'hub'])->name('kanban.hub');
 
+        // Exportação
+        Route::get('/corridas/{event}/export-participants', [App\Http\Controllers\Admin\RaceController::class, 'exportParticipants'])->name('corridas.export-participants');
+
         // Kanban por Corrida
         Route::get('/corridas/{event}/kanban', [App\Http\Controllers\Admin\KanbanController::class, 'index'])->name('corridas.kanban');
         Route::post('/corridas/{event}/kanban/columns', [App\Http\Controllers\Admin\KanbanController::class, 'storeColumn'])->name('kanban.columns.store');
