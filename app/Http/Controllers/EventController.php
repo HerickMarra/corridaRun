@@ -10,7 +10,7 @@ class EventController extends Controller
     public function show(Request $request, $slug)
     {
         $event = Event::where('slug', $slug)
-            ->where('status', \App\Enums\EventStatus::Published)
+            ->whereIn('status', [\App\Enums\EventStatus::Published, \App\Enums\EventStatus::Closed])
             ->firstOrFail();
 
         $kitHash = $request->get('kit');

@@ -102,7 +102,13 @@
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm font-bold text-slate-500 uppercase">Inscrições</span>
-                                <span class="text-lg font-black italic">Abertas</span>
+                                @if($event->registration_end < now())
+                                    <span class="text-lg font-black italic text-red-500 uppercase">Encerradas</span>
+                                @elseif($event->categories->sum('available_tickets') <= 0)
+                                    <span class="text-lg font-black italic text-orange-500 uppercase">Esgotadas</span>
+                                @else
+                                    <span class="text-lg font-black italic text-green-500 uppercase">Abertas</span>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -120,49 +126,64 @@
             
             <div class="space-y-3">
                 @foreach($event->categories as $category)
-                    <div class="bg-white rounded-2xl overflow-hidden border border-slate-100 card-shadow hover:border-primary/30 transition-colors" style="box-shadow: 0 10px 40px -15px rgba(0, 0, 0, 0.05);">
-                        <details class="group">
-                            <summary class="flex items-center justify-between p-6 cursor-pointer list-none">
+                    @php
+                        $isSoldOut = $category->available_tickets <= 0;
+                        $isExpired = $event->registration_end < now();
+                        $isDisabled = $isSoldOut || $isExpired;
+                    @endphp
+                    <div class="bg-white rounded-2xl overflow-hidden border border-slate-100 card-shadow transition-all {{ $isDisabled ? 'opacity-75 grayscale-[0.5]' : 'hover:border-primary/30' }}" style="box-shadow: 0 10px 40px -15px rgba(0, 0, 0, 0.05);">
+                        <details class="group" {{ $isDisabled ? 'disabled' : '' }}>
+                            <summary class="flex items-center justify-between p-6 {{ $isDisabled ? 'cursor-not-allowed' : 'cursor-pointer' }} list-none">
                                 <div class="flex items-center gap-6">
-                                    <div class="bg-slate-50 text-slate-400 size-12 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-primary/5 group-hover:text-primary transition-colors">
-                                        <span class="material-symbols-outlined">check_circle</span>
+                                    <div class="bg-slate-50 {{ $isDisabled ? 'text-slate-300' : 'text-slate-400 group-hover:bg-primary/5 group-hover:text-primary' }} size-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors">
+                                        <span class="material-symbols-outlined">{{ $isSoldOut ? 'block' : ($isExpired ? 'timer_off' : 'check_circle') }}</span>
                                     </div>
                                     <div>
-                                        <h3 class="text-lg font-black uppercase italic">Kit {{ $category->name }}</h3>
-                                        <p class="text-xs text-slate-500 font-medium mt-0.5">Distância: {{ $category->distance }} • Vagas: {{ $category->available_tickets }}</p>
+                                        <h3 class="text-lg font-black uppercase italic {{ $isDisabled ? 'text-slate-400' : '' }}">Kit {{ $category->name }}</h3>
+                                        @if($isSoldOut)
+                                            <p class="text-[10px] text-orange-500 font-black uppercase tracking-widest mt-0.5">Vagas Esgotadas</p>
+                                        @elseif($isExpired)
+                                            <p class="text-[10px] text-red-500 font-black uppercase tracking-widest mt-0.5">Inscrições Encerradas</p>
+                                        @else
+                                            <p class="text-xs text-slate-500 font-medium mt-0.5">Distância: {{ $category->distance }} • Vagas: {{ $category->available_tickets }}</p>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-8">
                                     <div class="text-right hidden sm:block">
-                                        <p class="text-xl font-black italic text-primary">R$ {{ number_format($category->price, 2, ',', '.') }}</p>
+                                        <p class="text-xl font-black italic {{ $isDisabled ? 'text-slate-300' : 'text-primary' }}">R$ {{ number_format($category->price, 2, ',', '.') }}</p>
                                     </div>
-                                    <span class="material-symbols-outlined transition-transform duration-300 text-slate-400 group-open:rotate-180">expand_more</span>
+                                    @if(!$isDisabled)
+                                        <span class="material-symbols-outlined transition-transform duration-300 text-slate-400 group-open:rotate-180">expand_more</span>
+                                    @endif
                                 </div>
                             </summary>
-                            <div class="px-6 pb-6 pt-2 border-t border-slate-50">
-                                    <div class="flex flex-col sm:flex-row items-end sm:items-center justify-between gap-8 py-2">
-                                        @if(!empty($category->items_included))
-                                            <div class="space-y-4 w-full">
-                                                <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-400">O que está incluso:</h4>
-                                                <ul class="grid grid-cols-1 gap-2">
-                                                    @foreach($category->items_included as $item)
-                                                        <li class="flex items-center gap-2 text-sm font-medium text-slate-600"><span class="size-1.5 bg-primary rounded-full"></span> {{ $item }}</li>
-                                                    @endforeach
-                                                </ul>
+                            @if(!$isDisabled)
+                                <div class="px-6 pb-6 pt-2 border-t border-slate-50">
+                                        <div class="flex flex-col sm:flex-row items-end sm:items-center justify-between gap-8 py-2">
+                                            @if(!empty($category->items_included))
+                                                <div class="space-y-4 w-full">
+                                                    <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-400">O que está incluso:</h4>
+                                                    <ul class="grid grid-cols-1 gap-2">
+                                                        @foreach($category->items_included as $item)
+                                                            <li class="flex items-center gap-2 text-sm font-medium text-slate-600"><span class="size-1.5 bg-primary rounded-full"></span> {{ $item }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            @else
+                                                <div></div> <!-- Spacer for alignment -->
+                                            @endif
+                                            <div class="flex flex-col items-end gap-4 flex-shrink-0">
+                                                <div class="text-right sm:hidden">
+                                                    <p class="text-2xl font-black italic">R$ {{ number_format($category->price, 2, ',', '.') }}</p>
+                                                </div>
+                                                <a href="{{ route('checkout.index', ['category' => $category->id, 'kit' => request('kit')]) }}" class="w-full sm:w-auto px-12 py-4 bg-primary text-white font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:bg-black transition-all text-center">
+                                                    Selecionar Ingresso
+                                                </a>
                                             </div>
-                                        @else
-                                            <div></div> <!-- Spacer for alignment -->
-                                        @endif
-                                        <div class="flex flex-col items-end gap-4 flex-shrink-0">
-                                            <div class="text-right sm:hidden">
-                                                <p class="text-2xl font-black italic">R$ {{ number_format($category->price, 2, ',', '.') }}</p>
-                                            </div>
-                                            <a href="{{ route('checkout.index', ['category' => $category->id, 'kit' => request('kit')]) }}" class="w-full sm:w-auto px-12 py-4 bg-primary text-white font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:bg-black transition-all text-center">
-                                                Selecionar Ingresso
-                                            </a>
                                         </div>
-                                    </div>
-                            </div>
+                                </div>
+                            @endif
                         </details>
                     </div>
                 @endforeach
