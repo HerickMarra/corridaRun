@@ -89,12 +89,24 @@ class RaceController extends Controller
             }
         }
 
+        if ($request->has('routes')) {
+            foreach ($request->routes as $routeData) {
+                if (!empty($routeData['path'])) {
+                    $event->routes()->create([
+                        'name' => $routeData['name'],
+                        'color' => $routeData['color'],
+                        'path' => json_decode($routeData['path'], true),
+                    ]);
+                }
+            }
+        }
+
         return redirect()->route('admin.corridas.index')->with('success', 'Corrida criada com sucesso!');
     }
 
     public function edit(Event $event)
     {
-        $event->load(['categories', 'customFields', 'coupons']);
+        $event->load(['categories', 'customFields', 'coupons', 'routes']);
         return view('admin.corridas.edit', compact('event'));
     }
 
@@ -241,6 +253,34 @@ class RaceController extends Controller
                         'value' => $couponData['value'],
                         'usage_limit' => $couponData['usage_limit'],
                         'is_active' => isset($couponData['is_active']) ? (bool) $couponData['is_active'] : false,
+                    ]);
+                }
+            }
+        }
+
+        // Sync Routes
+        $routeIds = collect($request->routes)->pluck('id')->filter()->toArray();
+        $event->routes()->whereNotIn('id', $routeIds)->delete();
+
+        if ($request->has('routes')) {
+            foreach ($request->routes as $routeData) {
+                if (empty($routeData['path']))
+                    continue;
+
+                $path = is_string($routeData['path']) ? json_decode($routeData['path'], true) : $routeData['path'];
+
+                if (isset($routeData['id'])) {
+                    $route = $event->routes()->find($routeData['id']);
+                    $route->update([
+                        'name' => $routeData['name'],
+                        'color' => $routeData['color'],
+                        'path' => $path,
+                    ]);
+                } else {
+                    $event->routes()->create([
+                        'name' => $routeData['name'],
+                        'color' => $routeData['color'],
+                        'path' => $path,
                     ]);
                 }
             }

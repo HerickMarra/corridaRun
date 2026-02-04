@@ -54,4 +54,9 @@ class Event extends Model
     {
         return $this->hasMany(EventCoupon::class);
     }
+
+    public function routes(): HasMany
+    {
+        return $this->hasMany(EventRoute::class);
+    }
 }

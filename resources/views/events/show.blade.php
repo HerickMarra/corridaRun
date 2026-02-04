@@ -170,22 +170,87 @@
         </div>
     </section>
 
-    <section class="w-full relative h-[600px] overflow-hidden bg-slate-100">
-        <div class="absolute inset-0 z-0">
-            <iframe allowfullscreen="" height="100%" loading="lazy" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14628.272101036836!2d-46.6668!3d-23.5475!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce5833440789d5%3A0x6779a572a129d271!2sEst%C3%A1dio%20do%20Pacaembu!5e0!3m2!1sen!2sbr!4v1625480000000!5m2!1sen!2sbr" style="border:0; filter: grayscale(1) invert(0.1) contrast(1.1);" width="100%">
-            </iframe>
-        </div>
-        <div class="absolute top-12 left-6 lg:left-12 z-10 bg-white p-8 rounded-3xl shadow-2xl max-w-sm border border-slate-100">
-            <h4 class="text-xl font-black uppercase italic mb-4">Localização</h4>
-            <p class="text-sm text-slate-500 font-medium mb-6 leading-relaxed">
-                {{ $event->location }}<br/>
-                {{ $event->city }}, {{ $event->state }}
-            </p>
-            <div class="flex items-center gap-4 text-primary font-black text-[10px] uppercase tracking-widest cursor-pointer hover:underline">
-                <span class="material-symbols-outlined">map</span>
-                Abrir no Google Maps
+    @if($event->routes->count() > 0)
+        <!-- Mapa de Percurso -->
+        <section class="max-w-7xl mx-auto px-4 py-20 border-t border-slate-100">
+            <div class="mb-12 text-center md:text-left">
+                <span class="text-primary font-black uppercase text-[10px] tracking-[0.3em] mb-4 block">Percurso</span>
+                <h2 class="text-4xl md:text-5xl font-black uppercase italic tracking-tighter">Onde a mágica <span class="text-primary">Acontece</span></h2>
             </div>
-        </div>
-    </section>
+
+            <div class="grid lg:grid-cols-4 gap-12">
+                <div class="lg:col-span-1 space-y-4">
+                    <p class="text-sm text-slate-500 font-medium leading-relaxed mb-8">
+                        Confira o traçado oficial da prova. Abaixo você vê todas as distâncias e seus respectivos caminhos.
+                    </p>
+                    
+                    <div class="flex flex-col gap-3">
+                        @foreach($event->routes as $index => $route)
+                            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center gap-3">
+                                <div class="size-3 rounded-full flex-shrink-0" style="background-color: {{ $route->color }}"></div>
+                                <span class="font-black uppercase italic text-xs tracking-wider text-slate-700">{{ $route->name }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <div class="mt-8 p-6 rounded-2xl bg-primary/5 border border-primary/10">
+                        <div class="flex items-center gap-4 text-primary font-black text-[10px] uppercase tracking-widest cursor-pointer hover:underline" onclick="window.open('https://www.google.com/maps/search/?api=1&query={{ urlencode($event->location . ' ' . $event->city) }}')">
+                            <span class="material-symbols-outlined">directions_run</span>
+                            Como chegar na largada
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-3">
+                    <div class="rounded-3xl overflow-hidden shadow-2xl shadow-slate-200 border-4 border-white h-[500px] md:h-[600px] relative">
+                        <div id="route-map" class="w-full h-full"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    @endif
+
+    @push('scripts')
+    @if($event->routes->count() > 0)
+    <script>
+        function initRouteMap() {
+            const routes = @json($event->routes);
+            const map = new google.maps.Map(document.getElementById("route-map"), {
+                zoom: 14,
+                center: { lat: -15.7942, lng: -47.8822 },
+                mapId: 'RUNPACE_PUBLIC_MAP',
+                disableDefaultUI: false,
+                scrollwheel: false,
+            });
+
+            const bounds = new google.maps.LatLngBounds();
+            let hasPoints = false;
+            
+            routes.forEach(route => {
+                const path = Array.isArray(route.path) ? route.path : JSON.parse(route.path);
+                if (path && path.length > 0) {
+                    new google.maps.Polyline({
+                        path: path,
+                        strokeColor: route.color || "#0d59f2",
+                        strokeOpacity: 0.8,
+                        strokeWeight: 6,
+                        map: map
+                    });
+
+                    path.forEach(point => {
+                        bounds.extend(point);
+                        hasPoints = true;
+                    });
+                }
+            });
+
+            if (hasPoints) {
+                map.fitBounds(bounds);
+            }
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.maps_api_key') }}&callback=initRouteMap" async defer></script>
+    @endif
+    @endpush
 </main>
 @endsection
