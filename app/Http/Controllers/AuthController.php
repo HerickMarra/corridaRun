@@ -24,6 +24,15 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
+
+            // Redirecionamento baseado no role do usuário
+            $user = Auth::user();
+
+            if (in_array($user->role->value, ['super-admin', 'admin', 'organizer'])) {
+                return redirect()->intended('/admin/dashboard');
+            }
+
+            // Cliente/Corredor vai para a home ou área do perfil
             return redirect()->intended('/');
         }
 
@@ -54,6 +63,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
+        // Novo usuário (sempre Client) vai para a home
         return redirect('/');
     }
 
