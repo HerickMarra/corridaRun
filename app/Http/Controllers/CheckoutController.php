@@ -41,11 +41,11 @@ class CheckoutController extends Controller
         return view('checkout.index', compact('category', 'event', 'serviceFee', 'total'));
     }
 
-    public function process(Request $request, Category $category)
+    public function process(Request $request, Category $category, \App\Services\AsaasService $asaasService)
     {
         $user = auth()->user();
 
-        return \DB::transaction(function () use ($request, $category, $user) {
+        return \DB::transaction(function () use ($request, $category, $user, $asaasService) {
             // Reload category with lock to prevent race conditions
             $category = Category::where('id', $category->id)->lockForUpdate()->first();
 
@@ -80,7 +80,7 @@ class CheckoutController extends Controller
                 'user_id' => $user->id,
                 'order_number' => 'ORD-' . strtoupper(uniqid()),
                 'total_amount' => $total,
-                'status' => \App\Enums\OrderStatus::Paid,
+                'status' => $total > 0 ? \App\Enums\OrderStatus::Pending : \App\Enums\OrderStatus::Paid,
                 'payment_method' => $request->payment_method,
             ]);
 
@@ -92,26 +92,81 @@ class CheckoutController extends Controller
                 'participant_email' => $user->email,
                 'participant_birth_date' => $user->birth_date ?? now()->subYears(20),
                 'price' => $finalPrice,
-                'status' => 'paid',
+                'status' => $total > 0 ? \App\Enums\OrderStatus::Pending : \App\Enums\OrderStatus::Paid,
                 'custom_responses' => $request->custom_responses,
             ]);
 
-            // Create Payment
-            $order->payments()->create([
-                'payment_gateway' => $total > 0 ? 'fake' : 'free',
-                'amount' => $total,
-                'status' => \App\Enums\PaymentStatus::Approved,
-                'payment_method' => $total > 0 ? $request->payment_method : 'free',
-                'paid_at' => now(),
-            ]);
+            $paymentData = null;
+            $pixQrCode = null;
+            $pixQrCodeBase64 = null;
 
-            // Create Ticket (Subscription Badge)
-            $orderItem->ticket()->create([
-                'ticket_number' => 'TKT-' . strtoupper(uniqid()),
-                'status' => \App\Enums\TicketStatus::Active,
-            ]);
+            // Handle Asaas Payment
+            if ($total > 0) {
+                try {
+                    $billingType = match ($request->payment_method) {
+                        'pix' => 'PIX',
+                        'boleto' => 'BOLETO',
+                        'credit_card' => 'CREDIT_CARD',
+                        default => 'PIX'
+                    };
 
-            return redirect()->route('checkout.confirmation', $order->id)->with('success', 'Inscrição confirmada com sucesso! Bem-vindo à prova.');
+                    $creditCardInfo = null;
+
+                    // Allow generic billing link if user chooses "Outros" or implement specific logic.
+                    // For this iteration: 
+                    // PIX -> Get QR Code
+                    // BOLETO -> Get Barcode/Link
+                    // CREDIT_CARD -> We need card data OR just give them the Invoice Link (Payment Link).
+                    // Asaas API "Create Payment" creates a charge. The response has "invoiceUrl".
+
+                    $paymentResponse = $asaasService->createPayment($order, $billingType);
+
+                    $paymentData = [
+                        'payment_gateway' => 'asaas',
+                        'asaas_payment_id' => $paymentResponse['id'],
+                        'invoice_url' => $paymentResponse['invoiceUrl'],
+                        'amount' => $total,
+                        'status' => \App\Enums\PaymentStatus::Pending,
+                        'payment_method' => $request->payment_method,
+                    ];
+
+                    if ($billingType === 'PIX') {
+                        $pixData = $asaasService->getPixQrCode($paymentResponse['id']);
+                        if ($pixData) {
+                            $pixQrCode = $pixData['payload'];
+                            $pixQrCodeBase64 = $pixData['encodedImage'];
+                        }
+                    }
+
+                } catch (\Exception $e) {
+                    // Log error and redirect back
+                    \Log::error('Checkout Payment Error: ' . $e->getMessage());
+                    throw $e; // Rollback transaction
+                }
+            } else {
+                // Free Event
+                $paymentData = [
+                    'payment_gateway' => 'free',
+                    'amount' => 0,
+                    'status' => \App\Enums\PaymentStatus::Approved,
+                    'payment_method' => 'free',
+                    'paid_at' => now(),
+                ];
+
+                // Active Ticket immediately
+                $orderItem->ticket()->create([
+                    'ticket_number' => 'TKT-' . strtoupper(uniqid()),
+                    'status' => \App\Enums\TicketStatus::Active,
+                ]);
+            }
+
+            // Create Payment Record
+            $order->payments()->create(array_merge($paymentData, [
+                'pix_qr_code' => $pixQrCode,
+                'pix_qr_code_base64' => $pixQrCodeBase64,
+            ]));
+
+            return redirect()->route('checkout.confirmation', $order->id)->with('success', 'Inscrição realizada! Finalize o pagamento.');
         });
     }
 

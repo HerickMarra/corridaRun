@@ -195,18 +195,22 @@
                                 </div>
                             </summary>
                             @if(!$isDisabled)
-                                    @if(!empty($category->items_included))
+                                <div class="px-6 pb-6 pt-2 border-t border-slate-50">
                                         <div class="flex flex-col sm:flex-row items-end sm:items-center justify-between gap-8 py-2">
-                                            <div class="space-y-4 w-full">
-                                                <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-400">O que está incluso:</h4>
-                                                <ul class="grid grid-cols-1 gap-2">
-                                                    @foreach($category->items_included as $item)
-                                                        <li class="flex items-center gap-2 text-sm font-medium text-slate-600"><span class="size-1.5 bg-primary rounded-full"></span> {{ $item }}</li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
-                                            <div class="flex flex-col items-end gap-4 flex-shrink-0 w-full sm:w-auto">
-                                                <div class="text-right sm:hidden w-full">
+                                            @if(!empty($category->items_included))
+                                                <div class="space-y-4 w-full">
+                                                    <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-400">O que está incluso:</h4>
+                                                    <ul class="grid grid-cols-1 gap-2">
+                                                        @foreach($category->items_included as $item)
+                                                            <li class="flex items-center gap-2 text-sm font-medium text-slate-600"><span class="size-1.5 bg-primary rounded-full"></span> {{ $item }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            @else
+                                                <div></div> <!-- Spacer for alignment -->
+                                            @endif
+                                            <div class="flex flex-col items-end gap-4 flex-shrink-0">
+                                                <div class="text-right sm:hidden">
                                                     <p class="text-2xl font-black italic">R$ {{ number_format($category->price, 2, ',', '.') }}</p>
                                                 </div>
                                                 <a href="{{ route('checkout.index', ['category' => $category->id, 'kit' => request('kit')]) }}" class="w-full sm:w-auto px-12 py-4 bg-primary text-white font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:bg-black transition-all text-center">
@@ -214,16 +218,6 @@
                                                 </a>
                                             </div>
                                         </div>
-                                    @else
-                                        <div class="flex flex-col items-center justify-center gap-6 py-4">
-                                            <div class="sm:hidden text-center">
-                                                <p class="text-3xl font-black italic text-primary">R$ {{ number_format($category->price, 2, ',', '.') }}</p>
-                                            </div>
-                                            <a href="{{ route('checkout.index', ['category' => $category->id, 'kit' => request('kit')]) }}" class="w-full sm:w-auto px-16 py-5 bg-primary text-white font-black uppercase text-xs tracking-[0.2em] rounded-full hover:bg-black transition-all text-center shadow-lg shadow-primary/25 hover:shadow-xl hover:scale-105 active:scale-95">
-                                                Selecionar Ingresso
-                                            </a>
-                                        </div>
-                                    @endif
                                 </div>
                             @endif
                         </details>

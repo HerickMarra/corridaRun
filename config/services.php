@@ -39,4 +39,9 @@ return [
         'maps_api_key' => env('GOOGLE_MAPS_API_KEY'),
     ],
 
+    'asaas' => [
+        'url' => env('ASAAS_API_URL', 'https://sandbox.asaas.com/api/v3'),
+        'key' => env('ASAAS_API_KEY'),
+    ],
+
 ];

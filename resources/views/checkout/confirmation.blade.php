@@ -6,18 +6,61 @@
     <main class="pt-32 pb-24 px-6 lg:px-12 bg-background-soft">
         <div class="max-w-[1000px] mx-auto">
             <div class="text-center mb-16 space-y-6">
-                <div
-                    class="inline-flex items-center justify-center size-24 bg-emerald-50 text-emerald-500 rounded-full mb-4">
-                    <span class="material-symbols-outlined text-5xl">check_circle</span>
-                </div>
-                <h1 class="text-4xl md:text-5xl font-black uppercase italic tracking-tighter leading-none">
-                    SUA VAGA ESTÁ <span class="text-primary">GARANTIDA!</span>
-                </h1>
-                <p class="text-slate-500 font-medium max-w-lg mx-auto">
-                    Parabéns, {{ explode(' ', auth()->user()->name)[0] }}! Sua inscrição para a
-                    {{ $order->items->first()->category->event->name }} foi confirmada com sucesso. Prepare seus tênis.
-                </p>
+                @if($order->status === \App\Enums\OrderStatus::Pending)
+                    <div
+                        class="inline-flex items-center justify-center size-24 bg-yellow-50 text-yellow-500 rounded-full mb-4">
+                        <span class="material-symbols-outlined text-5xl">pending</span>
+                    </div>
+                    <h1 class="text-4xl md:text-5xl font-black uppercase italic tracking-tighter leading-none">
+                        Aguardando <span class="text-primary">Pagamento</span>
+                    </h1>
+                    <p class="text-slate-500 font-medium max-w-lg mx-auto">
+                        Quase lá, {{ explode(' ', auth()->user()->name)[0] }}! Realize o pagamento para confirmar sua inscrição na 
+                        {{ $order->items->first()->category->event->name }}.
+                    </p>
+                @else
+                    <div
+                        class="inline-flex items-center justify-center size-24 bg-emerald-50 text-emerald-500 rounded-full mb-4">
+                        <span class="material-symbols-outlined text-5xl">check_circle</span>
+                    </div>
+                    <h1 class="text-4xl md:text-5xl font-black uppercase italic tracking-tighter leading-none">
+                        SUA VAGA ESTÁ <span class="text-primary">GARANTIDA!</span>
+                    </h1>
+                    <p class="text-slate-500 font-medium max-w-lg mx-auto">
+                        Parabéns, {{ explode(' ', auth()->user()->name)[0] }}! Sua inscrição para a
+                        {{ $order->items->first()->category->event->name }} foi confirmada com sucesso. Prepare seus tênis.
+                    </p>
+                @endif
             </div>
+
+            @php
+                $payment = $order->payments->first();
+            @endphp
+
+            @if($order->status === \App\Enums\OrderStatus::Pending && $payment)
+                <div class="mb-12">
+                   @if($payment->payment_method === 'pix' && $payment->pix_qr_code_base64)
+                        <div class="bg-white rounded-3xl p-8 card-shadow border-2 border-primary/20 max-w-md mx-auto text-center">
+                            <h3 class="text-lg font-black uppercase italic mb-6">Escaneie o QR Code</h3>
+                            <img src="data:image/png;base64,{{ $payment->pix_qr_code_base64 }}" alt="Pix QR Code" class="w-64 h-64 mx-auto mb-6">
+                            <div class="bg-slate-50 p-4 rounded-xl break-all text-xs font-mono text-slate-500 mb-4 select-all">
+                                {{ $payment->pix_qr_code }}
+                            </div>
+                            <button onclick="navigator.clipboard.writeText('{{ $payment->pix_qr_code }}'); alert('Código copiado!')" class="text-primary font-bold uppercase text-xs hover:underline">
+                                Copiar Código Pix
+                            </button>
+                        </div>
+                   @elseif($payment->invoice_url)
+                        <div class="bg-white rounded-3xl p-8 card-shadow border-2 border-primary/20 max-w-md mx-auto text-center">
+                             <h3 class="text-lg font-black uppercase italic mb-6">Pagamento via {{ ucfirst($payment->payment_method) }}</h3>
+                             <p class="text-slate-500 text-sm mb-6">Clique no botão abaixo para acessar o link de pagamento.</p>
+                             <a href="{{ $payment->invoice_url }}" target="_blank" class="bg-primary text-white px-8 py-4 rounded-full font-bold uppercase tracking-widest shadow-lg hover:bg-primary/90 transition-all">
+                                Pagar Agora
+                             </a>
+                        </div>
+                   @endif
+                </div>
+            @endif
 
             <div class="grid lg:grid-cols-5 gap-8 items-start">
                 <div class="lg:col-span-3 space-y-6">
