@@ -1,0 +1,177 @@
+{
+    "name": "Brasilia acao dark",
+    "config_schema": {
+        "sobre": [
+            {
+                "key": "bg_image_1",
+                "label": "Bg image 1",
+                "type": "image",
+                "default": "https://lh3.googleusercontent.com/aida-public/AB6AXuDfJ1niAN_pifT4SJdNdzqfH2HrC8AyDHHu1t-5KpW0KA0rkYjOgypEYFIBwqtMRd1w70r9oxPFEwEW3reCBGfcQJqVr8OM1kxG7G05O13h_LcUTexWBqfBpj6K_bF0EkhXlgEny49uof3wAu_69Is4j2xyZGTcYgcTeHmv-qFflHYdMuQLkYYHPYbIlgz0voHJY_v62RpCVSCCjMl2ZJwNQWlHSBdZUGg4cAr_dkk1hjUWt24ckcqtDI0J6GMQ3TdMr6cKSrDx1bQ"
+            },
+            {
+                "key": "heading_1",
+                "label": "Heading 1",
+                "type": "text",
+                "default": "Tradição &amp; Modernidade"
+            },
+            {
+                "key": "heading_2",
+                "label": "Heading 2",
+                "type": "text",
+                "default": "Uma experiência monumental"
+            },
+            {
+                "key": "description_1",
+                "label": "Description 1",
+                "type": "textarea",
+                "default": "A Maratona Brasília não é apenas uma corrida, é uma imersão na história e na arte urbana. O percurso plano e rápido convida atletas de todo o mundo a buscarem seus melhores tempos enquanto atravessam o Eixo Monumental."
+            },
+            {
+                "key": "description_2",
+                "label": "Description 2",
+                "type": "textarea",
+                "default": "Totalmente plano, ideal para recordes."
+            },
+            {
+                "key": "description_3",
+                "label": "Description 3",
+                "type": "textarea",
+                "default": "Passe pelos cartões-postais da capital."
+            },
+            {
+                "key": "heading_1",
+                "label": "Título 1",
+                "type": "text",
+                "default": "Percurso Veloz"
+            },
+            {
+                "key": "heading_2",
+                "label": "Título 2",
+                "type": "text",
+                "default": "Vista Única"
+            }
+        ],
+        "percursos": [
+            {
+                "key": "heading_1",
+                "label": "Heading 1",
+                "type": "text",
+                "default": "Escolha seu Desafio"
+            },
+            {
+                "key": "heading_2",
+                "label": "Heading 2",
+                "type": "text",
+                "default": "5K"
+            },
+            {
+                "key": "description_1",
+                "label": "Description 1",
+                "type": "textarea",
+                "default": "Percurso dinâmico no Eixo Rodoviário Sul, perfeito para quem está começando nas corridas de rua."
+            },
+            {
+                "key": "heading_3",
+                "label": "Heading 3",
+                "type": "text",
+                "default": "10K"
+            },
+            {
+                "key": "description_2",
+                "label": "Description 2",
+                "type": "textarea",
+                "default": "Uma volta completa pelo coração do Plano Piloto, desafiando sua resistência e velocidade."
+            },
+            {
+                "key": "heading_4",
+                "label": "Heading 4",
+                "type": "text",
+                "default": "21K"
+            },
+            {
+                "key": "description_3",
+                "label": "Description 3",
+                "type": "textarea",
+                "default": "A meia maratona que cruza a Ponte JK e o Memorial JK. O desafio supremo da nossa prova."
+            }
+        ],
+        "programacao": [
+            {
+                "key": "heading_1",
+                "label": "Heading 1",
+                "type": "text",
+                "default": "Programação do Evento"
+            },
+            {
+                "key": "description_1",
+                "label": "Description 1",
+                "type": "textarea",
+                "default": "Shopping Conjunto Nacional - 10h às 20h"
+            },
+            {
+                "key": "description_2",
+                "label": "Description 2",
+                "type": "textarea",
+                "default": "Shopping Conjunto Nacional - 10h às 18h"
+            },
+            {
+                "key": "description_3",
+                "label": "Description 3",
+                "type": "textarea",
+                "default": "Esplanada dos Ministérios - A partir das 06h00"
+            },
+            {
+                "key": "description_4",
+                "label": "Description 4",
+                "type": "textarea",
+                "default": "Palco Principal - 10h30"
+            },
+            {
+                "key": "heading_1",
+                "label": "Título 1",
+                "type": "text",
+                "default": "Entrega de Kits - Dia 1"
+            },
+            {
+                "key": "heading_2",
+                "label": "Título 2",
+                "type": "text",
+                "default": "Entrega de Kits - Dia 2"
+            },
+            {
+                "key": "heading_3",
+                "label": "Título 3",
+                "type": "text",
+                "default": "O Grande Dia - Largadas"
+            },
+            {
+                "key": "heading_4",
+                "label": "Título 4",
+                "type": "text",
+                "default": "Premiação"
+            }
+        ],
+        "inscricao": [
+            {
+                "key": "heading_1",
+                "label": "Heading 1",
+                "type": "text",
+                "default": "Últimas Vagas Disponíveis!"
+            },
+            {
+                "key": "description_1",
+                "label": "Description 1",
+                "type": "textarea",
+                "default": "Não fique de fora da prova mais emblemática do Brasil. Junte-se a milhares de corredores em uma celebração de esporte e arquitetura."
+            }
+        ],
+        "geral": [
+            {
+                "key": "description_3",
+                "label": "Description 3",
+                "type": "textarea",
+                "default": "Patrocínio Master"
+            }
+        ]
+    }
+}

@@ -60,6 +60,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/corridas/{event}/kanban', [App\Http\Controllers\Admin\KanbanController::class, 'index'])->name('corridas.kanban');
         Route::post('/corridas/{event}/kanban/columns', [App\Http\Controllers\Admin\KanbanController::class, 'storeColumn'])->name('kanban.columns.store');
         Route::post('/kanban/columns/update-order', [App\Http\Controllers\Admin\KanbanController::class, 'updateColumnOrder'])->name('kanban.columns.update-order');
+        Route::delete('/kanban/columns/{column}', [App\Http\Controllers\Admin\KanbanController::class, 'deleteColumn'])->name('kanban.columns.delete');
         Route::post('/corridas/{event}/kanban/tasks', [App\Http\Controllers\Admin\KanbanController::class, 'storeTask'])->name('kanban.tasks.store');
         Route::put('/kanban/tasks/{task}', [App\Http\Controllers\Admin\KanbanController::class, 'updateTask'])->name('kanban.tasks.update');
         Route::post('/kanban/update-order', [App\Http\Controllers\Admin\KanbanController::class, 'updateOrder'])->name('kanban.update-order');
@@ -77,11 +78,18 @@ Route::middleware(['auth'])->group(function () {
 
             // API Routes for Admin UI
             Route::get('/api/corridas/search', [App\Http\Controllers\Admin\RaceController::class, 'search'])->name('api.corridas.search');
+            Route::get('/api/media', [App\Http\Controllers\Admin\MediaController::class, 'index'])->name('api.media.index');
+            Route::post('/api/media', [App\Http\Controllers\Admin\MediaController::class, 'store'])->name('api.media.store');
+            Route::delete('/api/media', [App\Http\Controllers\Admin\MediaController::class, 'destroy'])->name('api.media.destroy');
 
             // Email Templates Management
             Route::resource('emails', App\Http\Controllers\Admin\EmailTemplateController::class)
                 ->names('emails')
                 ->parameters(['emails' => 'user_email_template']);
+
+            // Landing Pages Management
+            Route::resource('landing-pages', App\Http\Controllers\Admin\LandingPageController::class)
+                ->names('landing-pages');
         });
 
         // Pagamentos/Vendas e Detalhes Atletas (Admin, SuperAdmin)
@@ -105,3 +113,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'client'])->name('dashboard');
     });
 });
+
+// Landing Pages Públicas (Coringa - manter no fim)
+Route::get('/{slug}', [App\Http\Controllers\LandingPageController::class, 'show'])->name('lp.show');

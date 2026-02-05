@@ -36,7 +36,7 @@
                 @foreach($event->kanbanColumns as $column)
                     <div class="kanban-column-wrapper w-80 flex flex-col h-full bg-slate-50/50 rounded-2xl border border-slate-100/50 p-4" data-column-id="{{ $column->id }}">
                         <!-- Coluna Header -->
-                        <div class="flex justify-between items-center mb-4 px-1 cursor-move">
+                        <div class="group flex justify-between items-center mb-4 px-1 cursor-move">
                             <div class="flex items-center gap-2">
                                 <div class="size-2.5 rounded-full" style="background-color: {{ $column->color_hex }}"></div>
                                 <h3 class="text-xs font-black uppercase tracking-widest text-slate-700">{{ $column->name }}</h3>
@@ -44,6 +44,11 @@
                                     {{ $column->tasks->count() }}
                                 </span>
                             </div>
+                            <button onclick="deleteColumn({{ $column->id }}, '{{ $column->name }}', {{ $column->tasks->count() }})" 
+                                class="opacity-0 group-hover:opacity-100 transition-opacity text-slate-300 hover:text-red-500 p-1 rounded hover:bg-red-50"
+                                title="Excluir coluna">
+                                <span class="material-symbols-outlined text-sm">delete</span>
+                            </button>
                         </div>
 
                         <!-- Tasks Container -->
@@ -231,6 +236,39 @@
         function closeColumnModal() {
             document.getElementById('column-modal').classList.add('hidden');
             document.getElementById('column-modal').classList.remove('flex');
+        }
+
+        function deleteColumn(columnId, columnName, taskCount) {
+            if (taskCount > 0) {
+                toast(`A coluna "${columnName}" contém ${taskCount} tarefa(s). Mova ou exclua as tarefas primeiro.`, 'error');
+                return;
+            }
+
+            if (!confirm(`Tem certeza que deseja excluir a coluna "${columnName}"?`)) {
+                return;
+            }
+
+            fetch(`/admin/kanban/columns/${columnId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    toast('Coluna excluída com sucesso!', 'success');
+                    // Remover a coluna da UI
+                    document.querySelector(`[data-column-id="${columnId}"]`).remove();
+                } else {
+                    toast(data.error || 'Erro ao excluir coluna', 'error');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                toast('Erro ao excluir coluna', 'error');
+            });
         }
     </script>
 

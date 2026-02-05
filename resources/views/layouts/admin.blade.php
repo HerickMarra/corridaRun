@@ -140,6 +140,11 @@
                     <span class="material-symbols-outlined">mail</span>
                     <span class="text-sm font-semibold">E-mails (Modelos)</span>
                 </a>
+                <a href="{{ route('admin.landing-pages.index') }}"
+                    class="flex items-center gap-4 px-6 py-4 hover:bg-white/5 transition-all {{ request()->routeIs('admin.landing-pages.*') ? 'sidebar-active' : 'text-white/70 hover:text-white' }}">
+                    <span class="material-symbols-outlined">web</span>
+                    <span class="text-sm font-semibold">Landing Pages</span>
+                </a>
             @endif
 
 
@@ -195,6 +200,7 @@
         @yield('content')
     </main>
 
+    @include('admin.media._gallery_modal')
     @stack('scripts')
 </body>
 

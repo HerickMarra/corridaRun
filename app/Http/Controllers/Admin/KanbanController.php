@@ -178,4 +178,18 @@ class KanbanController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    public function deleteColumn(KanbanColumn $column)
+    {
+        // Verificar se a coluna tem tarefas
+        if ($column->tasks()->count() > 0) {
+            return response()->json([
+                'error' => 'Não é possível excluir uma coluna que contém tarefas. Mova ou exclua as tarefas primeiro.'
+            ], 422);
+        }
+
+        $column->delete();
+
+        return response()->json(['success' => true, 'message' => 'Coluna excluída com sucesso!']);
+    }
 }
