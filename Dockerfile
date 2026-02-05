@@ -1,4 +1,4 @@
-# Multi-stage Dockerfile for Laravel Production on Render
+# Multi-stage Dockerfile for Laravel Production on Render with SQLite
 
 # Stage 1: Build dependencies
 FROM php:8.3-fpm-alpine AS builder
@@ -11,13 +11,11 @@ RUN apk add --no-cache \
     libzip-dev \
     zip \
     unzip \
-    postgresql-dev \
-    oniguruma-dev \
     nodejs \
     npm
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo_pgsql pgsql mbstring exif pcntl bcmath gd zip
+# Install PHP extensions (only essential ones)
+RUN docker-php-ext-install pdo_sqlite exif pcntl gd zip
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -50,13 +48,12 @@ FROM php:8.3-fpm-alpine
 RUN apk add --no-cache \
     nginx \
     supervisor \
-    postgresql-dev \
     libpng \
     libzip \
-    oniguruma
+    sqlite
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_pgsql pgsql mbstring exif pcntl bcmath gd zip
+RUN docker-php-ext-install pdo_sqlite exif pcntl gd zip
 
 # Set working directory
 WORKDIR /var/www/html
@@ -64,7 +61,7 @@ WORKDIR /var/www/html
 # Create necessary directories
 RUN mkdir -p /var/log/supervisor /run/nginx /var/www/html/storage/app /var/www/html/storage/framework/cache \
     /var/www/html/storage/framework/sessions /var/www/html/storage/framework/views \
-    /var/www/html/storage/logs /var/www/html/bootstrap/cache
+    /var/www/html/storage/logs /var/www/html/bootstrap/cache /var/www/html/database
 
 # Copy Docker configuration files first
 COPY docker/nginx.conf /etc/nginx/nginx.conf
@@ -77,8 +74,8 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 COPY --from=builder --chown=www-data:www-data /var/www/html /var/www/html
 
 # Set proper permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
 
 # Expose port
 EXPOSE 8080
