@@ -14,6 +14,7 @@
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
 
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -65,9 +66,15 @@
 
 <body class="min-h-screen overflow-x-hidden antialiased">
 
-    <header class="fixed top-0 w-full z-50 border-b border-slate-100 glass-nav">
+    <header x-data="{ mobileMenuOpen: false }" class="fixed top-0 w-full z-50 border-b border-slate-100 glass-nav">
         <div class="max-w-[1440px] mx-auto px-6 lg:px-12 flex items-center justify-between h-20">
-            <div class="flex items-center gap-12">
+            <div class="flex items-center gap-4 md:gap-12">
+                <!-- Mobile Menu Button -->
+                <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-secondary p-2 -ml-2">
+                    <span class="material-symbols-outlined" x-show="!mobileMenuOpen">menu</span>
+                    <span class="material-symbols-outlined" x-show="mobileMenuOpen" x-cloak>close</span>
+                </button>
+
                 <a href="/" class="flex items-center gap-2">
                     <div class="size-7 text-primary">
                         <svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
@@ -76,7 +83,7 @@
                             </path>
                         </svg>
                     </div>
-                    <h2 class="text-xl font-bold tracking-tight text-secondary uppercase italic">
+                    <h2 class="text-xl font-bold tracking-tight text-secondary uppercase italic hidden sm:block">
                         Sisters Esportes
                     </h2>
                 </a>
@@ -105,7 +112,7 @@
                             <img alt="Avatar" class="w-full h-full object-cover"
                                 src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=0052FF&color=fff" />
                         </div>
-                        <span class="text-sm font-bold">{{ auth()->user()->name }}</span>
+                        <span class="text-sm font-bold hidden sm:block">{{ auth()->user()->name }}</span>
                     </div>
                     <form method="POST" action="{{ route('logout') }}" class="ml-4">
                         @csrf
@@ -120,6 +127,21 @@
                     </a>
                 @endauth
             </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div x-show="mobileMenuOpen" x-transition x-cloak
+            class="md:hidden absolute top-20 left-0 w-full bg-white border-b border-slate-100 p-6 flex flex-col gap-4 shadow-xl">
+            <a class="text-base font-bold text-slate-600 hover:text-primary transition-colors py-2 border-b border-slate-50"
+                href="/">Eventos</a>
+            <a class="text-base font-bold text-slate-600 hover:text-primary transition-colors py-2 border-b border-slate-50"
+                href="{{ route('calendar') }}">Calendário</a>
+            <a class="text-base font-bold text-slate-600 hover:text-primary transition-colors py-2 border-b border-slate-50"
+                href="{{ route('partner') }}">Seja um Parceiro</a>
+            @auth
+                <a class="text-base font-bold text-slate-600 hover:text-primary transition-colors py-2"
+                    href="{{ route('client.dashboard') }}">Área do Corredor</a>
+            @endauth
         </div>
     </header>
 
