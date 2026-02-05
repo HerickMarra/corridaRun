@@ -10,6 +10,7 @@ use App\Http\Controllers\DashboardController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/calendario', [App\Http\Controllers\CalendarController::class, 'index'])->name('calendar');
+Route::get('/seja-parceiro', [HomeController::class, 'partner'])->name('partner');
 Route::get('/event/{slug}', [EventController::class, 'show'])->name('events.show');
 
 // Auth Routes - Apenas para usuários não autenticados

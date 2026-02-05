@@ -180,8 +180,8 @@
                             <td class="px-8 py-6">
                                 @foreach($order->items as $item)
                                     <p class="text-xs font-bold text-slate-600 truncate max-w-[200px]">
-                                        {{ $item->category->event->name }}</p>
-                                    <p class="text-[9px] font-medium text-slate-400 italic">{{ $item->category->name }}</p>
+                                        {{ $item->category->event->name ?? 'Evento não encontrado' }}</p>
+                                    <p class="text-[9px] font-medium text-slate-400 italic">{{ $item->category->name ?? 'Categoria não encontrada' }}</p>
                                 @endforeach
                             </td>
                             <td class="px-8 py-6">

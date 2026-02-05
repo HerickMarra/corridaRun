@@ -50,13 +50,15 @@ class DashboardController extends Controller
             ->with('orderItem.category.event')
             ->get();
 
-        // Eventos passados (Minha Jornada) - eventos que o usuário participou e já aconteceram
+        // Eventos passados (Minha Jornada) - eventos que o usuário participou e já aconteceram há pelo menos 2 dias
         $pastEventsQuery = \App\Models\Event::whereHas('categories.orderItems.order', function ($query) use ($user) {
             $query->where('user_id', $user->id)
                 ->where('status', \App\Enums\OrderStatus::Paid);
         })
             ->where(function ($query) {
-                $query->where('event_date', '<', now())
+                // Evento deve ter acontecido há pelo menos 2 dias
+                $twoDaysAgo = now()->subDays(2);
+                $query->where('event_date', '<', $twoDaysAgo)
                     ->orWhere('status', 'closed');
             })
             ->with(['categories'])

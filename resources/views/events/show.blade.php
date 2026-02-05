@@ -66,7 +66,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-4">
+                    <!-- <div class="flex items-center gap-4">
                         <div class="size-12 rounded-2xl bg-slate-50 flex items-center justify-center text-primary">
                             <span class="material-symbols-outlined text-3xl">terrain</span>
                         </div>
@@ -74,16 +74,45 @@
                             <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Altimetria</p>
                             <p class="text-lg font-black italic">Moderada</p>
                         </div>
-                    </div>
+                    </div> -->
+                    @php
+                        $nutritionLabels = [
+                            'not_informed' => 'Não Informado',
+                            'none' => 'Não Fornecido',
+                            'partial' => 'Parcial',
+                            'complete' => 'Completo'
+                        ];
+                        $hydrationLabels = [
+                            'not_informed' => 'Não Informado',
+                            'none' => 'Não Fornecido',
+                            'partial' => 'Parcial',
+                            'complete' => 'Completo'
+                        ];
+                    @endphp
+                    
+                    @if($event->nutrition && $event->nutrition !== 'not_informed')
                     <div class="flex items-center gap-4">
                         <div class="size-12 rounded-2xl bg-slate-50 flex items-center justify-center text-primary">
-                            <span class="material-symbols-outlined text-3xl">water_full</span>
+                            <span class="material-symbols-outlined text-3xl">restaurant</span>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Alimentação</p>
+                            <p class="text-lg font-black italic">{{ $nutritionLabels[$event->nutrition] ?? 'Não Informado' }}</p>
+                        </div>
+                    </div>
+                    @endif
+                    
+                    @if($event->hydration && $event->hydration !== 'not_informed')
+                    <div class="flex items-center gap-4">
+                        <div class="size-12 rounded-2xl bg-slate-50 flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined text-3xl">water_drop</span>
                         </div>
                         <div>
                             <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Hidratação</p>
-                            <p class="text-lg font-black italic">Plena</p>
+                            <p class="text-lg font-black italic">{{ $hydrationLabels[$event->hydration] ?? 'Não Informado' }}</p>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
             

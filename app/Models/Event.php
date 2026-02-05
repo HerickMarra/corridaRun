@@ -27,6 +27,8 @@ class Event extends Model
         'banner_image',
         'terms_and_conditions',
         'regulation',
+        'nutrition',
+        'hydration',
     ];
 
     protected $casts = [

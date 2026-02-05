@@ -90,7 +90,8 @@
             <span class="text-xl font-bold tracking-widest uppercase">RUNPACE</span>
         </div>
 
-        <nav class="flex-grow mt-6">
+
+        <nav class="flex-grow mt-6 overflow-y-auto">
             @if(in_array(auth()->user()->role->value, ['super-admin', 'admin']))
                 <a href="{{ route('admin.dashboard') }}"
                     class="flex items-center gap-4 px-6 py-4 {{ request()->routeIs('admin.dashboard') ? 'sidebar-active' : 'text-white/70 hover:text-white' }}">

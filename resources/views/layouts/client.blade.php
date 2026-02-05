@@ -80,7 +80,10 @@
                         href="/">Eventos</a>
                     <a class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors"
                         href="{{ route('calendar') }}">Calendário</a>
-                    <a class="text-sm font-semibold text-primary" href="{{ route('client.dashboard') }}">Área do
+                    <a class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors"
+                        href="{{ route('partner') }}">Seja um Parceiro</a>
+                    <a class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors"
+                        href="{{ route('client.dashboard') }}">Área do
                         Corredor</a>
                 </nav>
             </div>

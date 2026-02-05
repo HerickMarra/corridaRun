@@ -16,6 +16,12 @@ class HomeController extends Controller
             ->orderBy('event_date', 'asc')
             ->get();
 
+
         return view('welcome', compact('events'));
+    }
+
+    public function partner()
+    {
+        return view('partner');
     }
 }

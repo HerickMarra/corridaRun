@@ -65,6 +65,8 @@ class RaceController extends Controller
             'custom_fields.*.options' => 'nullable|string',
             'custom_fields.*.is_required' => 'nullable|boolean',
             'regulation' => 'nullable|string',
+            'nutrition' => 'nullable|in:not_informed,none,partial,complete',
+            'hydration' => 'nullable|in:not_informed,none,partial,complete',
         ]);
 
 
@@ -98,6 +100,8 @@ class RaceController extends Controller
             'status' => $request->status,
             'banner_image' => $bannerPath,
             'regulation' => $request->regulation,
+            'nutrition' => $request->nutrition ?? 'not_informed',
+            'hydration' => $request->hydration ?? 'not_informed',
         ]);
 
         foreach ($request->categories as $index => $categoryData) {
@@ -195,6 +199,8 @@ class RaceController extends Controller
             'coupons.*.usage_limit' => 'nullable|integer|min:1',
             'coupons.*.is_active' => 'nullable|boolean',
             'regulation' => 'nullable|string',
+            'nutrition' => 'nullable|in:not_informed,none,partial,complete',
+            'hydration' => 'nullable|in:not_informed,none,partial,complete',
         ]);
 
 
@@ -215,6 +221,8 @@ class RaceController extends Controller
             'state' => $request->state,
             'max_participants' => $request->max_participants,
             'regulation' => $request->regulation,
+            'nutrition' => $request->nutrition ?? 'not_informed',
+            'hydration' => $request->hydration ?? 'not_informed',
         ]);
 
         // Sync Categories

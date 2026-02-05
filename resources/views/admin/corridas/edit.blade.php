@@ -498,6 +498,36 @@
                     </div>
                 </div>
 
+                <!-- Alimentação e Hidratação -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="text-lg font-black uppercase italic tracking-tight mb-6 border-b border-slate-50 pb-4">
+                        Alimentação & Hidratação</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Alimentação</label>
+                            <select name="nutrition"
+                                class="w-full bg-slate-50 border-transparent rounded-xl px-5 py-4 text-sm font-bold focus:bg-white transition-all cursor-pointer">
+                                <option value="not_informed" {{ $event->nutrition == 'not_informed' ? 'selected' : '' }}>Não Informado</option>
+                                <option value="none" {{ $event->nutrition == 'none' ? 'selected' : '' }}>Não Fornecido</option>
+                                <option value="partial" {{ $event->nutrition == 'partial' ? 'selected' : '' }}>Parcial</option>
+                                <option value="complete" {{ $event->nutrition == 'complete' ? 'selected' : '' }}>Completo</option>
+                            </select>
+                            <p class="text-[9px] text-slate-400 mt-2 font-medium">Tipo de alimentação disponível durante a prova.</p>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Hidratação</label>
+                            <select name="hydration"
+                                class="w-full bg-slate-50 border-transparent rounded-xl px-5 py-4 text-sm font-bold focus:bg-white transition-all cursor-pointer">
+                                <option value="not_informed" {{ $event->hydration == 'not_informed' ? 'selected' : '' }}>Não Informado</option>
+                                <option value="none" {{ $event->hydration == 'none' ? 'selected' : '' }}>Não Fornecido</option>
+                                <option value="partial" {{ $event->hydration == 'partial' ? 'selected' : '' }}>Parcial</option>
+                                <option value="complete" {{ $event->hydration == 'complete' ? 'selected' : '' }}>Completo</option>
+                            </select>
+                            <p class="text-[9px] text-slate-400 mt-2 font-medium">Tipo de hidratação disponível durante a prova.</p>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
                     <h3 class="text-lg font-black uppercase italic tracking-tight mb-6 border-b border-slate-50 pb-4">Status da Corrida</h3>
                     <div class="space-y-1.5">
