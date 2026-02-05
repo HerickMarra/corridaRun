@@ -40,10 +40,31 @@ class DashboardController extends Controller
         $user = auth()->user();
 
         // Inscrições ativas (Tickets que pertencem a ordens do usuário)
+        // Apenas eventos que ainda não aconteceram OU aconteceram há no máximo 2 dias
         $subscriptions = \App\Models\Ticket::whereHas('orderItem.order', function ($query) use ($user) {
             $query->where('user_id', $user->id);
-        })->with('orderItem.category.event')->get();
+        })
+            ->whereHas('orderItem.category.event', function ($query) {
+                $query->where('event_date', '>=', now()->subDays(2)->startOfDay());
+            })
+            ->with('orderItem.category.event')
+            ->get();
 
-        return view('client.dashboard', compact('subscriptions', 'user'));
+        // Eventos passados (Minha Jornada) - eventos que o usuário participou e já aconteceram
+        $pastEventsQuery = \App\Models\Event::whereHas('categories.orderItems.order', function ($query) use ($user) {
+            $query->where('user_id', $user->id)
+                ->where('status', \App\Enums\OrderStatus::Paid);
+        })
+            ->where(function ($query) {
+                $query->where('event_date', '<', now())
+                    ->orWhere('status', 'closed');
+            })
+            ->with(['categories'])
+            ->orderBy('event_date', 'desc');
+
+        $totalPastEvents = $pastEventsQuery->count();
+        $pastEvents = $pastEventsQuery->limit(5)->get();
+
+        return view('client.dashboard', compact('subscriptions', 'user', 'pastEvents', 'totalPastEvents'));
     }
 }

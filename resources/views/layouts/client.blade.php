@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>@yield('title', 'CORREDOR HUB') - {{ config('app.name', 'Run Platform') }}</title>
+    <title>@yield('title', 'CORREDOR HUB') - Sisters Esportes</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap"
         rel="stylesheet" />
@@ -73,14 +73,15 @@
                             </path>
                         </svg>
                     </div>
-                    <h2 class="text-xl font-bold tracking-tight text-secondary uppercase italic">Run Platform</h2>
+                    <h2 class="text-xl font-bold tracking-tight text-secondary uppercase italic">Sisters Esportes</h2>
                 </a>
                 <nav class="hidden md:flex items-center gap-8">
                     <a class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors"
                         href="/">Eventos</a>
                     <a class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors"
-                        href="#">Resultados</a>
-                    <a class="text-sm font-semibold text-primary" href="{{ route('client.dashboard') }}">Minha Área</a>
+                        href="{{ route('calendar') }}">Calendário</a>
+                    <a class="text-sm font-semibold text-primary" href="{{ route('client.dashboard') }}">Área do
+                        Corredor</a>
                 </nav>
             </div>
             <div class="flex items-center gap-6">
@@ -122,7 +123,7 @@
                             </path>
                         </svg>
                     </div>
-                    <h2 class="text-2xl font-black tracking-tight text-secondary uppercase italic">Run Platform</h2>
+                    <h2 class="text-2xl font-black tracking-tight text-secondary uppercase italic">Sisters Esportes</h2>
                 </div>
                 <p class="text-slate-500 font-medium max-w-sm mb-10 leading-relaxed">
                     A maior comunidade de corredores do Brasil. Performance, tecnologia e conexões reais em cada

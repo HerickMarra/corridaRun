@@ -16,6 +16,45 @@
         @endif
     </div>
 
+    <!-- Filtros e Busca -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-6">
+        <form method="GET" action="{{ route('admin.corridas.index') }}" class="flex flex-col md:flex-row gap-4">
+            <!-- Busca por nome -->
+            <div class="flex-1">
+                <label class="text-[10px] font-black uppercase text-slate-400 tracking-widest block mb-2">Buscar por
+                    nome</label>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Digite o nome da corrida..."
+                    class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+            </div>
+
+            <!-- Filtro por status -->
+            <div class="md:w-64">
+                <label class="text-[10px] font-black uppercase text-slate-400 tracking-widest block mb-2">Status</label>
+                <select name="status"
+                    class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+                    <option value="">Todos os status</option>
+                    <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Rascunho</option>
+                    <option value="published" {{ request('status') == 'published' ? 'selected' : '' }}>Publicado</option>
+                    <option value="closed" {{ request('status') == 'closed' ? 'selected' : '' }}>Encerrado</option>
+                </select>
+            </div>
+
+            <!-- Botões -->
+            <div class="flex gap-2 md:self-end">
+                <button type="submit"
+                    class="bg-primary text-white px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all">
+                    Filtrar
+                </button>
+                @if(request('search') || request('status'))
+                    <a href="{{ route('admin.corridas.index') }}"
+                        class="bg-slate-100 text-slate-600 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-200 transition-all">
+                        Limpar
+                    </a>
+                @endif
+            </div>
+        </form>
+    </div>
+
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
         <div class="p-0 overflow-x-auto">
             <table class="w-full text-left border-collapse">
@@ -124,4 +163,11 @@
             </table>
         </div>
     </div>
+
+    <!-- Paginação -->
+    @if($events->hasPages())
+        <div class="mt-6">
+            {{ $events->links() }}
+        </div>
+    @endif
 @endsection

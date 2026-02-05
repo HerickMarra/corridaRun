@@ -8,17 +8,32 @@ use Illuminate\Http\Request;
 
 class RaceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
-        $query = Event::withCount('categories')->latest();
+        $query = Event::withCount('categories');
 
         // O organizador vê apenas as provas vinculadas a ele
         if ($user->role === \App\Enums\UserRole::Organizer) {
             $query->whereIn('id', $user->managedEvents->pluck('id'));
         }
 
-        $events = $query->get();
+        // Busca por nome
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        // Filtro por status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Ordenação - mais recentes primeiro
+        $query->latest('created_at');
+
+        // Paginação
+        $events = $query->paginate(15)->withQueryString();
+
         return view('admin.corridas.index', compact('events'));
     }
 
@@ -52,14 +67,26 @@ class RaceController extends Controller
             'regulation' => 'nullable|string',
         ]);
 
+
+
         $bannerPath = 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e';
         if ($request->hasFile('banner_image')) {
             $bannerPath = '/storage/' . $request->file('banner_image')->store('events', 'public');
         }
 
+        // Gerar slug único
+        $baseSlug = \Illuminate\Support\Str::slug($request->name);
+        $slug = $baseSlug;
+        $counter = 1;
+
+        while (Event::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $counter;
+            $counter++;
+        }
+
         $event = Event::create([
             'name' => $request->name,
-            'slug' => \Illuminate\Support\Str::slug($request->name),
+            'slug' => $slug,
             'description' => $request->description,
             'event_date' => $request->event_date,
             'registration_start' => $request->registration_start,
@@ -80,7 +107,6 @@ class RaceController extends Controller
                 'distance' => $categoryData['distance'],
                 'price' => $categoryData['price'],
                 'max_participants' => $categoryData['max_participants'],
-                'available_tickets' => $categoryData['max_participants'],
                 'status' => 'active',
                 'sort_order' => $index,
                 'is_public' => $isPublic,
@@ -170,6 +196,7 @@ class RaceController extends Controller
             'coupons.*.is_active' => 'nullable|boolean',
             'regulation' => 'nullable|string',
         ]);
+
 
         if ($request->hasFile('banner_image')) {
             $bannerPath = '/storage/' . $request->file('banner_image')->store('events', 'public');

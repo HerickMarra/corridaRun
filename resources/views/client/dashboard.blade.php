@@ -6,8 +6,22 @@
     <section class="mb-16">
         <span class="text-primary font-black uppercase tracking-[0.3em] text-[10px] mb-3 block">Membro Premium</span>
         <h1 class="text-5xl md:text-6xl font-black text-secondary uppercase italic leading-[0.95] tracking-tighter">
-            Olá, {{ explode(' ', auth()->user()->name)[0] }},<br />sua próxima meta <span class="text-primary">está
-                próxima.</span>
+            Olá, {{ explode(' ', auth()->user()->name)[0] }},<br />
+            @php
+                $hasUpcoming = $subscriptions->count() > 0;
+                $hasPast = $totalPastEvents > 0;
+            @endphp
+            
+            @if(!$hasUpcoming && !$hasPast)
+                {{-- Nunca correu --}}
+                vamos quebrar a <span class="text-primary">primeira meta?</span>
+            @elseif($hasUpcoming)
+                {{-- Tem corridas próximas --}}
+                sua próxima meta <span class="text-primary">está próxima.</span>
+            @else
+                {{-- Já correu mas não tem próximas --}}
+                hora de <span class="text-primary">superar limites</span> novamente!
+            @endif
         </h1>
     </section>
 
@@ -77,34 +91,65 @@
                 <div class="relative pl-12">
                     <div class="absolute left-[23px] top-0 bottom-0 w-px timeline-line"></div>
                     <div class="space-y-12">
-                        <div class="relative group">
-                            <div
-                                class="absolute -left-[54px] top-0 size-11 bg-white border-2 border-primary rounded-full flex items-center justify-center z-10">
-                                <span class="material-symbols-outlined text-primary text-xl">workspace_premium</span>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                                <div class="aspect-[16/9] rounded-2xl overflow-hidden shadow-lg">
-                                    <img alt="Past Race"
-                                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRtGZ2mrAs-saSWAihjeRaTnwzFCoItB2zAzdDo3KT6l1tgpsihCTyK9v8xvnFcvnO0uUbnFbCBbaQjVYkZfJzf1ZhvZoxN3DsvfIywZghgWRppvQe09hSTEeuiPbkj5tSiXwDWJBMZimfTy1Wa9vdM1ZkuD-kpcUN5Y0uMdGJkXzO4JSduJ8KrNrTIfL1H-IjAMNy1KnDy5hfER4h8fzA8lAoD3y4ZmuWBSlc2nYuVrYc6B0_xGXKqwPaYwapofwJraGuKw4aNcA" />
+                        @forelse($pastEvents as $event)
+                            <div class="relative group">
+                                <div
+                                    class="absolute -left-[54px] top-0 size-11 bg-white border-2 border-primary rounded-full flex items-center justify-center z-10">
+                                    <span class="material-symbols-outlined text-primary text-xl">workspace_premium</span>
                                 </div>
-                                <div>
-                                    <p class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-2">Dezembro
-                                        2023</p>
-                                    <h4 class="text-xl font-black uppercase italic mb-2">Curitiba Marathon</h4>
-                                    <p class="text-slate-500 text-sm mb-4 leading-relaxed">Sua primeira maratona completada
-                                        em 03:45:12. Uma performance excepcional sob chuva.</p>
-                                    <div class="flex gap-4">
-                                        <span class="text-[10px] font-black bg-slate-100 px-3 py-1 rounded uppercase">Pace
-                                            5'20"</span>
-                                        <span class="text-[10px] font-black bg-slate-100 px-3 py-1 rounded uppercase">Rank
-                                            #142</span>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                                    <div class="aspect-[16/9] rounded-2xl overflow-hidden shadow-lg">
+                                        @php
+                                            // Se começa com http/https é URL externa, senão é caminho local
+                                            $imageUrl = $event->banner_image 
+                                                ? (str_starts_with($event->banner_image, 'http') 
+                                                    ? $event->banner_image 
+                                                    : asset($event->banner_image))
+                                                : 'https://via.placeholder.com/800x450?text=' . urlencode($event->name);
+                                        @endphp
+                                        <img alt="{{ $event->name }}"
+                                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                            src="{{ $imageUrl }}" />
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-2">
+                                            {{ $event->event_date?->translatedFormat('F Y') ?? 'Data não disponível' }}
+                                        </p>
+                                        <h4 class="text-xl font-black uppercase italic mb-2">{{ $event->name }}</h4>
+                                        <p class="text-slate-500 text-sm mb-4 leading-relaxed">
+                                            {{ $event->description ? Str::limit($event->description, 100) : 'Corrida concluída com sucesso!' }}
+                                        </p>
+                                        <div class="flex gap-4">
+                                            <span class="text-[10px] font-black bg-slate-100 px-3 py-1 rounded uppercase">
+                                                {{ $event->event_date?->format('d/m/Y') ?? 'N/A' }}
+                                            </span>
+                                            @if($event->location)
+                                                <span class="text-[10px] font-black bg-slate-100 px-3 py-1 rounded uppercase">
+                                                    {{ $event->location }}
+                                                </span>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        @empty
+                            <div class="text-center py-12">
+                                <span class="material-symbols-outlined text-slate-300 text-6xl mb-4">directions_run</span>
+                                <p class="text-slate-400 font-medium">Nenhuma corrida concluída ainda.</p>
+                                <p class="text-slate-400 text-sm">Suas conquistas aparecerão aqui!</p>
+                            </div>
+                        @endforelse
                     </div>
                 </div>
+
+                @if($totalPastEvents > 5)
+                    <div class="text-center mt-8">
+                        <a href="#" class="inline-flex items-center gap-2 text-primary hover:text-blue-700 font-bold text-sm transition-colors">
+                            <span>Ver todas as {{ $totalPastEvents }} corridas realizadas</span>
+                            <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                        </a>
+                    </div>
+                @endif
             </div>
         </div>
 
