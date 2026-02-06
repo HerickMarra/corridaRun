@@ -28,32 +28,62 @@ class AsaasService
         }
 
         // Try to find by CPF/Email first
-        $response = $this->request()->get("/customers", [
-            'cpfCnpj' => $user->cpf,
-        ]);
+        try {
+            $response = $this->request()->get("/customers", [
+                'cpfCnpj' => $user->cpf,
+            ]);
 
-        if ($response->successful() && !empty($response->json('data'))) {
-            $customer = $response->json('data')[0];
-            $user->update(['asaas_customer_id' => $customer['id']]);
-            return $customer['id'];
+            if ($response->successful() && !empty($response->json('data'))) {
+                $customer = $response->json('data')[0];
+                $user->update(['asaas_customer_id' => $customer['id']]);
+                Log::info('Asaas Customer Found', ['customer_id' => $customer['id'], 'user_id' => $user->id]);
+                return $customer['id'];
+            }
+        } catch (\Exception $e) {
+            Log::warning('Asaas Find Customer Error', ['user_id' => $user->id, 'error' => $e->getMessage()]);
         }
 
         // Create new customer
-        $response = $this->request()->post("/customers", [
+        $customerData = [
             'name' => $user->name,
             'email' => $user->email,
             'cpfCnpj' => $user->cpf,
-            'mobilePhone' => $user->phone, // Ensure user model has phone or handle this
-        ]);
+        ];
+
+        // Adicionar telefone apenas se existir
+        if ($user->phone) {
+            $customerData['mobilePhone'] = $user->phone;
+        }
+
+        Log::info('Creating Asaas Customer', ['user_id' => $user->id, 'data' => $customerData]);
+
+        $response = $this->request()->post("/customers", $customerData);
 
         if ($response->successful()) {
             $id = $response->json('id');
             $user->update(['asaas_customer_id' => $id]);
+            Log::info('Asaas Customer Created', ['customer_id' => $id, 'user_id' => $user->id]);
             return $id;
         }
 
-        Log::error('Asaas Create Customer Error', ['user_id' => $user->id, 'response' => $response->json()]);
-        return null; // Handle error gracefully in controller
+        // Log detalhado do erro
+        $errorData = [
+            'user_id' => $user->id,
+            'status' => $response->status(),
+            'response' => $response->json(),
+            'body' => $response->body(),
+        ];
+
+        Log::error('Asaas Create Customer Error', $errorData);
+
+        // Lançar exceção com mensagem mais descritiva
+        $errorMessage = 'Erro ao criar cliente no Asaas';
+        if ($response->json('errors')) {
+            $errors = $response->json('errors');
+            $errorMessage .= ': ' . json_encode($errors);
+        }
+
+        throw new \Exception($errorMessage);
     }
 
     /**
