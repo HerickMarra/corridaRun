@@ -45,7 +45,25 @@ class CheckoutController extends Controller
     {
         $user = auth()->user();
 
-        return \DB::transaction(function () use ($request, $category, $user, $asaasService) {
+        // Validar CPF
+        $request->validate([
+            'payment_method' => 'required|in:pix,boleto,credit_card',
+            'cpf' => 'required|string|size:14', // Formato: 000.000.000-00
+        ]);
+
+        // Limpar e validar CPF
+        $cpf = preg_replace('/\D/', '', $request->cpf);
+
+        if (!$this->isValidCPF($cpf)) {
+            return back()->withErrors(['cpf' => 'CPF inválido. Por favor, insira um CPF válido.'])->withInput();
+        }
+
+        // Atualizar CPF do usuário se diferente
+        if ($user->cpf !== $cpf) {
+            $user->update(['cpf' => $cpf]);
+        }
+
+        return \DB::transaction(function () use ($request, $category, $user, $asaasService, $cpf) {
             // Reload category with lock to prevent race conditions
             $category = Category::where('id', $category->id)->lockForUpdate()->first();
 
@@ -88,7 +106,7 @@ class CheckoutController extends Controller
             $orderItem = $order->items()->create([
                 'category_id' => $category->id,
                 'participant_name' => $user->name,
-                'participant_cpf' => $request->cpf ?? $user->cpf ?? '000.000.000-00',
+                'participant_cpf' => $cpf,
                 'participant_email' => $user->email,
                 'participant_birth_date' => $user->birth_date ?? now()->subYears(20),
                 'price' => $finalPrice,
@@ -261,5 +279,46 @@ class CheckoutController extends Controller
             'new_service_fee' => $newServiceFee,
             'new_total' => $newPrice + $newServiceFee,
         ]);
+    }
+
+    /**
+     * Validate Brazilian CPF
+     */
+    private function isValidCPF($cpf)
+    {
+        $cpf = preg_replace('/\D/', '', $cpf);
+
+        if (strlen($cpf) != 11) {
+            return false;
+        }
+
+        // Check if all digits are the same
+        if (preg_match('/^(\d)\1+$/', $cpf)) {
+            return false;
+        }
+
+        // Validate first digit
+        $sum = 0;
+        for ($i = 0; $i < 9; $i++) {
+            $sum += intval($cpf[$i]) * (10 - $i);
+        }
+        $digit = 11 - ($sum % 11);
+        if ($digit >= 10)
+            $digit = 0;
+        if ($digit != intval($cpf[9]))
+            return false;
+
+        // Validate second digit
+        $sum = 0;
+        for ($i = 0; $i < 10; $i++) {
+            $sum += intval($cpf[$i]) * (11 - $i);
+        }
+        $digit = 11 - ($sum % 11);
+        if ($digit >= 10)
+            $digit = 0;
+        if ($digit != intval($cpf[10]))
+            return false;
+
+        return true;
     }
 }

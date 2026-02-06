@@ -40,19 +40,14 @@
                                         readonly type="email" value="{{ auth()->user()->email }}" />
                                 </div>
                                 <div class="space-y-1.5">
-                                    <label
-                                        class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">CPF</label>
-                                    <input name="cpf"
+                                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">CPF
+                                        <span class="text-red-500">*</span></label>
+                                    <input name="cpf" id="cpf-input" required
                                         class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all"
-                                        placeholder="000.000.000-00" type="text" value="{{ auth()->user()->cpf }}" />
-                                </div>
-                                <div class="space-y-1.5">
-                                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Data
-                                        de Nascimento</label>
-                                    <input name="birth_date"
-                                        class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all"
-                                        placeholder="DD/MM/AAAA" type="text"
-                                        value="{{ auth()->user()->birth_date && auth()->user()->birth_date instanceof \Carbon\Carbon ? auth()->user()->birth_date->format('d/m/Y') : '' }}" />
+                                        placeholder="000.000.000-00" type="text" value="{{ auth()->user()->cpf }}"
+                                        maxlength="14" />
+                                    <p class="text-xs text-red-500 hidden" id="cpf-error">CPF inválido. Por favor, insira um
+                                        CPF válido.</p>
                                 </div>
                             </div>
                         </section>
@@ -406,4 +401,83 @@
             color: #0052FF;
         }
     </style>
+
+    <script>
+        // Máscara de CPF
+        const cpfInput = document.getElementById('cpf-input');
+        const cpfError = document.getElementById('cpf-error');
+        const checkoutForm = document.getElementById('checkout-form');
+
+        if (cpfInput) {
+            cpfInput.addEventListener('input', function (e) {
+                let value = e.target.value.replace(/\D/g, '');
+
+                if (value.length <= 11) {
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                }
+
+                e.target.value = value;
+
+                // Validar CPF em tempo real
+                if (value.length === 14) {
+                    const isValid = validateCPF(value.replace(/\D/g, ''));
+                    if (!isValid) {
+                        cpfError.classList.remove('hidden');
+                        cpfInput.classList.add('border-red-500');
+                    } else {
+                        cpfError.classList.add('hidden');
+                        cpfInput.classList.remove('border-red-500');
+                    }
+                }
+            });
+        }
+
+        // Validação de CPF
+        function validateCPF(cpf) {
+            cpf = cpf.replace(/\D/g, '');
+
+            if (cpf.length !== 11) return false;
+
+            // Verifica se todos os dígitos são iguais
+            if (/^(\d)\1+$/.test(cpf)) return false;
+
+            // Validação do primeiro dígito verificador
+            let sum = 0;
+            for (let i = 0; i < 9; i++) {
+                sum += parseInt(cpf.charAt(i)) * (10 - i);
+            }
+            let digit = 11 - (sum % 11);
+            if (digit >= 10) digit = 0;
+            if (digit !== parseInt(cpf.charAt(9))) return false;
+
+            // Validação do segundo dígito verificador
+            sum = 0;
+            for (let i = 0; i < 10; i++) {
+                sum += parseInt(cpf.charAt(i)) * (11 - i);
+            }
+            digit = 11 - (sum % 11);
+            if (digit >= 10) digit = 0;
+            if (digit !== parseInt(cpf.charAt(10))) return false;
+
+            return true;
+        }
+
+        // Validar antes de submeter
+        if (checkoutForm) {
+            checkoutForm.addEventListener('submit', function (e) {
+                const cpfValue = cpfInput.value.replace(/\D/g, '');
+
+                if (!validateCPF(cpfValue)) {
+                    e.preventDefault();
+                    cpfError.classList.remove('hidden');
+                    cpfInput.classList.add('border-red-500');
+                    cpfInput.focus();
+                    alert('Por favor, insira um CPF válido antes de continuar.');
+                    return false;
+                }
+            });
+        }
+    </script>
 @endpush
