@@ -115,9 +115,21 @@ class AsaasService
     {
         $response = $this->request()->get("/payments/{$paymentId}/pixQrCode");
 
+        Log::info('Asaas Pix QR Code Request', [
+            'payment_id' => $paymentId,
+            'status' => $response->status(),
+            'response' => $response->json()
+        ]);
+
         if ($response->successful()) {
             return $response->json();
         }
+
+        Log::warning('Asaas Pix QR Code Failed', [
+            'payment_id' => $paymentId,
+            'status' => $response->status(),
+            'error' => $response->json()
+        ]);
 
         return null;
     }

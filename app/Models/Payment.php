@@ -19,6 +19,10 @@ class Payment extends Model
         'payment_method',
         'paid_at',
         'metadata',
+        'asaas_payment_id',
+        'invoice_url',
+        'pix_qr_code',
+        'pix_qr_code_base64',
     ];
 
     protected $casts = [

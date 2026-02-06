@@ -41,8 +41,16 @@ class DashboardController extends Controller
 
         // Inscrições ativas (Tickets que pertencem a ordens do usuário)
         // Apenas eventos que ainda não aconteceram OU aconteceram há no máximo 2 dias
+        // E que tenham pagamento confirmado (status Paid ou Approved)
         $subscriptions = \App\Models\Ticket::whereHas('orderItem.order', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
+            $query->where('user_id', $user->id)
+                ->where(function ($q) {
+                    // Apenas ordens pagas ou com pagamento aprovado
+                    $q->where('status', \App\Enums\OrderStatus::Paid)
+                        ->orWhereHas('payments', function ($paymentQuery) {
+                        $paymentQuery->where('status', \App\Enums\PaymentStatus::Approved);
+                    });
+                });
         })
             ->whereHas('orderItem.category.event', function ($query) {
                 $query->where('event_date', '>=', now()->subDays(2)->startOfDay());
@@ -67,6 +75,17 @@ class DashboardController extends Controller
         $totalPastEvents = $pastEventsQuery->count();
         $pastEvents = $pastEventsQuery->limit(5)->get();
 
-        return view('client.dashboard', compact('subscriptions', 'user', 'pastEvents', 'totalPastEvents'));
+        // Pedidos pendentes de pagamento (últimas 24 horas)
+        $pendingOrders = \App\Models\Order::where('user_id', $user->id)
+            ->where('status', \App\Enums\OrderStatus::Pending)
+            ->whereHas('payments', function ($query) {
+                $query->where('payment_method', 'pix')
+                    ->where('created_at', '>=', now()->subMinutes(15)); // Apenas QR Codes não expirados
+            })
+            ->with(['items.category.event', 'payments'])
+            ->latest()
+            ->get();
+
+        return view('client.dashboard', compact('subscriptions', 'user', 'pastEvents', 'totalPastEvents', 'pendingOrders'));
     }
 }

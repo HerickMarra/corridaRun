@@ -7,15 +7,15 @@
         <div class="max-w-[1000px] mx-auto">
             <div class="text-center mb-16 space-y-6">
                 @if($order->status === \App\Enums\OrderStatus::Pending)
-                    <div
-                        class="inline-flex items-center justify-center size-24 bg-yellow-50 text-yellow-500 rounded-full mb-4">
+                    <div class="inline-flex items-center justify-center size-24 bg-yellow-50 text-yellow-500 rounded-full mb-4">
                         <span class="material-symbols-outlined text-5xl">pending</span>
                     </div>
                     <h1 class="text-4xl md:text-5xl font-black uppercase italic tracking-tighter leading-none">
                         Aguardando <span class="text-primary">Pagamento</span>
                     </h1>
                     <p class="text-slate-500 font-medium max-w-lg mx-auto">
-                        Quase lá, {{ explode(' ', auth()->user()->name)[0] }}! Realize o pagamento para confirmar sua inscrição na 
+                        Quase lá, {{ explode(' ', auth()->user()->name)[0] }}! Realize o pagamento para confirmar sua inscrição
+                        na
                         {{ $order->items->first()->category->event->name }}.
                     </p>
                 @else
@@ -33,32 +33,69 @@
                 @endif
             </div>
 
-            @php
-                $payment = $order->payments->first();
-            @endphp
+
 
             @if($order->status === \App\Enums\OrderStatus::Pending && $payment)
+                @php
+                    $paymentCreatedAt = $payment->created_at;
+                    $expirationTime = $paymentCreatedAt->addMinutes(15);
+                    $isExpired = now()->greaterThan($expirationTime);
+                    $minutesRemaining = !$isExpired ? now()->diffInMinutes($expirationTime, false) : 0;
+                @endphp
+
                 <div class="mb-12">
-                   @if($payment->payment_method === 'pix' && $payment->pix_qr_code_base64)
-                        <div class="bg-white rounded-3xl p-8 card-shadow border-2 border-primary/20 max-w-md mx-auto text-center">
-                            <h3 class="text-lg font-black uppercase italic mb-6">Escaneie o QR Code</h3>
-                            <img src="data:image/png;base64,{{ $payment->pix_qr_code_base64 }}" alt="Pix QR Code" class="w-64 h-64 mx-auto mb-6">
-                            <div class="bg-slate-50 p-4 rounded-xl break-all text-xs font-mono text-slate-500 mb-4 select-all">
-                                {{ $payment->pix_qr_code }}
+                    @if($payment->payment_method === 'pix' && $payment->pix_qr_code_base64)
+                        @if($isExpired)
+                            {{-- QR Code Expirado --}}
+                            <div class="bg-white rounded-3xl p-8 card-shadow border-2 border-red-200 max-w-md mx-auto text-center">
+                                <div class="inline-flex items-center justify-center size-16 bg-red-50 text-red-500 rounded-full mb-4">
+                                    <span class="material-symbols-outlined text-4xl">schedule</span>
+                                </div>
+                                <h3 class="text-lg font-black uppercase italic mb-4 text-red-600">QR Code Expirado</h3>
+                                <p class="text-slate-600 text-sm mb-6">
+                                    O QR Code Pix expirou após 15 minutos. Por favor, faça um novo pedido para gerar um novo código de
+                                    pagamento.
+                                </p>
+                                <a href="{{ route('events.show', $order->items->first()->category->event->slug) }}"
+                                    class="bg-primary text-white px-8 py-4 rounded-full font-bold uppercase tracking-widest shadow-lg hover:bg-primary/90 transition-all inline-block">
+                                    Fazer Novo Pedido
+                                </a>
                             </div>
-                            <button onclick="navigator.clipboard.writeText('{{ $payment->pix_qr_code }}'); alert('Código copiado!')" class="text-primary font-bold uppercase text-xs hover:underline">
-                                Copiar Código Pix
-                            </button>
-                        </div>
-                   @elseif($payment->invoice_url)
+                        @else
+                            {{-- QR Code Ativo --}}
+                            <div class="bg-white rounded-3xl p-8 card-shadow border-2 border-primary/20 max-w-md mx-auto text-center"
+                                x-data="pixTimer({{ $expirationTime->timestamp }})" x-init="startTimer()">
+
+                                {{-- Contador de Tempo --}}
+                                <div class="mb-4 p-3 bg-yellow-50 rounded-xl border border-yellow-200">
+                                    <p class="text-xs font-bold uppercase tracking-widest text-yellow-700 mb-1">Tempo Restante</p>
+                                    <p class="text-2xl font-black text-yellow-600" x-text="timeRemaining"></p>
+                                </div>
+
+                                <h3 class="text-lg font-black uppercase italic mb-6">Escaneie o QR Code</h3>
+                                <img src="data:image/png;base64,{{ $payment->pix_qr_code_base64 }}" alt="Pix QR Code"
+                                    class="w-64 h-64 mx-auto mb-6">
+                                <div class="bg-slate-50 p-4 rounded-xl break-all text-xs font-mono text-slate-500 mb-4 select-all">
+                                    {{ $payment->pix_qr_code }}
+                                </div>
+                                <button onclick="navigator.clipboard.writeText('{{ $payment->pix_qr_code }}'); alert('Código copiado!')"
+                                    class="text-primary font-bold uppercase text-xs hover:underline">
+                                    Copiar Código Pix
+                                </button>
+                            </div>
+                        @endif
+                    @elseif($payment->invoice_url)
                         <div class="bg-white rounded-3xl p-8 card-shadow border-2 border-primary/20 max-w-md mx-auto text-center">
-                             <h3 class="text-lg font-black uppercase italic mb-6">Pagamento via {{ ucfirst($payment->payment_method) }}</h3>
-                             <p class="text-slate-500 text-sm mb-6">Clique no botão abaixo para acessar o link de pagamento.</p>
-                             <a href="{{ $payment->invoice_url }}" target="_blank" class="bg-primary text-white px-8 py-4 rounded-full font-bold uppercase tracking-widest shadow-lg hover:bg-primary/90 transition-all">
+                            <h3 class="text-lg font-black uppercase italic mb-6">Pagamento via
+                                {{ ucfirst($payment->payment_method) }}
+                            </h3>
+                            <p class="text-slate-500 text-sm mb-6">Clique no botão abaixo para acessar o link de pagamento.</p>
+                            <a href="{{ $payment->invoice_url }}" target="_blank"
+                                class="bg-primary text-white px-8 py-4 rounded-full font-bold uppercase tracking-widest shadow-lg hover:bg-primary/90 transition-all">
                                 Pagar Agora
-                             </a>
+                            </a>
                         </div>
-                   @endif
+                    @endif
                 </div>
             @endif
 
@@ -78,9 +115,11 @@
                                 <div class="flex-1 space-y-6">
                                     <div>
                                         <h2 class="text-2xl font-black uppercase italic tracking-tight mb-1">
-                                            {{ $item->category->event->name }}</h2>
+                                            {{ $item->category->event->name }}
+                                        </h2>
                                         <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Kit
-                                            {{ $item->category->name }} ({{ $item->category->distance }})</p>
+                                            {{ $item->category->name }} ({{ $item->category->distance }})
+                                        </p>
                                     </div>
                                     <div class="grid grid-cols-2 gap-y-6 gap-x-4">
                                         <div>
@@ -88,7 +127,8 @@
                                                 class="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-1">Data
                                                 do Evento</span>
                                             <p class="text-sm font-bold italic">
-                                                {{ $item->category->event->event_date->translatedFormat('d \d\e F, Y') }}</p>
+                                                {{ $item->category->event->event_date->translatedFormat('d \d\e F, Y') }}
+                                            </p>
                                         </div>
                                         <div>
                                             <span
@@ -160,4 +200,88 @@
             </div>
         </div>
     </main>
+
+    <script>
+        function pixTimer(expirationTimestamp) {
+            return {
+                timeRemaining: '',
+                interval: null,
+
+                startTimer() {
+                    this.updateTimer();
+                    this.interval = setInterval(() => {
+                        this.updateTimer();
+                    }, 1000);
+                },
+
+                updateTimer() {
+                    const now = Math.floor(Date.now() / 1000);
+                    const secondsLeft = expirationTimestamp - now;
+
+                    if (secondsLeft <= 0) {
+                        this.timeRemaining = 'Expirado';
+                        clearInterval(this.interval);
+                        // Recarregar a página para mostrar a mensagem de expirado
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                        return;
+                    }
+
+                    const minutes = Math.floor(secondsLeft / 60);
+                    const seconds = secondsLeft % 60;
+                    this.timeRemaining = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+            }
+        }
+
+        // Verificador de pagamento Pix
+        @if($order->status === \App\Enums\OrderStatus::Pending && $payment && $payment->payment_method === 'pix')
+            let paymentCheckInterval;
+            let checkCount = 0;
+            const maxChecks = 180; // 15 minutos (180 checks * 5 segundos)
+
+            function checkPaymentStatus() {
+                checkCount++;
+
+                // Parar após 15 minutos
+                if (checkCount > maxChecks) {
+                    clearInterval(paymentCheckInterval);
+                    console.log('Verificação de pagamento encerrada após 15 minutos');
+                    return;
+                }
+
+                fetch('{{ route('checkout.payment.status', $order->id) }}', {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Status do pagamento:', data);
+
+                        if (data.is_paid) {
+                            clearInterval(paymentCheckInterval);
+
+                            // Mostrar mensagem de sucesso
+                            alert('🎉 Pagamento confirmado! Redirecionando para o dashboard...');
+
+                            // Redirecionar para o dashboard
+                            window.location.href = '{{ route('client.dashboard') }}';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao verificar pagamento:', error);
+                    });
+            }
+
+            // Iniciar verificação a cada 5 segundos
+            paymentCheckInterval = setInterval(checkPaymentStatus, 5000);
+
+            // Primeira verificação imediata
+            checkPaymentStatus();
+        @endif
+    </script>
 @endsection

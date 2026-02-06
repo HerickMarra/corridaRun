@@ -25,6 +25,60 @@
         </h1>
     </section>
 
+    {{-- Alerta de Pagamentos Pendentes --}}
+    @if($pendingOrders->count() > 0)
+        <div class="mb-12 space-y-4">
+            @foreach($pendingOrders as $order)
+                @php
+                    $payment = $order->payments->first();
+                    $paymentCreatedAt = $payment->created_at;
+                    $expirationTime = $paymentCreatedAt->addMinutes(15);
+                    $isExpired = now()->greaterThan($expirationTime);
+                @endphp
+
+                @if(!$isExpired)
+                    <div class="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-3xl p-6 md:p-8 card-shadow"
+                         x-data="pixTimer({{ $expirationTime->timestamp }})"
+                         x-init="startTimer()">
+                        <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
+                            {{-- Ícone --}}
+                            <div class="flex-shrink-0">
+                                <div class="inline-flex items-center justify-center size-16 bg-yellow-500/20 text-yellow-600 rounded-full">
+                                    <span class="material-symbols-outlined text-4xl">schedule</span>
+                                </div>
+                            </div>
+
+                            {{-- Conteúdo --}}
+                            <div class="flex-1 space-y-2">
+                                <h3 class="text-xl font-black uppercase italic tracking-tight text-yellow-900">
+                                    Pagamento Pendente
+                                </h3>
+                                <p class="text-sm text-yellow-800 font-medium">
+                                    Você tem um pedido aguardando pagamento para 
+                                    <span class="font-bold">{{ $order->items->first()->category->event->name }}</span>.
+                                    Complete o pagamento antes que o QR Code expire!
+                                </p>
+                                <div class="flex items-center gap-2 text-xs">
+                                    <span class="font-bold text-yellow-700">Tempo restante:</span>
+                                    <span class="font-black text-yellow-600 text-lg" x-text="timeRemaining"></span>
+                                </div>
+                            </div>
+
+                            {{-- Botão --}}
+                            <div class="flex-shrink-0">
+                                <a href="{{ route('checkout.confirmation', $order->id) }}" 
+                                   class="bg-yellow-500 text-white px-6 py-3 rounded-full font-bold uppercase text-sm tracking-widest shadow-lg hover:bg-yellow-600 transition-all inline-flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-xl">payment</span>
+                                    Pagar Agora
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            @endforeach
+        </div>
+    @endif
+
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
         <div class="lg:col-span-8 space-y-20">
             <!-- Inscrições Ativas -->
@@ -212,4 +266,39 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function pixTimer(expirationTimestamp) {
+            return {
+                timeRemaining: '',
+                interval: null,
+                
+                startTimer() {
+                    this.updateTimer();
+                    this.interval = setInterval(() => {
+                        this.updateTimer();
+                    }, 1000);
+                },
+                
+                updateTimer() {
+                    const now = Math.floor(Date.now() / 1000);
+                    const secondsLeft = expirationTimestamp - now;
+                    
+                    if (secondsLeft <= 0) {
+                        this.timeRemaining = 'Expirado';
+                        clearInterval(this.interval);
+                        // Recarregar a página para remover o alerta
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                        return;
+                    }
+                    
+                    const minutes = Math.floor(secondsLeft / 60);
+                    const seconds = secondsLeft % 60;
+                    this.timeRemaining = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+            }
+        }
+    </script>
 @endsection

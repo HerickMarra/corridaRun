@@ -38,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/{category}/coupon', [CheckoutController::class, 'validateCoupon'])->name('coupon.validate');
         Route::post('/{category}', [CheckoutController::class, 'process'])->name('process');
         Route::get('/confirmation/{order}', [CheckoutController::class, 'confirmation'])->name('confirmation');
+        Route::get('/payment-status/{order}', [CheckoutController::class, 'checkPaymentStatus'])->name('payment.status');
     });
 
     // Admin Panel

@@ -101,16 +101,16 @@ class CheckoutController extends Controller
             $pixQrCodeBase64 = null;
 
             // Handle Asaas Payment
+
             if ($total > 0) {
                 try {
+                    // Determine Billing Type for Asaas
                     $billingType = match ($request->payment_method) {
                         'pix' => 'PIX',
                         'boleto' => 'BOLETO',
                         'credit_card' => 'CREDIT_CARD',
-                        default => 'PIX'
+                        default => 'PIX',
                     };
-
-                    $creditCardInfo = null;
 
                     // Allow generic billing link if user chooses "Outros" or implement specific logic.
                     // For this iteration: 
@@ -128,13 +128,21 @@ class CheckoutController extends Controller
                         'amount' => $total,
                         'status' => \App\Enums\PaymentStatus::Pending,
                         'payment_method' => $request->payment_method,
+
                     ];
 
                     if ($billingType === 'PIX') {
                         $pixData = $asaasService->getPixQrCode($paymentResponse['id']);
-                        if ($pixData) {
+                        \Log::info('Pix QR Code Data Retrieved', ['pix_data' => $pixData]);
+                        if ($pixData && isset($pixData['payload'])) {
                             $pixQrCode = $pixData['payload'];
                             $pixQrCodeBase64 = $pixData['encodedImage'];
+                            \Log::info('Pix QR Code Assigned to Variables', [
+                                'qr_code_length' => strlen($pixQrCode),
+                                'base64_length' => strlen($pixQrCodeBase64)
+                            ]);
+                        } else {
+                            \Log::warning('Pix QR Code is null or missing payload - payment may not be ready yet');
                         }
                     }
 
@@ -154,20 +162,52 @@ class CheckoutController extends Controller
                 ];
 
                 // Active Ticket immediately
-                $orderItem->ticket()->create([
-                    'ticket_number' => 'TKT-' . strtoupper(uniqid()),
-                    'status' => \App\Enums\TicketStatus::Active,
-                ]);
+
             }
 
             // Create Payment Record
-            $order->payments()->create(array_merge($paymentData, [
-                'pix_qr_code' => $pixQrCode,
-                'pix_qr_code_base64' => $pixQrCodeBase64,
-            ]));
+            \Log::info('About to create payment record', [
+                'paymentData' => $paymentData,
+                'pixQrCode' => $pixQrCode ? substr($pixQrCode, 0, 50) . '...' : 'NULL',
+                'pixQrCodeBase64' => $pixQrCodeBase64 ? 'EXISTS (length: ' . strlen($pixQrCodeBase64) . ')' : 'NULL'
+            ]);
+            $paymentData['pix_qr_code'] = $pixQrCode;
+            $paymentData['pix_qr_code_base64'] = $pixQrCodeBase64;
+            $payment = $order->payments()->create($paymentData);
+
+
+            \Log::info('Payment record created', [
+                'payment_id' => $payment->id,
+                'has_pix_qr_code' => !empty($payment->pix_qr_code),
+                'has_pix_qr_code_base64' => !empty($payment->pix_qr_code_base64)
+            ]);
+
+            // Create Ticket (Subscription Badge) - Always create, status depends on payment
+            $orderItem->ticket()->create([
+                'ticket_number' => 'TKT-' . strtoupper(uniqid()),
+                'status' => $total > 0 ? \App\Enums\TicketStatus::Pending : \App\Enums\TicketStatus::Active,
+            ]);
+
 
             return redirect()->route('checkout.confirmation', $order->id)->with('success', 'Inscrição realizada! Finalize o pagamento.');
         });
+    }
+
+    public function checkPaymentStatus(\App\Models\Order $order)
+    {
+        // Ensure the order belongs to the user
+        if ($order->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $payment = $order->payments()->latest()->first();
+
+        return response()->json([
+            'order_status' => $order->status->value,
+            'payment_status' => $payment ? $payment->status->value : null,
+            'is_paid' => $order->status === \App\Enums\OrderStatus::Paid ||
+                ($payment && $payment->status === \App\Enums\PaymentStatus::Approved),
+        ]);
     }
 
     public function confirmation(\App\Models\Order $order)
@@ -179,8 +219,8 @@ class CheckoutController extends Controller
 
         $order->load(['items.category.event', 'items.ticket']);
         $serviceFee = $order->total_amount - $order->items->sum('price');
-
-        return view('checkout.confirmation', compact('order', 'serviceFee'));
+        $payment = $order->payments()->first();
+        return view('checkout.confirmation', compact('order', 'serviceFee', 'payment'));
     }
 
     public function validateCoupon(Request $request, Category $category)
