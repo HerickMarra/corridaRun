@@ -128,13 +128,43 @@ class AsaasService
             ];
         }
 
+        Log::info('Creating Asaas Payment', [
+            'order_id' => $order->id,
+            'payload' => $payload
+        ]);
+
         $response = $this->request()->post("/payments", $payload);
 
+        Log::info('Asaas Payment Response', [
+            'order_id' => $order->id,
+            'status' => $response->status(),
+            'response' => $response->json()
+        ]);
+
         if ($response->successful()) {
-            return $response->json();
+            $responseData = $response->json();
+
+            // Verificar se é um objeto de pagamento válido
+            if (isset($responseData['object']) && $responseData['object'] === 'list') {
+                Log::error('Asaas returned list instead of payment', [
+                    'order_id' => $order->id,
+                    'response' => $responseData
+                ]);
+                throw new \Exception('API Asaas retornou lista de pagamentos em vez de criar novo pagamento');
+            }
+
+            if (!isset($responseData['id'])) {
+                Log::error('Asaas payment response missing ID', [
+                    'order_id' => $order->id,
+                    'response' => $responseData
+                ]);
+                throw new \Exception('Resposta da API Asaas não contém ID do pagamento');
+            }
+
+            return $responseData;
         }
 
-        Log::error('Asaas Create Payment Error', ['order_id' => $order->id, 'response' => $response->json()]);
+        Log::error('Asaas Create Payment Error', ['order_id' => $order->id, 'status' => $response->status(), 'response' => $response->json()]);
         throw new \Exception('Erro ao criar pagamento no Asaas: ' . ($response->json('errors')[0]['description'] ?? 'Erro desconhecido'));
     }
 
