@@ -128,16 +128,6 @@
                                                 <span class="text-xs font-black uppercase tracking-widest">Pix</span>
                                             </label>
                                         </div>
-                                        <div>
-                                            <input class="hidden payment-radio" id="boleto" name="payment_method"
-                                                type="radio" value="boleto" />
-                                            <label
-                                                class="flex flex-col items-center justify-center gap-3 p-6 border-2 border-slate-100 rounded-2xl cursor-pointer hover:border-primary/30 transition-all"
-                                                for="boleto">
-                                                <span class="material-symbols-outlined text-slate-400">barcode</span>
-                                                <span class="text-xs font-black uppercase tracking-widest">Boleto</span>
-                                            </label>
-                                        </div>
                                     </div>
 
                                     <div id="credit-card-section" class="space-y-6">
@@ -184,17 +174,7 @@
                                         </div>
                                     </div>
 
-                                    <div id="boleto-section"
-                                        class="hidden mt-6 p-10 bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-center">
-                                        <div class="flex flex-col items-center">
-                                            <span
-                                                class="material-symbols-outlined text-primary text-5xl mb-4">barcode</span>
-                                            <p class="text-sm font-bold text-slate-600">O Boleto será gerado após clicar em
-                                                finalizar.</p>
-                                            <p class="text-[10px] uppercase font-black tracking-widest text-slate-400 mt-2">
-                                                Pode levar até 3 dias úteis para compensar</p>
-                                        </div>
-                                    </div>
+
                                 </div>
 
                                 <div id="free-registration-section"
