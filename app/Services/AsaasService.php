@@ -97,13 +97,17 @@ class AsaasService
     {
         $customer = $this->createCustomer($order->user);
 
+        if (!$customer) {
+            throw new \Exception('Erro ao criar cliente no Asaas.');
+        }
+
         $payload = [
             'customer' => $customer,
             'billingType' => $billingType,
-            'value' => (float) $order->total_amount,
+            'value' => $order->total_amount,
             'dueDate' => now()->addDays(2)->format('Y-m-d'),
             'description' => "Pedido #{$order->order_number} - Sisters Esportes",
-            'externalReference' => (string) $order->id,
+            'externalReference' => $order->id,
         ];
 
         if ($billingType === 'CREDIT_CARD' && $creditCardInfo) {
@@ -112,42 +116,27 @@ class AsaasService
                 'number' => $creditCardInfo['number'],
                 'expiryMonth' => $creditCardInfo['expiryMonth'],
                 'expiryYear' => $creditCardInfo['expiryYear'],
-                'ccv' => $creditCardInfo['ccv'],
+                'ccv' => $creditCardInfo['ccv']
             ];
-
             $payload['creditCardHolderInfo'] = [
                 'name' => $order->user->name,
                 'email' => $order->user->email,
-                'cpfCnpj' => preg_replace('/\D/', '', $order->user->cpf),
-                'postalCode' => '00000000',
+                'cpfCnpj' => $order->user->cpf,
+                'postalCode' => '00000000', // Should be fetched from user address
                 'addressNumber' => '0',
-                'phone' => preg_replace('/\D/', '', $order->user->phone ?? '00000000000'),
+                'phone' => $order->user->phone ?? '00000000000',
             ];
         }
 
-        Log::info('Creating Asaas Payment', $payload);
-        $response = $this->request()->post('/payments', $payload);
-        
-        Log::info('Asaas Payment Raw Response', [
-            'status' => $response->status(),
-            'body' => $response->body()
-        ]);
+        $response = $this->request()->post("/payments", $payload);
 
-        $json = $response->json();
-
-        // ✅ VALIDAÇÃO CORRETA
-        if ($response->successful() && isset($json['id']) && ($json['object'] ?? null) === 'payment') {
-            return $json;
+        if ($response->successful()) {
+            return $response->json();
         }
 
-        Log::error('Asaas Create Payment Error', [
-            'status' => $response->status(),
-            'response' => $json,
-        ]);
-
-        throw new \Exception('Erro ao criar pagamento no Asaas');
+        Log::error('Asaas Create Payment Error', ['order_id' => $order->id, 'response' => $response->json()]);
+        throw new \Exception('Erro ao criar pagamento no Asaas: ' . ($response->json('errors')[0]['description'] ?? 'Erro desconhecido'));
     }
-
 
     /**
      * Get Pix QR Code and Payload.
@@ -178,7 +167,7 @@ class AsaasService
     protected function request()
     {
         return Http::withHeaders([
-            'access_token' => $this->key,
+            'access-token' => $this->key,
             'Content-Type' => 'application/json',
             'User-Agent' => 'SistersEsportes',
         ])->baseUrl($this->url);
