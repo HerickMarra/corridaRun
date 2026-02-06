@@ -121,10 +121,19 @@ class CheckoutController extends Controller
 
                     $paymentResponse = $asaasService->createPayment($order, $billingType);
 
+                    // Validar resposta do pagamento
+                    if (!isset($paymentResponse['id'])) {
+                        \Log::error('Invalid Asaas Payment Response', [
+                            'order_id' => $order->id,
+                            'response' => $paymentResponse
+                        ]);
+                        throw new \Exception('Resposta inválida da API Asaas ao criar pagamento');
+                    }
+
                     $paymentData = [
                         'payment_gateway' => 'asaas',
                         'asaas_payment_id' => $paymentResponse['id'],
-                        'invoice_url' => $paymentResponse['invoiceUrl'],
+                        'invoice_url' => $paymentResponse['invoiceUrl'] ?? null,
                         'amount' => $total,
                         'status' => \App\Enums\PaymentStatus::Pending,
                         'payment_method' => $request->payment_method,
