@@ -47,6 +47,12 @@ Route::middleware(['auth'])->group(function () {
         // Dashboard Principal e Gestão de Admins (Apenas SuperAdmin e Admin)
         Route::middleware(['role:super-admin,admin'])->group(function () {
             Route::get('/dashboard', [DashboardController::class, 'admin'])->name('dashboard');
+
+            // Webhook Logs
+            Route::get('/webhook-logs', [App\Http\Controllers\Admin\WebhookLogController::class, 'index'])->name('webhook-logs.index');
+            Route::get('/webhook-logs/{id}', [App\Http\Controllers\Admin\WebhookLogController::class, 'show'])->name('webhook-logs.show');
+            Route::delete('/webhook-logs/{id}', [App\Http\Controllers\Admin\WebhookLogController::class, 'destroy'])->name('webhook-logs.destroy');
+            Route::delete('/webhook-logs', [App\Http\Controllers\Admin\WebhookLogController::class, 'destroyAll'])->name('webhook-logs.destroy-all');
         });
 
         // Corridas - Listagem e Dashboard (Acesso para Gestor/Organizador tb)

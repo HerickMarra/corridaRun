@@ -202,7 +202,7 @@ class CheckoutController extends Controller
             $paymentData['pix_qr_code_base64'] = $pixQrCodeBase64;
             $payment = $order->payments()->create($paymentData);
 
-
+            
             \Log::info('Payment record created', [
                 'payment_id' => $payment->id,
                 'has_pix_qr_code' => !empty($payment->pix_qr_code),

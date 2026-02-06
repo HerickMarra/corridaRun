@@ -26,12 +26,14 @@ class AsaasService
         if ($user->asaas_customer_id) {
             return $user->asaas_customer_id;
         }
+        $cpf = preg_replace('/\D/', '', $user->cpf);
 
         // Try to find by CPF/Email first
         try {
             $response = $this->request()->get("/customers", [
-                'cpfCnpj' => $user->cpf,
+                'cpfCnpj' => $cpf,
             ]);
+
 
             if ($response->successful() && !empty($response->json('data'))) {
                 $customer = $response->json('data')[0];
@@ -47,7 +49,7 @@ class AsaasService
         $customerData = [
             'name' => $user->name,
             'email' => $user->email,
-            'cpfCnpj' => $user->cpf,
+            'cpfCnpj' => $cpf,
         ];
 
         // Adicionar telefone apenas se existir
@@ -58,7 +60,6 @@ class AsaasService
         Log::info('Creating Asaas Customer', ['user_id' => $user->id, 'data' => $customerData]);
 
         $response = $this->request()->post("/customers", $customerData);
-
         if ($response->successful()) {
             $id = $response->json('id');
             $user->update(['asaas_customer_id' => $id]);
@@ -167,7 +168,7 @@ class AsaasService
     protected function request()
     {
         return Http::withHeaders([
-            'access-token' => $this->key,
+            'access_token' => $this->key,
             'Content-Type' => 'application/json',
             'User-Agent' => 'SistersEsportes',
         ])->baseUrl($this->url);

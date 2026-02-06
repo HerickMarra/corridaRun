@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\WebhookLog;
 use Illuminate\Support\Facades\Log;
 
 class WebhookController extends Controller
@@ -15,9 +16,20 @@ class WebhookController extends Controller
         $event = $payload['event'] ?? null;
         $paymentData = $payload['payment'] ?? null;
 
+        // Salvar log do webhook
+        $webhookLog = WebhookLog::create([
+            'event' => $event ?? 'unknown',
+            'payload' => $payload,
+            'payment_id' => $paymentData['id'] ?? null,
+            'order_id' => $paymentData['externalReference'] ?? null,
+            'status_code' => 200,
+            'processed_at' => now(),
+        ]);
+
         Log::info('Asaas Webhook Received', ['event' => $event, 'payment_id' => $paymentData['id'] ?? null]);
 
         if (!$event || !$paymentData || !isset($paymentData['externalReference'])) {
+            $webhookLog->update(['status_code' => 200]); // Ignored but successful
             return response()->json(['status' => 'ignored'], 200);
         }
 
@@ -25,6 +37,7 @@ class WebhookController extends Controller
         $order = Order::find($orderId);
 
         if (!$order) {
+            $webhookLog->update(['status_code' => 404]);
             Log::warning('Asaas Webhook: Order not found', ['order_id' => $orderId]);
             return response()->json(['status' => 'order_not_found'], 404);
         }
