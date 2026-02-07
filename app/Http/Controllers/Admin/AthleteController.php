@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\EmailTemplate;
+use App\Mail\DynamicMail;
+use Illuminate\Support\Facades\Mail;
 use App\Enums\UserRole;
 use Illuminate\Http\Request;
 
@@ -24,8 +27,31 @@ class AthleteController extends Controller
         }
 
         $athletes = $query->latest()->paginate(15)->withQueryString();
+        $templates = EmailTemplate::where('is_active', true)->orderBy('name')->get();
 
-        return view('admin.athletes.index', compact('athletes'));
+        return view('admin.athletes.index', compact('athletes', 'templates'));
+    }
+
+    public function sendEmail(Request $request, User $athlete)
+    {
+        $request->validate([
+            'template_id' => 'required|exists:email_templates,id'
+        ]);
+
+        $template = EmailTemplate::findOrFail($request->template_id);
+
+        try {
+            Mail::to($athlete->email)->send(new DynamicMail($template, [
+                'nome' => $athlete->name,
+                'email' => $athlete->email,
+                // Outras variáveis podem ser adicionadas aqui se houver contexto
+            ]));
+
+            return response()->json(['success' => true, 'message' => 'E-mail enviado com sucesso!']);
+        } catch (\Exception $e) {
+            \Log::error('Erro ao enviar e-mail manual: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Erro ao enviar e-mail.'], 500);
+        }
     }
 
     public function show(User $athlete)

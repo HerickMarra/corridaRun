@@ -61,7 +61,8 @@
                                     <div>
                                         <p class="text-sm font-black text-slate-800 uppercase italic">{{ $athlete->name }}</p>
                                         <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Membro desde
-                                            {{ $athlete->created_at->format('d/m/Y') }}</p>
+                                            {{ $athlete->created_at->format('d/m/Y') }}
+                                        </p>
                                     </div>
                                 </div>
                             </td>
@@ -81,7 +82,8 @@
                                 <div class="text-xs font-bold text-slate-600 uppercase">
                                     <p>{{ $athlete->cpf ?? '---' }}</p>
                                     <p class="text-[10px] text-slate-400">
-                                        {{ $athlete->birth_date ? $athlete->birth_date->format('d/m/Y') : '---' }}</p>
+                                        {{ $athlete->birth_date ? $athlete->birth_date->format('d/m/Y') : '---' }}
+                                    </p>
                                 </div>
                             </td>
                             <td class="px-8 py-6 text-center">
@@ -92,16 +94,21 @@
                             </td>
                             <td class="px-8 py-6 text-right">
                                 <div class="flex items-center justify-end gap-2">
+                                    <button onclick="openEmailModal({{ $athlete->id }}, '{{ $athlete->name }}')"
+                                        class="size-10 rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/30 transition-all group-hover:bg-white"
+                                        title="Enviar E-mail">
+                                        <span class="material-symbols-outlined text-xl">mail</span>
+                                    </button>
                                     <button onclick="viewAthlete({{ $athlete->id }})"
                                         class="size-10 rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/30 transition-all group-hover:bg-white"
                                         title="Visualizar Perfil">
                                         <span class="material-symbols-outlined text-xl">visibility</span>
                                     </button>
-                            <a href="{{ route('admin.athletes.edit', $athlete->id) }}"
-                                class="size-10 rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-secondary hover:border-secondary/30 transition-all group-hover:bg-white"
-                                title="Editar Atleta">
-                                <span class="material-symbols-outlined text-xl">edit_note</span>
-                            </a>
+                                    <a href="{{ route('admin.athletes.edit', $athlete->id) }}"
+                                        class="size-10 rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-secondary hover:border-secondary/30 transition-all group-hover:bg-white"
+                                        title="Editar Atleta">
+                                        <span class="material-symbols-outlined text-xl">edit_note</span>
+                                    </a>
                                 </div>
                             </td>
                         </tr>
@@ -127,6 +134,49 @@
         @endif
     </div>
 
+    <!-- Modal de Envio de E-mail -->
+    <div id="emailModal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeEmailModal()"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md px-6">
+            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+                <div class="p-8 border-b border-slate-50 flex justify-between items-center">
+                    <h3 class="text-xl font-bold text-slate-800 uppercase italic">Enviar <span
+                            class="text-primary">E-mail</span></h3>
+                    <button onclick="closeEmailModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <form id="emailForm" onsubmit="submitEmail(event)" class="p-8 space-y-6">
+                    <input type="hidden" id="emailAthleteId">
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Destinatário</p>
+                        <p id="emailAthleteName" class="font-bold text-slate-800 uppercase italic"></p>
+                    </div>
+                    <div>
+                        <label for="template_id"
+                            class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 block">Selecione o
+                            Modelo</label>
+                        <select id="template_id" required
+                            class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 text-sm font-bold focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all">
+                            <option value="">Escolha um template...</option>
+                            @foreach($templates as $template)
+                                <option value="{{ $template->id }}">{{ $template->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="flex justify-end gap-3 pt-4">
+                        <button type="button" onclick="closeEmailModal()"
+                            class="px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest text-slate-500 hover:bg-slate-100 transition-all">Cancelar</button>
+                        <button type="submit" id="btnSubmitEmail"
+                            class="bg-primary text-white px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-secondary transition-all shadow-lg shadow-primary/20">
+                            Enviar E-mail
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal de Visualização -->
     <div id="athleteModal" class="fixed inset-0 z-[100] hidden">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal()"></div>
@@ -143,7 +193,8 @@
                     <!-- Info Pessoal -->
                     <div class="grid grid-cols-2 gap-6">
                         <div>
-                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Nome Completo</p>
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Nome Completo
+                            </p>
                             <p id="modalName" class="font-bold text-slate-800 uppercase italic"></p>
                         </div>
                         <div>
@@ -155,7 +206,8 @@
                             <p id="modalCpf" class="font-bold text-slate-600"></p>
                         </div>
                         <div>
-                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Data de Nascimento
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Data de
+                                Nascimento
                             </p>
                             <p id="modalBirthDate" class="font-bold text-slate-600"></p>
                         </div>
@@ -173,11 +225,14 @@
                             <table class="w-full text-left font-medium">
                                 <thead class="bg-slate-100/50">
                                     <tr>
-                                        <th class="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                        <th
+                                            class="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">
                                             Evento</th>
-                                        <th class="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                        <th
+                                            class="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">
                                             Categoria</th>
-                                        <th class="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                        <th
+                                            class="px-4 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">
                                             Data em q se inscreveu</th>
                                     </tr>
                                 </thead>
@@ -217,23 +272,23 @@
                         } else {
                             registrations.forEach(reg => {
                                 tableBody.innerHTML += `
-                                    <tr>
-                                        <td class="px-4 py-4">
-                                            <p class="text-xs font-bold text-slate-700 uppercase italic">${reg.event_name}</p>
-                                            ${reg.custom_responses.length > 0 ? `
-                                                <div class="mt-2 space-y-1 bg-white p-2 rounded-lg border border-slate-100">
-                                                    ${reg.custom_responses.map(resp => `
-                                                        <p class="text-[9px] font-bold text-slate-500 uppercase tracking-tighter">
-                                                            <span class="text-primary">${resp.label}:</span> ${resp.value}
-                                                        </p>
-                                                    `).join('')}
-                                                </div>
-                                            ` : ''}
-                                        </td>
-                                        <td class="px-4 py-4 text-xs font-bold text-slate-500 uppercase">${reg.category_name}</td>
-                                        <td class="px-4 py-4 text-xs text-slate-400 font-medium">${reg.date}</td>
-                                    </tr>
-                                `;
+                                                    <tr>
+                                                        <td class="px-4 py-4">
+                                                            <p class="text-xs font-bold text-slate-700 uppercase italic">${reg.event_name}</p>
+                                                            ${reg.custom_responses.length > 0 ? `
+                                                                <div class="mt-2 space-y-1 bg-white p-2 rounded-lg border border-slate-100">
+                                                                    ${reg.custom_responses.map(resp => `
+                                                                        <p class="text-[9px] font-bold text-slate-500 uppercase tracking-tighter">
+                                                                            <span class="text-primary">${resp.label}:</span> ${resp.value}
+                                                                        </p>
+                                                                    `).join('')}
+                                                                </div>
+                                                            ` : ''}
+                                                        </td>
+                                                        <td class="px-4 py-4 text-xs font-bold text-slate-500 uppercase">${reg.category_name}</td>
+                                                        <td class="px-4 py-4 text-xs text-slate-400 font-medium">${reg.date}</td>
+                                                    </tr>
+                                                `;
                             });
                         }
 
@@ -243,6 +298,52 @@
 
             function closeModal() {
                 document.getElementById('athleteModal').classList.add('hidden');
+            }
+
+            function openEmailModal(id, name) {
+                document.getElementById('emailAthleteId').value = id;
+                document.getElementById('emailAthleteName').textContent = name;
+                document.getElementById('emailModal').classList.remove('hidden');
+            }
+
+            function closeEmailModal() {
+                document.getElementById('emailModal').classList.add('hidden');
+            }
+
+            async function submitEmail(event) {
+                event.preventDefault();
+                const btn = document.getElementById('btnSubmitEmail');
+                const athleteId = document.getElementById('emailAthleteId').value;
+                const templateId = document.getElementById('template_id').value;
+
+                btn.disabled = true;
+                btn.textContent = 'Enviando...';
+
+                try {
+                    const response = await fetch(`/admin/atletas/${athleteId}/send-email`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({ template_id: templateId })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        toast(data.message);
+                        closeEmailModal();
+                    } else {
+                        alert(data.message || 'Erro ao enviar e-mail.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Erro na comunicação com o servidor.');
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = 'Enviar E-mail';
+                }
             }
         </script>
     @endpush

@@ -111,6 +111,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/atletas/{athlete}', [App\Http\Controllers\Admin\AthleteController::class, 'show'])->name('athletes.show');
             Route::get('/atletas/{athlete}/edit', [App\Http\Controllers\Admin\AthleteController::class, 'edit'])->name('athletes.edit');
             Route::put('/atletas/{athlete}', [App\Http\Controllers\Admin\AthleteController::class, 'update'])->name('athletes.update');
+            Route::post('/atletas/{athlete}/send-email', [App\Http\Controllers\Admin\AthleteController::class, 'sendEmail'])->name('athletes.send-email');
             Route::get('/vendas', [App\Http\Controllers\Admin\SalesController::class, 'index'])->name('sales.index');
         });
 
