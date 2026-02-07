@@ -20,11 +20,16 @@ class CheckoutController extends Controller
             }
         }
 
-        // Bloqueia se o evento não estiver publicado ou se a data já passou
-        if ($category->event->status !== \App\Enums\EventStatus::Published || $category->event->event_date < now()) {
+        // Bloqueia se o evento não estiver publicado ou se as inscrições já encerraram
+        $isClosed = $category->event->status->value === 'closed';
+        $isExpired = $category->event->registration_end
+            ? $category->event->registration_end < now()
+            : $category->event->event_date < now();
+
+        if ($category->event->status !== \App\Enums\EventStatus::Published || $isExpired) {
             $statusLabel = 'indisponíveis';
 
-            if ($category->event->event_date < now() || $category->event->status->value === 'closed') {
+            if ($isExpired || $isClosed) {
                 $statusLabel = 'encerradas';
             } elseif ($category->event->status->value === 'cancelled') {
                 $statusLabel = 'canceladas';
@@ -96,7 +101,11 @@ class CheckoutController extends Controller
             // Reload category with lock to prevent race conditions
             $category = Category::where('id', $category->id)->lockForUpdate()->first();
 
-            if ($category->event->status !== \App\Enums\EventStatus::Published || $category->event->event_date < now()) {
+            $isExpired = $category->event->registration_end
+                ? $category->event->registration_end < now()
+                : $category->event->event_date < now();
+
+            if ($category->event->status !== \App\Enums\EventStatus::Published || $isExpired) {
                 return redirect()->route('events.show', $category->event->slug)
                     ->with('error', 'Infelizmente as inscrições para este evento não estão mais disponíveis.');
             }
