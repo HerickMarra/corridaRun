@@ -13,9 +13,11 @@ class EmailTemplate extends Model
         'content',
         'description',
         'is_active',
+        'is_system',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'is_system' => 'boolean',
     ];
 }

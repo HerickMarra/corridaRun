@@ -2,16 +2,33 @@
 
 @section('content')
     <div class="max-w-5xl mx-auto">
-        <div class="mb-8 flex items-center gap-4">
-            <a href="{{ route('admin.emails.index') }}"
-                class="size-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-primary transition-all">
-                <span class="material-symbols-outlined">arrow_back</span>
-            </a>
+        <div class="mb-8 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <a href="{{ route('admin.emails.index') }}"
+                    class="size-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-primary transition-all">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </a>
+                <div>
+                    <h2 class="text-2xl font-black text-slate-800 uppercase italic tracking-tighter">Editar <span
+                            class="text-primary">E-mail</span></h2>
+                    <p class="text-slate-500 text-sm font-medium">Identificador: <span
+                            class="font-bold text-slate-700 uppercase">{{ $template->slug }}</span></p>
+                </div>
+            </div>
             <div>
-                <h2 class="text-2xl font-black text-slate-800 uppercase italic tracking-tighter">Editar <span
-                        class="text-primary">E-mail</span></h2>
-                <p class="text-slate-500 text-sm font-medium">Identificador: <span
-                        class="font-bold text-slate-700 uppercase">{{ $template->slug }}</span></p>
+                @if($template->is_system)
+                    <span
+                        class="px-3 py-1 bg-blue-100 text-blue-600 text-[10px] font-black uppercase rounded-lg border border-blue-200 tracking-widest flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-sm">lock</span>
+                        Modelo de Sistema
+                    </span>
+                @else
+                    <span
+                        class="px-3 py-1 bg-purple-100 text-purple-600 text-[10px] font-black uppercase rounded-lg border border-purple-200 tracking-widest flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-sm">campaign</span>
+                        Modelo de Marketing
+                    </span>
+                @endif
             </div>
         </div>
 
@@ -27,6 +44,17 @@
                             Conteúdo do E-mail</h3>
 
                         <div class="space-y-6">
+                            <div class="space-y-1.5">
+                                <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Nome do Modelo</label>
+                                <input type="text" name="name" value="{{ old('name', $template->name) }}" 
+                                    {{ $template->is_system ? 'readonly' : 'required' }}
+                                    class="w-full bg-slate-50 border-transparent rounded-xl px-5 py-4 text-sm font-bold focus:bg-white transition-all outline-none {{ $template->is_system ? 'opacity-60 cursor-not-allowed' : '' }}"
+                                    placeholder="Nome identificador do modelo">
+                                @if($template->is_system)
+                                    <p class="text-[9px] text-slate-400 font-bold uppercase mt-1 ml-1 italic">Nomes de modelos de sistema não podem ser alterados.</p>
+                                @endif
+                            </div>
+
                             <div class="space-y-1.5">
                                 <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Assunto
                                     do E-mail</label>
