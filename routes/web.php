@@ -113,6 +113,14 @@ Route::middleware(['auth'])->group(function () {
             Route::put('/atletas/{athlete}', [App\Http\Controllers\Admin\AthleteController::class, 'update'])->name('athletes.update');
             Route::post('/atletas/{athlete}/send-email', [App\Http\Controllers\Admin\AthleteController::class, 'sendEmail'])->name('athletes.send-email');
             Route::get('/vendas', [App\Http\Controllers\Admin\SalesController::class, 'index'])->name('sales.index');
+
+            // Mail Marketing
+            Route::prefix('marketing')->name('marketing.')->group(function () {
+                Route::get('/', [App\Http\Controllers\Admin\MailMarketingController::class, 'index'])->name('index');
+                Route::get('/nova-campanha', [App\Http\Controllers\Admin\MailMarketingController::class, 'create'])->name('create');
+                Route::post('/', [App\Http\Controllers\Admin\MailMarketingController::class, 'store'])->name('store');
+                Route::get('/recipient-count', [App\Http\Controllers\Admin\MailMarketingController::class, 'getRecipientCount'])->name('recipient-count');
+            });
         });
 
         // Configurações e Dados Sensíveis (Apenas SuperAdmin)
