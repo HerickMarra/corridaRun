@@ -173,7 +173,7 @@
                             <summary class="flex items-center justify-between p-6 {{ $isDisabled ? 'cursor-not-allowed' : 'cursor-pointer' }} list-none">
                                 <div class="flex items-center gap-6">
                                     <div class="bg-slate-50 {{ $isDisabled ? 'text-slate-300' : 'text-slate-400 group-hover:bg-primary/5 group-hover:text-primary' }} size-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors">
-                                        <span class="material-symbols-outlined">{{ $isSoldOut ? 'block' : ($isExpired ? 'timer_off' : 'check_circle') }}</span>
+                                        <span class="material-symbols-outlined">{{ $isSoldOut ? 'block' : (($isEventPast || $isRegistrationExpired) ? 'timer_off' : 'check_circle') }}</span>
                                     </div>
                                     <div>
                                         <h3 class="text-lg font-black uppercase italic {{ $isDisabled ? 'text-slate-400' : '' }}">{{ $category->name }}</h3>
