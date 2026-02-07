@@ -20,14 +20,16 @@ class CheckoutController extends Controller
             }
         }
 
-        // Bloqueia se o evento não estiver publicado
-        if ($category->event->status !== \App\Enums\EventStatus::Published) {
-            $statusLabel = match ($category->event->status->value) {
-                'closed' => 'encerradas',
-                'cancelled' => 'canceladas',
-                'draft' => 'indisponíveis',
-                default => 'indisponíveis'
-            };
+        // Bloqueia se o evento não estiver publicado ou se a data já passou
+        if ($category->event->status !== \App\Enums\EventStatus::Published || $category->event->event_date < now()) {
+            $statusLabel = 'indisponíveis';
+
+            if ($category->event->event_date < now() || $category->event->status->value === 'closed') {
+                $statusLabel = 'encerradas';
+            } elseif ($category->event->status->value === 'cancelled') {
+                $statusLabel = 'canceladas';
+            }
+
             return redirect()->route('events.show', $category->event->slug)
                 ->with('error', "Desculpe, as inscrições para este evento estão {$statusLabel}.");
         }
@@ -93,6 +95,11 @@ class CheckoutController extends Controller
         return \DB::transaction(function () use ($request, $category, $user, $asaasService, $cpf) {
             // Reload category with lock to prevent race conditions
             $category = Category::where('id', $category->id)->lockForUpdate()->first();
+
+            if ($category->event->status !== \App\Enums\EventStatus::Published || $category->event->event_date < now()) {
+                return redirect()->route('events.show', $category->event->slug)
+                    ->with('error', 'Infelizmente as inscrições para este evento não estão mais disponíveis.');
+            }
 
             if ($category->available_tickets <= 0) {
                 return redirect()->route('events.show', $category->event->slug)
