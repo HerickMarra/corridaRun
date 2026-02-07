@@ -37,7 +37,7 @@ class DynamicMail extends Mailable
 
         return $this->subject($subject)
             ->html(view('emails.layout', [
-                'slot' => new HtmlString(nl2br($content)),
+                'slot' => new HtmlString(\Illuminate\Support\Str::markdown($content)),
                 'subject' => $subject
             ])->render());
     }
