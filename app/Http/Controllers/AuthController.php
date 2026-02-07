@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\EmailTemplate;
+use App\Mail\DynamicMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
@@ -62,6 +65,18 @@ class AuthController extends Controller
         ]);
 
         Auth::login($user);
+
+        // Enviar E-mail de Boas-vindas
+        $template = EmailTemplate::where('slug', 'welcome')->where('is_active', true)->first();
+        if ($template) {
+            try {
+                Mail::to($user->email)->send(new DynamicMail($template, [
+                    'nome' => $user->name,
+                ]));
+            } catch (\Exception $e) {
+                \Log::error('Erro ao enviar e-mail de boas-vindas: ' . $e->getMessage());
+            }
+        }
 
         // Novo usuário (sempre Client) vai para a home
         return redirect('/');

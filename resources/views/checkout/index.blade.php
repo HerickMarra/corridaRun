@@ -17,6 +17,25 @@
                     <form action="{{ route('checkout.process', $category->id) }}" method="POST" id="checkout-form">
                         @csrf
                         <input type="hidden" name="coupon_code" id="hidden-coupon-code">
+
+                        {{-- Error Messages --}}
+                        @if ($errors->any())
+                            <div class="bg-red-50 border-2 border-red-200 rounded-3xl p-6 mb-8">
+                                <div class="flex items-start gap-4">
+                                    <span class="material-symbols-outlined text-red-600 text-2xl flex-shrink-0">error</span>
+                                    <div class="flex-1">
+                                        <h3 class="text-sm font-black uppercase tracking-widest text-red-900 mb-2">Erro ao
+                                            processar inscrição</h3>
+                                        <ul class="space-y-1">
+                                            @foreach ($errors->all() as $error)
+                                                <li class="text-sm text-red-700">• {{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
                         <section class="bg-white rounded-3xl p-8 card-shadow border border-slate-50 mb-8">
                             <div class="flex items-center gap-4 mb-8">
                                 <div class="size-10 rounded-xl bg-slate-50 flex items-center justify-center text-primary">
@@ -297,17 +316,13 @@
             radio.addEventListener('change', (e) => {
                 const creditSection = document.getElementById('credit-card-section');
                 const pixSection = document.getElementById('pix-section');
-                const boletoSection = document.getElementById('boleto-section');
 
                 // Hide all first
                 creditSection.classList.add('hidden');
                 pixSection.classList.add('hidden');
-                if (boletoSection) boletoSection.classList.add('hidden');
 
                 if (e.target.value === 'pix') {
                     pixSection.classList.remove('hidden');
-                } else if (e.target.value === 'boleto') {
-                    if (boletoSection) boletoSection.classList.remove('hidden');
                 } else if (e.target.value === 'credit_card') {
                     creditSection.classList.remove('hidden');
                 }
@@ -388,21 +403,31 @@
         const cpfError = document.getElementById('cpf-error');
         const checkoutForm = document.getElementById('checkout-form');
 
+        // Função para formatar CPF
+        function formatCPF(value) {
+            value = value.replace(/\D/g, '');
+
+            if (value.length <= 11) {
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            }
+
+            return value;
+        }
+
         if (cpfInput) {
+            // Formatar CPF ao carregar a página se já houver valor
+            if (cpfInput.value) {
+                cpfInput.value = formatCPF(cpfInput.value);
+            }
+
             cpfInput.addEventListener('input', function (e) {
-                let value = e.target.value.replace(/\D/g, '');
-
-                if (value.length <= 11) {
-                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-                    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-                }
-
-                e.target.value = value;
+                e.target.value = formatCPF(e.target.value);
 
                 // Validar CPF em tempo real
-                if (value.length === 14) {
-                    const isValid = validateCPF(value.replace(/\D/g, ''));
+                if (e.target.value.length === 14) {
+                    const isValid = validateCPF(e.target.value.replace(/\D/g, ''));
                     if (!isValid) {
                         cpfError.classList.remove('hidden');
                         cpfInput.classList.add('border-red-500');

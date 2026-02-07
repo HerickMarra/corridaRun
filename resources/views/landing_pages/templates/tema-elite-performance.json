@@ -1,0 +1,85 @@
+{
+    "name": "Elite Performance",
+    "config_schema": {
+        "geral": [
+            {
+                "key": "title",
+                "label": "Título Principal",
+                "type": "text",
+                "default": "BREAK YOUR LIMITS"
+            },
+            {
+                "key": "subtitle",
+                "label": "Subtítulo",
+                "type": "text",
+                "default": "THE ULTIMATE SPEED CHALLENGE"
+            },
+            {
+                "key": "hero_image",
+                "label": "Imagem de Fundo Hero",
+                "type": "image",
+                "default": "https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?auto=format&fit=crop&q=80&w=1920"
+            },
+            {
+                "key": "accent_color",
+                "label": "Cor de Destaque (Hex)",
+                "type": "text",
+                "default": "#00f2ff"
+            },
+            {
+                "key": "intro_title",
+                "label": "Título da Introdução",
+                "type": "text",
+                "default": "ENGINEERED FOR SPEED"
+            },
+            {
+                "key": "intro_text",
+                "label": "Texto da Introdução",
+                "type": "textarea",
+                "default": "Join the elite group of runners at the midnight sprint. A flat, fast course designed for personal bests."
+            },
+            {
+                "key": "feat_1_title",
+                "label": "Feature 1 - Título",
+                "type": "text",
+                "default": "CHRONO TECH"
+            },
+            {
+                "key": "feat_1_desc",
+                "label": "Feature 1 - Descrição",
+                "type": "text",
+                "default": "Extreme precision timing for every stride."
+            },
+            {
+                "key": "feat_2_title",
+                "label": "Feature 2 - Título",
+                "type": "text",
+                "default": "NITRO STATION"
+            },
+            {
+                "key": "feat_2_desc",
+                "label": "Feature 2 - Descrição",
+                "type": "text",
+                "default": "Premium hydration and energy pods."
+            },
+            {
+                "key": "feat_3_title",
+                "label": "Feature 3 - Título",
+                "type": "text",
+                "default": "GLOW TRACK"
+            },
+            {
+                "key": "feat_3_desc",
+                "label": "Feature 3 - Descrição",
+                "type": "text",
+                "default": "Fully illuminated high-performance asphalt."
+            },
+            {
+                "key": "cta_text",
+                "label": "Texto do Botão CTA",
+                "type": "text",
+                "default": "SECURE YOUR SLOT"
+            }
+        ]
+    }
+}

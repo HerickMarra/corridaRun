@@ -85,7 +85,7 @@
             <div>
                 <div class="flex items-center justify-between mb-8">
                     <h2 class="text-2xl font-black uppercase italic tracking-tight">Inscrições Ativas</h2>
-                    <a class="text-sm font-bold text-primary hover:underline" href="#">Ver todas</a>
+                    <a class="text-sm font-bold text-primary hover:underline" href="{{ route('client.registrations') }}">Ver todas</a>
                 </div>
 
                     @forelse($subscriptions as $subscription)
@@ -109,7 +109,7 @@
                                                     $days = now()->diffInDays($subscription->orderItem->category->event->event_date, false);
                                                 @endphp
                                                 <p class="text-2xl font-black italic text-secondary leading-none">
-                                                    {{ $days > 0 ? $days : 0 }} DIAS
+                                                    {{$days > 0 ? (int) $days : 0 }} DIAS
                                                 </p>
                                             </div>
                                         </div>
@@ -123,7 +123,11 @@
                                     <div class="flex gap-4">
                                         <a href="{{ route('events.show', $subscription->orderItem->category->event->slug) }}"
                                             class="bg-secondary text-white px-8 py-3 rounded-full text-xs font-black uppercase tracking-widest hover:bg-black transition-all">Ver Guia da Prova</a>
-                                        <button class="border border-slate-200 px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all">Voucher</button>
+                                        <a href="{{ route('client.receipt', $subscription->id) }}" 
+                                           class="border border-slate-200 px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-sm">description</span>
+                                            Comprovante
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -198,7 +202,7 @@
 
                 @if($totalPastEvents > 5)
                     <div class="text-center mt-8">
-                        <a href="#" class="inline-flex items-center gap-2 text-primary hover:text-blue-700 font-bold text-sm transition-colors">
+                        <a href="{{ route('client.registrations') }}" class="inline-flex items-center gap-2 text-primary hover:text-blue-700 font-bold text-sm transition-colors">
                             <span>Ver todas as {{ $totalPastEvents }} corridas realizadas</span>
                             <span class="material-symbols-outlined text-lg">arrow_forward</span>
                         </a>

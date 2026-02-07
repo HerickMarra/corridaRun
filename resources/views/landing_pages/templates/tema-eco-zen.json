@@ -1,0 +1,55 @@
+{
+    "name": "Eco-Zen",
+    "config_schema": {
+        "geral": [
+            {
+                "key": "title",
+                "label": "Título Principal",
+                "type": "text",
+                "default": "RUN IN HARMONY"
+            },
+            {
+                "key": "hero_image",
+                "label": "Imagem Hero",
+                "type": "image",
+                "default": "https://images.unsplash.com/photo-1544717297-fa95b8ee4bc1?auto=format&fit=crop&q=80&w=1920"
+            },
+            {
+                "key": "accent_color",
+                "label": "Cor de Destaque",
+                "type": "text",
+                "default": "#2d6a4f"
+            },
+            {
+                "key": "intro_text",
+                "label": "Filosofia",
+                "type": "textarea",
+                "default": "Discover the balance between physical effort and mental clarity. Our eco-conscious events focus on sustainable practices and breathtaking natural surroundings."
+            },
+            {
+                "key": "pillar_1",
+                "label": "Pilar 1",
+                "type": "text",
+                "default": "Sustainable Pace"
+            },
+            {
+                "key": "pillar_2",
+                "label": "Pilar 2",
+                "type": "text",
+                "default": "Mental Clarity"
+            },
+            {
+                "key": "pillar_3",
+                "label": "Pilar 3",
+                "type": "text",
+                "default": "Zero Waste Event"
+            },
+            {
+                "key": "cta_text",
+                "label": "Texto do Botão",
+                "type": "text",
+                "default": "FIND YOUR FLOW"
+            }
+        ]
+    }
+}

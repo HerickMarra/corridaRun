@@ -1,0 +1,61 @@
+{
+    "name": "Cyber Tech",
+    "config_schema": {
+        "geral": [
+            {
+                "key": "title",
+                "label": "Título Principal",
+                "type": "text",
+                "default": "CYBER SPRINT 2077"
+            },
+            {
+                "key": "hero_image",
+                "label": "Imagem de Fundo",
+                "type": "image",
+                "default": "https://images.unsplash.com/photo-1549438343-98282367ea1b?auto=format&fit=crop&q=80&w=1920"
+            },
+            {
+                "key": "accent_color",
+                "label": "Cor Neon (Hex)",
+                "type": "text",
+                "default": "#00ff41"
+            },
+            {
+                "key": "intro_title",
+                "label": "Título Introdução",
+                "type": "text",
+                "default": "UPGRADE YOUR PACE"
+            },
+            {
+                "key": "intro_text",
+                "label": "Especificações",
+                "type": "textarea",
+                "default": "The future of racing is here. Holographic pacer, data-driven track analysis, and real-time biomechanical feedback."
+            },
+            {
+                "key": "module_1",
+                "label": "Módulo 1",
+                "type": "text",
+                "default": "Neural Sync"
+            },
+            {
+                "key": "module_2",
+                "label": "Módulo 2",
+                "type": "text",
+                "default": "Augmented Reality"
+            },
+            {
+                "key": "module_3",
+                "label": "Módulo 3",
+                "type": "text",
+                "default": "Plasma Hydration"
+            },
+            {
+                "key": "cta_text",
+                "label": "Texto Botão",
+                "type": "text",
+                "default": "INITIALIZE PROTOCOL"
+            }
+        ]
+    }
+}

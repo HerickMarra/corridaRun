@@ -1,0 +1,61 @@
+{
+    "name": "Golden Hour",
+    "config_schema": {
+        "geral": [
+            {
+                "key": "title",
+                "label": "Título Principal",
+                "type": "text",
+                "default": "GOLDEN HOUR RUN"
+            },
+            {
+                "key": "tagline",
+                "label": "Tagline",
+                "type": "text",
+                "default": "CHASE THE LAST LIGHT"
+            },
+            {
+                "key": "hero_image",
+                "label": "Imagem Hero",
+                "type": "image",
+                "default": "https://images.unsplash.com/photo-1550021671-b0db3dc0266e?auto=format&fit=crop&q=80&w=1920"
+            },
+            {
+                "key": "primary_color",
+                "label": "Cor Principal (Sunset)",
+                "type": "text",
+                "default": "#f59e0b"
+            },
+            {
+                "key": "intro_text",
+                "label": "Descrição Emocional",
+                "type": "textarea",
+                "default": "There is a magic window when the day meets the night. Run through scenic viewpoints as the sun dips below the horizon."
+            },
+            {
+                "key": "feature_1",
+                "label": "Destaque 1",
+                "type": "text",
+                "default": "Oceanfront Route"
+            },
+            {
+                "key": "feature_2",
+                "label": "Destaque 2",
+                "type": "text",
+                "default": "Sunset Medals"
+            },
+            {
+                "key": "feature_3",
+                "label": "Destaque 3",
+                "type": "text",
+                "default": "Post-Run Sunset Party"
+            },
+            {
+                "key": "cta_text",
+                "label": "Texto Botão",
+                "type": "text",
+                "default": "SAVE YOUR SUNSET"
+            }
+        ]
+    }
+}

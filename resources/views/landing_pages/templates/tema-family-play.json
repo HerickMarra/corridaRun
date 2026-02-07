@@ -1,0 +1,67 @@
+{
+    "name": "Family Play",
+    "config_schema": {
+        "geral": [
+            {
+                "key": "title",
+                "label": "Título Principal",
+                "type": "text",
+                "default": "KIDS & FAMILY RUN"
+            },
+            {
+                "key": "tagline",
+                "label": "Tagline",
+                "type": "text",
+                "default": "FUN FOR ALL AGES • 1K & 3K"
+            },
+            {
+                "key": "hero_image",
+                "label": "Imagem Hero",
+                "type": "image",
+                "default": "https://images.unsplash.com/photo-1541625602330-2277a1cd1f59?auto=format&fit=crop&q=80&w=1920"
+            },
+            {
+                "key": "primary_color",
+                "label": "Cor Principal (Joyful)",
+                "type": "text",
+                "default": "#4cc9f0"
+            },
+            {
+                "key": "intro_title",
+                "label": "Título Introdução",
+                "type": "text",
+                "default": "STAY ACTIVE TOGETHER"
+            },
+            {
+                "key": "intro_text",
+                "label": "Texto Introdução",
+                "type": "textarea",
+                "default": "A day of laughter, movement, and medals for everyone. Our safe course is perfect for little legs and big hearts."
+            },
+            {
+                "key": "attr_1",
+                "label": "Atributo 1",
+                "type": "text",
+                "default": "Costume Contest"
+            },
+            {
+                "key": "attr_2",
+                "label": "Atributo 2",
+                "type": "text",
+                "default": "Bouncy Castle"
+            },
+            {
+                "key": "attr_3",
+                "label": "Atributo 3",
+                "type": "text",
+                "default": "Healthy Snacks"
+            },
+            {
+                "key": "cta_text",
+                "label": "Texto do Botão",
+                "type": "text",
+                "default": "REGISTER FAMILY"
+            }
+        ]
+    }
+}

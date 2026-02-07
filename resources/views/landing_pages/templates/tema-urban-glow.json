@@ -1,0 +1,61 @@
+{
+    "name": "Urban Glow",
+    "config_schema": {
+        "geral": [
+            {
+                "key": "title",
+                "label": "Título Principal",
+                "type": "text",
+                "default": "CITY LIGHTS RUN"
+            },
+            {
+                "key": "date_info",
+                "label": "Data do Evento",
+                "type": "text",
+                "default": "SATURDAY NIGHT • 10PM"
+            },
+            {
+                "key": "hero_image",
+                "label": "Imagem Hero",
+                "type": "image",
+                "default": "https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&q=80&w=1920"
+            },
+            {
+                "key": "accent_name",
+                "label": "Nome da vibe",
+                "type": "text",
+                "default": "Neon Purple"
+            },
+            {
+                "key": "intro_text",
+                "label": "Texto Sobre o Evento",
+                "type": "textarea",
+                "default": "The city belongs to us when the sun goes down. A neon-drenched course through the most iconic streets."
+            },
+            {
+                "key": "card_1_title",
+                "label": "Card 1 - Título",
+                "type": "text",
+                "default": "DJ ON TRACK"
+            },
+            {
+                "key": "card_2_title",
+                "label": "Card 2 - Título",
+                "type": "text",
+                "default": "GLOW KITS"
+            },
+            {
+                "key": "card_3_title",
+                "label": "Card 3 - Título",
+                "type": "text",
+                "default": "FINISHER PARTY"
+            },
+            {
+                "key": "cta_text",
+                "label": "Texto do Botão",
+                "type": "text",
+                "default": "OWN THE NIGHT"
+            }
+        ]
+    }
+}

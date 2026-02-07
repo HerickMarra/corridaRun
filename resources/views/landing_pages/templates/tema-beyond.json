@@ -1,0 +1,223 @@
+{
+    "name": "Tema beyond",
+    "config_schema": {
+        "geral": [
+            {
+                "key": "image_1",
+                "label": "Imagem 1",
+                "type": "image",
+                "default": "https://lh3.googleusercontent.com/aida-public/AB6AXuAgpFsliDXK869mGO4es3dVf4gdPfGYETQef7G7_qlxREN-KqY1fAevPc_K6YyjMfkFkXT9QRPmMKKlzakOn6lvQHxUkyZZkPdLtwG0oLZknFDFcKahOGYJTLWcPATl5e7lIrIjgt2hd3xnou5cqwWrNc2t7DoO2_5nYHTmoG9-8HKIu1xf88sA7EoBgbIbcVsMn11G3jxJr-q2bUeqJOLVjshzaA_-UuzekHAlSo_fsewVv4fMlcgI171Dp1J8b6xap8VhA4bb--o"
+            },
+            {
+                "key": "image_2",
+                "label": "Imagem 2",
+                "type": "image",
+                "default": "https://lh3.googleusercontent.com/aida-public/AB6AXuBenMUVFD5jCWCM1boAts_JrYV11nq80fOTPIt_1WAH1cjHpMDgn9OXiDpNGWXxwmp9jTyae7M1QmryBaVV9nF42J7lyU_Htbr-wCwE_SkBJOzd7S9df4DuqVVJ3xffpaePRbvMvxDfdqQltXLbWXxSnH3_qp49pP95Wg2PNT6oKHlAyLRhLqVdDXWrv3NHHRerY74_mTtwdqbei5ewqGFzEtlHKxYGvR7YfMghh1D0cJUE4kKsCrTOv7Umz2BrqZjvY4o-ikyQocM"
+            },
+            {
+                "key": "image_3",
+                "label": "Imagem 3",
+                "type": "image",
+                "default": "https://lh3.googleusercontent.com/aida-public/AB6AXuBnpBq9Z54i_hO5qbr9KkFmsAYth2Kr792faM4i-VYjd68iYeop_BrPivoSHz_UqkI6X7ZJrc8VPq_uTN9LdQvAeWQNXUXDaMdsRe3OrImT13p-V0gnVhamMT5TexpnApkdyqKAd51HAUgJGDUaqd8PPalNrshrC3ioc64VXu0-hU--t3rY-ViOO52mU5lTmMSXUHtanGNf6qQNTYTDOlHXYr1-1GQEarQbw9DKgvKXf5YDJ4Wrdedosn59F8N0B-lKdR7x_6MqDUU"
+            },
+            {
+                "key": "image_4",
+                "label": "Imagem 4",
+                "type": "image",
+                "default": "https://lh3.googleusercontent.com/aida-public/AB6AXuAcPnBid4ndO8c7EgAvDh_UPkVVJ6fiuT77IV7Dd0KuRC-0vrL9anMRX5G_vSDXrj-JuWTHbyH6xPg3eQk6vKBq_vRSVqn7coPtO-YwwvwlPkIyGF7BWkZbl2PghqtFWONRkkcqf9n_s4c_xHj3nlJBFqbqPvkLJnoGMrLZtMiGGcHj31BiEOravZpGLUG7cr978PBywAgC1X-Uq1GpeYuroPCi7ulD8C6RU0u1Y6vtFzin_hZFxD6PhPt8guoUMuHMEBtsFE9gUns"
+            },
+            {
+                "key": "image_5",
+                "label": "Imagem 5",
+                "type": "image",
+                "default": "https://lh3.googleusercontent.com/aida-public/AB6AXuCeD_jUMvwLx6dvXlaWEyleYRh5VJD-A0sACD0FWGgmno3gu-qQujAfo8Pt7aoAZ-bwAifTxRDuuIXH1mcLsunmtn_xmx1p9WMojVmk6VAegS0JM1YWA9fObJbo1N256outHosKEztzi1KYaDbAsku3EjkjS5pUh34Hel0orINjYFXkrLsjl2rifxdjkaWEvelGuLjYA9SbR7pJrNtKjStAkb3rZLsPwiRrkilnShn9t3MnhMqUwhY1xa6CtXRVQvBDBWCCZRGhkLE"
+            },
+            {
+                "key": "image_6",
+                "label": "Imagem 6",
+                "type": "image",
+                "default": "https://lh3.googleusercontent.com/aida-public/AB6AXuDVOkFbdqegghoYSzaBMV2h1JZ8X0YUiiDV9dM6rL1m-jJXUCNqzEwKTmON86XoDsnwqhsvakSGYJTh4vznEpPxJL-XyRBPiwgDVjiP2wDHWT02ca2cb1VVpGegCvnHyS2-mHTN4m_eCW_KoZcovo6ZKNUF_57anfcTcoLgq2rZj-KVByY2zFXLY5Iv2g3UzxBvlQTbd8f_5_DvPvcQatwg-JBkN0fMKB3ARSSzW_blfpH7tw_MOLz065tgd2SZLrVYjUhK0wiyA4w"
+            },
+            {
+                "key": "image_7",
+                "label": "Imagem 7",
+                "type": "image",
+                "default": "https://lh3.googleusercontent.com/aida-public/AB6AXuCXSXkZWICZtuMTKxWpIqpJzruhYMtV0wt9vqvzAh0-RUpO7SpXR4qqcAlycqwYpV1dz9tJ3c7Ed1KRRd5AJ2hI5Ytk53VXSTbJjCi4EI9pCgA2lH4osniIdzs4HD8cjbhP9qTTxRLQz0eXCVajWoKVWrrxUmEVvNiqH1IuRqFBO_AQSCZ75SsR60yr3U7yLvMImszpaC5WHTC-_aTfQrr6sRYnquM0NAKwi5sHES-yZdMH0C-ZvNvVPsRkKGoI12js8HHGEdnhVFw"
+            },
+            {
+                "key": "image_8",
+                "label": "Imagem 8",
+                "type": "image",
+                "default": "https://lh3.googleusercontent.com/aida-public/AB6AXuAZ9WBEoyyygSQIP1u7F_IE-S0FSMOq2i1vTyhllByc_qOb9CJkL6L5dQDd3FakLL2tQcMaPLdHPmQ6q_Qea-Y9dYYnp8NgkemZq3roOMa3VNOOTelUwseQQKFodvM4YGuItx_NsfhUC77T6EhBOMPkC2vjwDGN6M6Bd6wsWBQyrpahNMPTEQkpfzjZQC1FHrDwE4fOx29PxJ-Ys2T4BSVYSuXwpgmfkcWf7nDPGdxDaocHeUjSD40Iyvowfwu8oDdiQeY-J4aif_M"
+            },
+            {
+                "key": "title",
+                "label": "Título Principal",
+                "type": "text",
+                "default": "BEYOND MILESWE BUILD BONDS"
+            },
+            {
+                "key": "heading_2",
+                "label": "Título 2",
+                "type": "text",
+                "default": "MORE THAN JUST RUNNING"
+            },
+            {
+                "key": "heading_3",
+                "label": "Título 3",
+                "type": "text",
+                "default": "RUN TOGETHER FEEL THE ENERGY"
+            },
+            {
+                "key": "heading_4",
+                "label": "Título 4",
+                "type": "text",
+                "default": "Training\r\n                            Plans"
+            },
+            {
+                "key": "heading_5",
+                "label": "Título 5",
+                "type": "text",
+                "default": "Group Runs"
+            },
+            {
+                "key": "heading_6",
+                "label": "Título 6",
+                "type": "text",
+                "default": "Community"
+            },
+            {
+                "key": "heading_7",
+                "label": "Título 7",
+                "type": "text",
+                "default": "Events"
+            },
+            {
+                "key": "heading_8",
+                "label": "Título 8",
+                "type": "text",
+                "default": "MARATONA BRASÍLIA"
+            },
+            {
+                "key": "heading_9",
+                "label": "Título 9",
+                "type": "text",
+                "default": "RUN THE DATE OWN THE MILES"
+            },
+            {
+                "key": "heading_10",
+                "label": "Título 10",
+                "type": "text",
+                "default": "Weekend Fun Run"
+            },
+            {
+                "key": "heading_11",
+                "label": "Título 11",
+                "type": "text",
+                "default": "Night\r\n                        Run Legacy"
+            },
+            {
+                "key": "heading_12",
+                "label": "Título 12",
+                "type": "text",
+                "default": "Cerrado Trail Challenge"
+            },
+            {
+                "key": "heading_13",
+                "label": "Título 13",
+                "type": "text",
+                "default": "READY TO START YOUR JOURNEY?"
+            },
+            {
+                "key": "description_1",
+                "label": "Parágrafo 1",
+                "type": "textarea",
+                "default": "Brasília is a running community that connects passionate runners."
+            },
+            {
+                "key": "description_2",
+                "label": "Parágrafo 2",
+                "type": "textarea",
+                "default": "Support By"
+            },
+            {
+                "key": "description_3",
+                "label": "Parágrafo 3",
+                "type": "textarea",
+                "default": "What is Brasília Run?"
+            },
+            {
+                "key": "description_4",
+                "label": "Parágrafo 4",
+                "type": "textarea",
+                "default": "Born from a passion for movement and innovation, Brasília Run is about friendship, motivation, and\r\n                    growth. We believe every stride brings us closer together."
+            },
+            {
+                "key": "description_5",
+                "label": "Parágrafo 5",
+                "type": "textarea",
+                "default": "Join weekly runs in your city and experience the joy of running with people who share your passion."
+            },
+            {
+                "key": "description_6",
+                "label": "Parágrafo 6",
+                "type": "textarea",
+                "default": "Personalized tips for\r\n                            all levels, from beginners to elites."
+            },
+            {
+                "key": "description_7",
+                "label": "Parágrafo 7",
+                "type": "textarea",
+                "default": "Weekly community runs\r\n                            in different neighborhoods of the capital."
+            },
+            {
+                "key": "description_8",
+                "label": "Parágrafo 8",
+                "type": "textarea",
+                "default": "Connect with fellow\r\n                            runners and share your daily progress."
+            },
+            {
+                "key": "description_9",
+                "label": "Parágrafo 9",
+                "type": "textarea",
+                "default": "Monthly events to keep\r\n                            you motivated and challenge your limits."
+            },
+            {
+                "key": "description_10",
+                "label": "Parágrafo 10",
+                "type": "textarea",
+                "default": "Upcoming Events"
+            },
+            {
+                "key": "description_11",
+                "label": "Parágrafo 11",
+                "type": "textarea",
+                "default": "The Maratona Brasília is more than a race, it's a celebration of culture, endurance, and\r\n                        togetherness in the heart of Brazil."
+            },
+            {
+                "key": "description_12",
+                "label": "Parágrafo 12",
+                "type": "textarea",
+                "default": "Community Events"
+            },
+            {
+                "key": "description_13",
+                "label": "Parágrafo 13",
+                "type": "textarea",
+                "default": "Discover our\r\n                    upcoming runs, from casual weekend jogs to exciting city races across the Federal District."
+            },
+            {
+                "key": "description_14",
+                "label": "Parágrafo 14",
+                "type": "textarea",
+                "default": "Be part of a growing running community that supports you every step of the way. No matter your pace,\r\n                    you're welcome here."
+            },
+            {
+                "key": "description_15",
+                "label": "Parágrafo 15",
+                "type": "textarea",
+                "default": "Copyright ©\r\n                    2025 Brasília Run Community®"
+            }
+        ]
+    }
+}

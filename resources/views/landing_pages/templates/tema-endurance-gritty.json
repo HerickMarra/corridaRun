@@ -1,0 +1,61 @@
+{
+    "name": "Endurance Gritty",
+    "config_schema": {
+        "geral": [
+            {
+                "key": "title",
+                "label": "Título Principal",
+                "type": "text",
+                "default": "BEYOND THE PAIN"
+            },
+            {
+                "key": "tagline",
+                "label": "Tagline",
+                "type": "text",
+                "default": "100 MILES OF RAW DETERMINATION"
+            },
+            {
+                "key": "hero_image",
+                "label": "Imagem Hero",
+                "type": "image",
+                "default": "https://images.unsplash.com/photo-1533167649158-6d508895b680?auto=format&fit=crop&q=80&w=1920"
+            },
+            {
+                "key": "accent_color",
+                "label": "Cor de Destaque",
+                "type": "text",
+                "default": "#ff4d00"
+            },
+            {
+                "key": "intro_title",
+                "label": "Título Introdução",
+                "type": "text",
+                "default": "NOT FOR THE WEAK"
+            },
+            {
+                "key": "intro_text",
+                "label": "Texto Introdução",
+                "type": "textarea",
+                "default": "This isn't a race. It's a test of the human spirit. Dust, sweat, and absolute silence."
+            },
+            {
+                "key": "section_2_title",
+                "label": "Título Seção 2",
+                "type": "text",
+                "default": "RESILIENCE"
+            },
+            {
+                "key": "section_3_title",
+                "label": "Título Seção 3",
+                "type": "text",
+                "default": "SURVIVAL"
+            },
+            {
+                "key": "cta_text",
+                "label": "Texto do Botão",
+                "type": "text",
+                "default": "ACCEPT THE CHALLENGE"
+            }
+        ]
+    }
+}

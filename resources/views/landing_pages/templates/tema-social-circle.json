@@ -1,0 +1,61 @@
+{
+    "name": "Social Circle",
+    "config_schema": {
+        "geral": [
+            {
+                "key": "title",
+                "label": "Título Principal",
+                "type": "text",
+                "default": "RUN WITH FRIENDS"
+            },
+            {
+                "key": "tagline",
+                "label": "Tagline",
+                "type": "text",
+                "default": "GOOD VIBES ONLY • EVERY SUNDAY"
+            },
+            {
+                "key": "hero_image",
+                "label": "Imagem Hero",
+                "type": "image",
+                "default": "https://images.unsplash.com/photo-1549438343-98282367ea1b?auto=format&fit=crop&q=80&w=1920"
+            },
+            {
+                "key": "primary_color",
+                "label": "Cor Principal",
+                "type": "text",
+                "default": "#ff6b6b"
+            },
+            {
+                "key": "intro_text",
+                "label": "Texto Introdução",
+                "type": "textarea",
+                "default": "Running is better when shared. Join our community for casual morning runs, coffee talks, and a supportive atmosphere."
+            },
+            {
+                "key": "feat_1_title",
+                "label": "Ponto 1",
+                "type": "text",
+                "default": "Coffee & Run"
+            },
+            {
+                "key": "feat_2_title",
+                "label": "Ponto 2",
+                "type": "text",
+                "default": "No Pressure Pace"
+            },
+            {
+                "key": "feat_3_title",
+                "label": "Ponto 3",
+                "type": "text",
+                "default": "Community Events"
+            },
+            {
+                "key": "cta_text",
+                "label": "Botão CTA",
+                "type": "text",
+                "default": "JOIN THE CIRCLE"
+            }
+        ]
+    }
+}

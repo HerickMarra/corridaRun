@@ -100,6 +100,18 @@
                 </a>
             @endif
 
+            <a href="{{ route('client.dashboard') }}"
+                class="flex items-center gap-4 px-6 py-4 hover:bg-white/5 transition-all text-white/70 hover:text-white">
+                <span class="material-symbols-outlined">person</span>
+                <span class="text-sm font-semibold">Área do Corredor</span>
+            </a>
+            <a href="{{ route('client.registrations') }}"
+                class="flex items-center gap-4 px-6 py-4 hover:bg-white/5 transition-all text-white/70 hover:text-white">
+                <span class="material-symbols-outlined">assignment</span>
+                <span class="text-sm font-semibold">Minhas Inscrições</span>
+            </a>
+            <div class="h-px bg-white/10 my-4 mx-6"></div>
+
             <a href="{{ route('admin.corridas.index') }}"
                 class="flex items-center gap-4 px-6 py-4 hover:bg-white/5 transition-all {{ request()->routeIs('admin.corridas.*') ? 'sidebar-active' : 'text-white/70 hover:text-white' }}">
                 <span class="material-symbols-outlined">directions_run</span>

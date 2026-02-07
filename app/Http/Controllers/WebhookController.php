@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\WebhookLog;
+use App\Models\EmailTemplate;
+use App\Mail\DynamicMail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class WebhookController extends Controller
 {
@@ -94,6 +97,24 @@ class WebhookController extends Controller
         }
 
         Log::info("Order #{$order->id} confirmed via Asaas Webhook.");
+
+        // Enviar E-mail de Confirmação
+        $user = $order->user;
+        $template = EmailTemplate::where('slug', 'order_confirmation')->where('is_active', true)->first();
+        if ($template && $user) {
+            try {
+                $firstItem = $order->items->first();
+                Mail::to($user->email)->send(new DynamicMail($template, [
+                    'nome' => $user->name,
+                    'prova' => $firstItem->category->event->name,
+                    'inscricao' => $order->order_number,
+                    'data' => $firstItem->category->event->event_date->format('d/m/Y'),
+                    'link_evento' => route('events.show', $firstItem->category->event->slug),
+                ]));
+            } catch (\Exception $e) {
+                \Log::error('Erro ao enviar e-mail de confirmação via Webhook: ' . $e->getMessage());
+            }
+        }
     }
 
     protected function handlePaymentFailed(Order $order, ?Payment $payment, array $paymentData)

@@ -130,7 +130,7 @@
                             <button
                                 class="w-full bg-primary hover:bg-blue-600 text-white font-black py-5 rounded-xl uppercase tracking-[0.1em] transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-3"
                                 type="submit">
-                                Enviar Solicitação de Parceria
+                                Enviar Solicitação
                                 <span class="material-symbols-outlined">send</span>
                             </button>
                         </div>

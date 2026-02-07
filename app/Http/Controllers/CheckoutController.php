@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\EmailTemplate;
+use App\Mail\DynamicMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class CheckoutController extends Controller
 {
@@ -45,11 +48,35 @@ class CheckoutController extends Controller
     {
         $user = auth()->user();
 
-        // Validar CPF
-        $request->validate([
-            'payment_method' => 'required|in:pix,boleto,credit_card',
+        // Calcular total primeiro para validação condicional
+        $originalPrice = $category->price;
+        $discountValue = 0;
+
+        if ($request->filled('coupon_code')) {
+            $coupon = \App\Models\EventCoupon::where('event_id', $category->event_id)
+                ->where('code', strtoupper($request->coupon_code))
+                ->first();
+
+            if ($coupon && $coupon->isValid()) {
+                $discountValue = $coupon->calculateDiscount($originalPrice);
+            }
+        }
+
+        $finalPrice = max(0, $originalPrice - $discountValue);
+        $serviceFee = $finalPrice > 0 ? ($finalPrice * 0.07) : 0;
+        $total = $finalPrice + $serviceFee;
+
+        // Validação condicional
+        $rules = [
             'cpf' => 'required|string|size:14', // Formato: 000.000.000-00
-        ]);
+        ];
+
+        // Só exigir payment_method se o total for maior que 0
+        if ($total > 0) {
+            $rules['payment_method'] = 'required|in:pix,boleto,credit_card';
+        }
+
+        $request->validate($rules);
 
         // Limpar e validar CPF
         $cpf = preg_replace('/\D/', '', $request->cpf);
@@ -202,7 +229,7 @@ class CheckoutController extends Controller
             $paymentData['pix_qr_code_base64'] = $pixQrCodeBase64;
             $payment = $order->payments()->create($paymentData);
 
-            
+
             \Log::info('Payment record created', [
                 'payment_id' => $payment->id,
                 'has_pix_qr_code' => !empty($payment->pix_qr_code),
@@ -216,7 +243,32 @@ class CheckoutController extends Controller
             ]);
 
 
-            return redirect()->route('checkout.confirmation', $order->id)->with('success', 'Inscrição realizada! Finalize o pagamento.');
+            $successMessage = $total > 0
+                ? 'Inscrição realizada! Finalize o pagamento para confirmar sua vaga.'
+                : 'Inscrição confirmada! Sua vaga está garantida.';
+
+            // Enviar E-mail de Confirmação se for gratuito (Pago é via Webhook ou finalização manual se quisermos)
+            // O USER especificou "quando a pessoa compra uma corrida, falando que foi inscrito"
+            // Se for gratuito, enviamos agora. Se for pago, talvez devêssemos enviar na aprovação,
+            // mas o controlador atual redireciona para confirmação. Vou enviar aqui para gratúitos e marcar para enviar no pagamento.
+            if ($total == 0) {
+                $template = EmailTemplate::where('slug', 'order_confirmation')->where('is_active', true)->first();
+                if ($template) {
+                    try {
+                        Mail::to($user->email)->send(new DynamicMail($template, [
+                            'nome' => $user->name,
+                            'prova' => $category->event->name,
+                            'inscricao' => $order->order_number,
+                            'data' => $category->event->event_date->format('d/m/Y'),
+                            'link_evento' => route('events.show', $category->event->slug),
+                        ]));
+                    } catch (\Exception $e) {
+                        \Log::error('Erro ao enviar e-mail de confirmação: ' . $e->getMessage());
+                    }
+                }
+            }
+
+            return redirect()->route('checkout.confirmation', $order->id)->with('success', $successMessage);
         });
     }
 

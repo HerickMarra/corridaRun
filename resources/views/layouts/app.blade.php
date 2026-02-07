@@ -98,6 +98,9 @@
                         <a class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors"
                             href="{{ route('client.dashboard') }}">Área do
                             Corredor</a>
+                        <a class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors"
+                            href="{{ route('client.registrations') }}">Minhas
+                            Inscrições</a>
                     @endauth
                 </nav>
             </div>
@@ -139,8 +142,10 @@
             <a class="text-base font-bold text-slate-600 hover:text-primary transition-colors py-2 border-b border-slate-50"
                 href="{{ route('partner') }}">Seja um Parceiro</a>
             @auth
-                <a class="text-base font-bold text-slate-600 hover:text-primary transition-colors py-2"
+                <a class="text-base font-bold text-slate-600 hover:text-primary transition-colors py-2 border-b border-slate-50"
                     href="{{ route('client.dashboard') }}">Área do Corredor</a>
+                <a class="text-base font-bold text-slate-600 hover:text-primary transition-colors py-2"
+                    href="{{ route('client.registrations') }}">Minhas Inscrições</a>
             @endauth
         </div>
     </header>
@@ -172,9 +177,13 @@
                 <h4 class="text-secondary font-black uppercase tracking-[0.2em] text-[10px] mb-8">Plataforma</h4>
                 <ul class="space-y-4 text-slate-500 text-sm font-semibold">
                     <li><a class="hover:text-primary transition-colors" href="#">Sobre Nós</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="#">Calendário</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="{{ route('calendar') }}">Calendário</a>
+                    </li>
+                    @auth
+                        <li><a class="hover:text-primary transition-colors"
+                                href="{{ route('client.registrations') }}">Minhas Inscrições</a></li>
+                    @endauth
                     <li><a class="hover:text-primary transition-colors" href="#">Resultados</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="#">Afiliados</a></li>
                 </ul>
             </div>
             <div>

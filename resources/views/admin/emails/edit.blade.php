@@ -34,7 +34,8 @@
                                     class="w-full bg-slate-50 border-transparent rounded-xl px-5 py-4 text-sm font-bold focus:bg-white transition-all outline-none"
                                     placeholder="Ex: Confirmação de Inscrição - @{prova}">
                                 @error('subject') <p class="text-red-500 text-[10px] font-bold uppercase mt-1 ml-1">
-                                {{ $message }}</p> @enderror
+                                    {{ $message }}
+                                </p> @enderror
                             </div>
 
                             <div class="space-y-1.5">
@@ -44,7 +45,8 @@
                                     class="w-full bg-slate-50 border-transparent rounded-xl px-5 py-4 text-sm font-bold focus:bg-white transition-all outline-none font-mono"
                                     placeholder="Olá @{nome}, sua inscrição foi confirmada...">{{ old('content', $template->content) }}</textarea>
                                 @error('content') <p class="text-red-500 text-[10px] font-bold uppercase mt-1 ml-1">
-                                {{ $message }}</p> @enderror
+                                    {{ $message }}
+                                </p> @enderror
                             </div>
                         </div>
                     </div>
@@ -94,6 +96,14 @@
                                     class="text-[10px] font-black text-primary uppercase tracking-tighter mb-0.5 group-hover:scale-105 transition-transform origin-left">
                                     @{link_evento}</p>
                                 <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">URL da Prova</p>
+                            </div>
+                            <div
+                                class="p-3 bg-slate-50 rounded-xl border border-slate-100 group hover:border-primary/30 transition-all">
+                                <p
+                                    class="text-[10px] font-black text-primary uppercase tracking-tighter mb-0.5 group-hover:scale-105 transition-transform origin-left">
+                                    @{email}</p>
+                                <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">E-mail do Atleta
+                                </p>
                             </div>
                         </div>
                     </div>

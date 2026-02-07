@@ -1,0 +1,67 @@
+{
+    "name": "Classic Prestige",
+    "config_schema": {
+        "geral": [
+            {
+                "key": "title",
+                "label": "Nome do Evento",
+                "type": "text",
+                "default": "PRESTIGE MARATHON"
+            },
+            {
+                "key": "edition",
+                "label": "Edição",
+                "type": "text",
+                "default": "25th ANNIVERSARY EDITION"
+            },
+            {
+                "key": "hero_image",
+                "label": "Imagem Hero",
+                "type": "image",
+                "default": "https://images.unsplash.com/photo-1459313101143-efcd1a6b0d70?auto=format&fit=crop&q=80&w=1920"
+            },
+            {
+                "key": "accent_color",
+                "label": "Cor de Destaque",
+                "type": "text",
+                "default": "#b1976b"
+            },
+            {
+                "key": "intro_heading",
+                "label": "Título Introdução",
+                "type": "text",
+                "default": "A LEGACY OF EXCELLENCE"
+            },
+            {
+                "key": "intro_body",
+                "label": "Texto Introdução",
+                "type": "textarea",
+                "default": "The Prestige Marathon represents the pinnacle of long-distance running. Since 1999, we have welcomed the world's most dedicated athletes."
+            },
+            {
+                "key": "service_1",
+                "label": "Serviço 1",
+                "type": "text",
+                "default": "Elite Athlete Support"
+            },
+            {
+                "key": "service_2",
+                "label": "Serviço 2",
+                "type": "text",
+                "default": "VIP Lounge Access"
+            },
+            {
+                "key": "service_3",
+                "label": "Serviço 3",
+                "type": "text",
+                "default": "Museum Edition Medal"
+            },
+            {
+                "key": "cta_label",
+                "label": "Texto Botão",
+                "type": "text",
+                "default": "REQUEST INVITATION"
+            }
+        ]
+    }
+}

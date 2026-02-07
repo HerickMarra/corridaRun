@@ -88,4 +88,51 @@ class DashboardController extends Controller
 
         return view('client.dashboard', compact('subscriptions', 'user', 'pastEvents', 'totalPastEvents', 'pendingOrders'));
     }
+
+    public function receipt($ticketId)
+    {
+        $ticket = \App\Models\Ticket::with([
+            'orderItem.category.event',
+            'orderItem.order.user',
+            'orderItem.order.payments'
+        ])->findOrFail($ticketId);
+
+        // Verificar se o ticket pertence ao usuário autenticado
+        if ($ticket->orderItem->order->user_id !== auth()->id()) {
+            abort(403, 'Você não tem permissão para acessar este comprovante.');
+        }
+
+        $order = $ticket->orderItem->order;
+        $event = $ticket->orderItem->category->event;
+        $category = $ticket->orderItem->category;
+        $payment = $order->payments->first();
+
+        return view('client.receipt', compact('ticket', 'order', 'event', 'category', 'payment'));
+    }
+
+    public function registrations()
+    {
+        $user = auth()->user();
+
+        // Todas as inscrições ativas (pagas e eventos futuros ou recentes)
+        $activeRegistrations = \App\Models\Ticket::whereHas('orderItem.order', function ($query) use ($user) {
+            $query->where('user_id', $user->id)
+                ->where(function ($q) {
+                    $q->where('status', \App\Enums\OrderStatus::Paid)
+                        ->orWhereHas('payments', function ($paymentQuery) {
+                            $paymentQuery->where('status', \App\Enums\PaymentStatus::Approved);
+                        });
+                });
+        })
+            ->whereHas('orderItem.category.event', function ($query) {
+                $query->where('event_date', '>=', now()->subDays(2)->startOfDay());
+            })
+            ->with(['orderItem.category.event', 'orderItem.order'])
+            ->get()
+            ->sortByDesc(function ($ticket) {
+                return $ticket->orderItem->category->event->event_date;
+            });
+
+        return view('client.registrations', compact('activeRegistrations'));
+    }
 }

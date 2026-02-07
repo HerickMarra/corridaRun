@@ -264,17 +264,91 @@
 
                         if (data.is_paid) {
                             clearInterval(paymentCheckInterval);
-
-                            // Mostrar mensagem de sucesso
-                            alert('🎉 Pagamento confirmado! Redirecionando para o dashboard...');
-
-                            // Redirecionar para o dashboard
-                            window.location.href = '{{ route('client.dashboard') }}';
+                            showPaymentSuccess();
                         }
                     })
                     .catch(error => {
                         console.error('Erro ao verificar pagamento:', error);
                     });
+            }
+
+            function showPaymentSuccess() {
+                // Criar overlay de sucesso
+                const overlay = document.createElement('div');
+                overlay.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-6';
+                overlay.style.animation = 'fadeIn 0.3s ease-out';
+
+                overlay.innerHTML = `
+                            <div class="bg-white rounded-3xl p-8 md:p-12 max-w-md w-full text-center card-shadow" style="animation: slideUp 0.5s ease-out">
+                                <div class="inline-flex items-center justify-center size-24 bg-emerald-50 text-emerald-500 rounded-full mb-6" style="animation: scaleIn 0.6s ease-out 0.2s both">
+                                    <span class="material-symbols-outlined text-6xl">check_circle</span>
+                                </div>
+
+                                <h2 class="text-3xl md:text-4xl font-black uppercase italic tracking-tighter leading-none mb-4">
+                                    PAGAMENTO <span class="text-emerald-500">CONFIRMADO!</span>
+                                </h2>
+
+                                <p class="text-slate-600 font-medium mb-2">
+                                    🎉 Parabéns, {{ explode(' ', auth()->user()->name)[0] }}!
+                                </p>
+
+                                <p class="text-slate-500 text-sm mb-8">
+                                    Sua vaga está <strong class="text-emerald-600">garantida</strong> na {{ $order->items->first()->category->event->name }}. 
+                                    Prepare seus tênis e vamos juntos! 🏃‍♂️💨
+                                </p>
+
+                                <div class="space-y-3">
+                                    <a href="{{ route('client.dashboard') }}" 
+                                       class="block w-full bg-emerald-500 text-white py-4 rounded-full text-sm font-black uppercase tracking-widest shadow-lg hover:bg-emerald-600 transition-all">
+                                        <span class="flex items-center justify-center gap-2">
+                                            <span class="material-symbols-outlined">dashboard</span>
+                                            IR PARA ÁREA DO CORREDOR
+                                        </span>
+                                    </a>
+
+                                    <button onclick="window.location.reload()" 
+                                            class="block w-full bg-white border-2 border-slate-200 text-slate-600 py-4 rounded-full text-sm font-black uppercase tracking-widest hover:border-emerald-500 hover:text-emerald-500 transition-all">
+                                        VER COMPROVANTE
+                                    </button>
+                                </div>
+
+                                <p class="text-xs text-slate-400 mt-6 italic">
+                                    ✨ Você receberá um email de confirmação em instantes
+                                </p>
+                            </div>
+                        `;
+
+                document.body.appendChild(overlay);
+
+                // Adicionar estilos de animação
+                const style = document.createElement('style');
+                style.textContent = `
+                            @keyframes fadeIn {
+                                from { opacity: 0; }
+                                to { opacity: 1; }
+                            }
+                            @keyframes slideUp {
+                                from { 
+                                    opacity: 0;
+                                    transform: translateY(30px);
+                                }
+                                to { 
+                                    opacity: 1;
+                                    transform: translateY(0);
+                                }
+                            }
+                            @keyframes scaleIn {
+                                from { 
+                                    transform: scale(0);
+                                    opacity: 0;
+                                }
+                                to { 
+                                    transform: scale(1);
+                                    opacity: 1;
+                                }
+                            }
+                        `;
+                document.head.appendChild(style);
             }
 
             // Iniciar verificação a cada 5 segundos

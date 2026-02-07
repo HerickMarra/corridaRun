@@ -1,0 +1,85 @@
+{
+    "name": "Trail Adventure",
+    "config_schema": {
+        "geral": [
+            {
+                "key": "title",
+                "label": "Título Principal",
+                "type": "text",
+                "default": "CONQUER THE PEAKS"
+            },
+            {
+                "key": "subtitle",
+                "label": "Subtítulo",
+                "type": "text",
+                "default": "WILD TRAIL SERIES 2024"
+            },
+            {
+                "key": "hero_image",
+                "label": "Imagem Hero",
+                "type": "image",
+                "default": "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&q=80&w=1920"
+            },
+            {
+                "key": "primary_color",
+                "label": "Cor Primária (Hex)",
+                "type": "text",
+                "default": "#8b5e3c"
+            },
+            {
+                "key": "intro_title",
+                "label": "Título Introdução",
+                "type": "text",
+                "default": "WHERE NATURE MEETS CHALLENGE"
+            },
+            {
+                "key": "intro_text",
+                "label": "Texto Introdução",
+                "type": "textarea",
+                "default": "Experience the raw beauty of the mountains. Our trails take you through dense forests and rocky ridges."
+            },
+            {
+                "key": "stat_1_val",
+                "label": "Stat 1 - Valor",
+                "type": "text",
+                "default": "2.4k"
+            },
+            {
+                "key": "stat_1_label",
+                "label": "Stat 1 - Label",
+                "type": "text",
+                "default": "Elevation Gain"
+            },
+            {
+                "key": "stat_2_val",
+                "label": "Stat 2 - Valor",
+                "type": "text",
+                "default": "42km"
+            },
+            {
+                "key": "stat_2_label",
+                "label": "Stat 2 - Label",
+                "type": "text",
+                "default": "Pure Nature"
+            },
+            {
+                "key": "stat_3_val",
+                "label": "Stat 3 - Valor",
+                "type": "text",
+                "default": "100%"
+            },
+            {
+                "key": "stat_3_label",
+                "label": "Stat 3 - Label",
+                "type": "text",
+                "default": "Adrenaline"
+            },
+            {
+                "key": "cta_text",
+                "label": "Botão Inscrição",
+                "type": "text",
+                "default": "START YOUR ASCENT"
+            }
+        ]
+    }
+}
