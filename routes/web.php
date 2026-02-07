@@ -26,9 +26,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Protected Routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/dashboard/client', [DashboardController::class, 'client'])->name('client.dashboard');
-    Route::get('/minhas-inscricoes', [DashboardController::class, 'registrations'])->name('client.registrations');
-    Route::get('/comprovante/{ticket}', [DashboardController::class, 'receipt'])->name('client.receipt');
 
     // Profile
     Route::get('/profile/edit', [App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
@@ -123,9 +120,10 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
-    // Client Hub
     Route::middleware(['role:cliente'])->prefix('hub')->name('client.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'client'])->name('dashboard');
+        Route::get('/minhas-inscricoes', [DashboardController::class, 'registrations'])->name('registrations');
+        Route::get('/comprovante/{ticket}', [DashboardController::class, 'receipt'])->name('receipt');
     });
 });
 
