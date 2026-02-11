@@ -21,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        \Illuminate\Support\Carbon::setLocale(config('app.locale'));
+        setlocale(LC_TIME, config('app.locale') . '.utf8', config('app.locale'), 'pt_BR.utf-8', 'pt_BR', 'portuguese');
     }
 }
