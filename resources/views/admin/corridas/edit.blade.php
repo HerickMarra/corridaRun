@@ -40,6 +40,12 @@
                                 placeholder="Ex: Maratona Internacional de SP" type="text" />
                         </div>
                         <div class="md:col-span-2 space-y-1.5">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Subtítulo (Ex: A Prova Mais Icônica da Região)</label>
+                            <input name="subtitle" value="{{ $event->subtitle }}"
+                                class="w-full bg-slate-50 border-transparent rounded-xl px-5 py-4 text-sm font-bold focus:bg-white transition-all"
+                                placeholder="Subtítulo que aparece abaixo do nome..." type="text" />
+                        </div>
+                        <div class="md:col-span-2 space-y-1.5">
                             <label
                                 class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Descrição</label>
                             <textarea name="description" required rows="4"

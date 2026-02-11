@@ -49,7 +49,11 @@
         <div class="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-20">
             <div class="lg:col-span-7">
                 <h2 class="text-4xl font-black uppercase italic tracking-tighter mb-10">
-                    A Prova <span class="text-primary">Mais Icônica</span> da Região
+                    @if($event->subtitle)
+                        {!! $event->subtitle !!}
+                    @else
+                        A Prova <span class="text-primary">Mais Icônica</span> da Região
+                    @endif
                 </h2>
                 <div class="prose prose-lg text-slate-600 font-medium leading-relaxed space-y-6">
                     {!! nl2br(e($event->description)) !!}

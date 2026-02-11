@@ -47,6 +47,7 @@ class RaceController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'subtitle' => 'nullable|string|max:255',
             'description' => 'required|string',
             'event_date' => 'required|date',
             'registration_start' => 'required|date',
@@ -88,6 +89,7 @@ class RaceController extends Controller
 
         $event = Event::create([
             'name' => $request->name,
+            'subtitle' => $request->subtitle,
             'slug' => $slug,
             'description' => $request->description,
             'event_date' => $request->event_date,
@@ -172,6 +174,7 @@ class RaceController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
+            'subtitle' => 'nullable|string|max:255',
             'description' => 'required|string',
             'event_date' => 'required|date',
             'registration_start' => 'required|date',
@@ -211,6 +214,7 @@ class RaceController extends Controller
 
         $event->update([
             'name' => $request->name,
+            'subtitle' => $request->subtitle,
             'description' => $request->description,
             'event_date' => $request->event_date,
             'registration_start' => $request->registration_start,

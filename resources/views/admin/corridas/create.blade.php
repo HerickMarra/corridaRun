@@ -47,6 +47,13 @@
                                 placeholder="Ex: Maratona Internacional de SP" type="text" />
                         </div>
                         <div class="md:col-span-2 space-y-1.5">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Subtítulo
+                                (Ex: A Prova Mais Icônica da Região)</label>
+                            <input name="subtitle" value="{{ old('subtitle') }}"
+                                class="w-full bg-slate-50 border-transparent rounded-xl px-5 py-4 text-sm font-bold focus:bg-white transition-all"
+                                placeholder="Subtítulo que aparece abaixo do nome..." type="text" />
+                        </div>
+                        <div class="md:col-span-2 space-y-1.5">
                             <label
                                 class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Descrição</label>
                             <textarea name="description" required rows="4"
@@ -440,49 +447,49 @@
         document.getElementById('add-category').addEventListener('click', function () {
             const container = document.getElementById('categories-container');
             const html = `
-                                                                                                                    <div class="category-item p-6 rounded-2xl bg-slate-50 border border-slate-100 relative group animate-in fade-in slide-in-from-top-4 duration-500">
-                                                                                                                        <div class="absolute -left-2 top-1/2 -translate-y-1/2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-all z-10">
-                                                                                                                            <button type="button" class="move-up size-6 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/30 shadow-sm transition-all">
-                                                                                                                                <span class="material-symbols-outlined text-sm">arrow_upward</span>
+                                                                                                                        <div class="category-item p-6 rounded-2xl bg-slate-50 border border-slate-100 relative group animate-in fade-in slide-in-from-top-4 duration-500">
+                                                                                                                            <div class="absolute -left-2 top-1/2 -translate-y-1/2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-all z-10">
+                                                                                                                                <button type="button" class="move-up size-6 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/30 shadow-sm transition-all">
+                                                                                                                                    <span class="material-symbols-outlined text-sm">arrow_upward</span>
+                                                                                                                                </button>
+                                                                                                                                <button type="button" class="move-down size-6 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/30 shadow-sm transition-all">
+                                                                                                                                    <span class="material-symbols-outlined text-sm">arrow_downward</span>
+                                                                                                                                </button>
+                                                                                                                            </div>
+                                                                                                                            <button type="button" class="remove-category absolute -right-2 -top-2 size-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg">
+                                                                                                                                <span class="material-symbols-outlined text-xs">close</span>
                                                                                                                             </button>
-                                                                                                                            <button type="button" class="move-down size-6 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/30 shadow-sm transition-all">
-                                                                                                                                <span class="material-symbols-outlined text-sm">arrow_downward</span>
-                                                                                                                            </button>
-                                                                                                                        </div>
-                                                                                                                        <button type="button" class="remove-category absolute -right-2 -top-2 size-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg">
-                                                                                                                            <span class="material-symbols-outlined text-xs">close</span>
-                                                                                                                        </button>
-                                                                                                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                                                                                                            <div class="space-y-1.5">
-                                                                                                                                <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Nome do Kit</label>
-                                                                                                                                <input name="categories[${categoryIndex}][name]" required class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold" placeholder="Ex: Kit Premium" type="text"/>
-                                                                                                                            </div>
-                                                                                                                            <div class="space-y-1.5">
-                                                                                                                                <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Distância</label>
-                                                                                                                                <input name="categories[${categoryIndex}][distance]" required class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold" placeholder="Ex: 21K" type="text"/>
-                                                                                                                            </div>
-                                                                                                                            <div class="space-y-1.5">
-                                                                                                                                <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Preço (R$)</label>
-                                                                                                                                <input name="categories[${categoryIndex}][price]" required class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold" placeholder="0.00" step="0.01" type="number"/>
-                                                                                                                            </div>
-                                                                                                                            <div class="space-y-1.5">
-                                                                                                                                <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Vagas</label>
-                                                                                                                                <input name="categories[${categoryIndex}][max_participants]" required class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold" placeholder="500" type="number"/>
-                                                                                                                            </div>
-                                                                                                                            <div class="space-y-1.5 lg:col-span-1">
-                                                                                                                                <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Visibilidade</label>
-                                                                                                                                <select name="categories[${categoryIndex}][is_public]" class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold">
-                                                                                                                                    <option value="1">Público</option>
-                                                                                                                                    <option value="0">Privado (Link Hash)</option>
-                                                                                                                                </select>
-                                                                                                                            </div>
-                                                                                                                            <div class="space-y-1.5 lg:col-span-4">
-                                                                                                                                <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">O que está incluso (Separe por vírgula)</label>
-                                                                                                                                <textarea name="categories[${categoryIndex}][items_included]" class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold" placeholder="Ex: Medalha, Camiseta, Chip, Hidratação" rows="2"></textarea>
+                                                                                                                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                                                                                                                <div class="space-y-1.5">
+                                                                                                                                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Nome do Kit</label>
+                                                                                                                                    <input name="categories[${categoryIndex}][name]" required class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold" placeholder="Ex: Kit Premium" type="text"/>
+                                                                                                                                </div>
+                                                                                                                                <div class="space-y-1.5">
+                                                                                                                                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Distância</label>
+                                                                                                                                    <input name="categories[${categoryIndex}][distance]" required class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold" placeholder="Ex: 21K" type="text"/>
+                                                                                                                                </div>
+                                                                                                                                <div class="space-y-1.5">
+                                                                                                                                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Preço (R$)</label>
+                                                                                                                                    <input name="categories[${categoryIndex}][price]" required class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold" placeholder="0.00" step="0.01" type="number"/>
+                                                                                                                                </div>
+                                                                                                                                <div class="space-y-1.5">
+                                                                                                                                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Vagas</label>
+                                                                                                                                    <input name="categories[${categoryIndex}][max_participants]" required class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold" placeholder="500" type="number"/>
+                                                                                                                                </div>
+                                                                                                                                <div class="space-y-1.5 lg:col-span-1">
+                                                                                                                                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Visibilidade</label>
+                                                                                                                                    <select name="categories[${categoryIndex}][is_public]" class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold">
+                                                                                                                                        <option value="1">Público</option>
+                                                                                                                                        <option value="0">Privado (Link Hash)</option>
+                                                                                                                                    </select>
+                                                                                                                                </div>
+                                                                                                                                <div class="space-y-1.5 lg:col-span-4">
+                                                                                                                                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">O que está incluso (Separe por vírgula)</label>
+                                                                                                                                    <textarea name="categories[${categoryIndex}][items_included]" class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold" placeholder="Ex: Medalha, Camiseta, Chip, Hidratação" rows="2"></textarea>
+                                                                                                                                </div>
                                                                                                                             </div>
                                                                                                                         </div>
-                                                                                                                    </div>
-                                                                                                                `;
+                                                                                                                    `;
             container.insertAdjacentHTML('beforeend', html);
             categoryIndex++;
             reindexCategories();
@@ -531,38 +538,38 @@
         document.getElementById('add-field').addEventListener('click', function () {
             const container = document.getElementById('fields-container');
             const html = `
-                                                                                                        <div class="field-item p-4 rounded-xl bg-slate-50 border border-slate-100 relative group animate-in fade-in slide-in-from-top-2 duration-300">
-                                                                                                            <button type="button" class="remove-field absolute -right-2 -top-2 size-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg">
-                                                                                                                <span class="material-symbols-outlined text-[10px]">close</span>
-                                                                                                            </button>
-                                                                                                            <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-                                                                                                                <div class="md:col-span-5 space-y-1">
-                                                                                                                    <label class="text-[9px] font-black uppercase tracking-widest text-slate-400">Pergunta / Label</label>
-                                                                                                                    <input name="custom_fields[${fieldIndex}][label]" required class="w-full bg-white border-transparent rounded-lg px-3 py-2 text-xs font-bold" placeholder="Ex: Tamanho da Camiseta" type="text"/>
-                                                                                                                </div>
-                                                                                                                <div class="md:col-span-3 space-y-1">
-                                                                                                                    <label class="text-[9px] font-black uppercase tracking-widest text-slate-400">Tipo</label>
-                                                                                                                    <select name="custom_fields[${fieldIndex}][type]" required class="type-selector w-full bg-white border-transparent rounded-lg px-3 py-2 text-xs font-bold">
-                                                                                                                        <option value="text">Texto Curto</option>
-                                                                                                                        <option value="number">Número</option>
-                                                                                                                        <option value="select">Seleção (Select)</option>
-                                                                                                                        <option value="textarea">Texto Longo</option>
-                                                                                                                    </select>
-                                                                                                                </div>
-                                                                                                                <div class="md:col-span-3 space-y-1">
-                                                                                                                    <label class="text-[9px] font-black uppercase tracking-widest text-slate-400">Obrigatório?</label>
-                                                                                                                    <select name="custom_fields[${fieldIndex}][is_required]" class="w-full bg-white border-transparent rounded-lg px-3 py-2 text-xs font-bold">
-                                                                                                                        <option value="0">Não</option>
-                                                                                                                        <option value="1">Sim</option>
-                                                                                                                    </select>
-                                                                                                                </div>
-                                                                                                                <div class="options-container hidden md:col-span-12 space-y-1">
-                                                                                                                    <label class="text-[9px] font-black uppercase tracking-widest text-slate-400">Opções (Separadas por vírgula)</label>
-                                                                                                                    <input name="custom_fields[${fieldIndex}][options]" class="w-full bg-white border-transparent rounded-lg px-3 py-2 text-xs font-bold" placeholder="Ex: P, M, G, GG"/>
+                                                                                                            <div class="field-item p-4 rounded-xl bg-slate-50 border border-slate-100 relative group animate-in fade-in slide-in-from-top-2 duration-300">
+                                                                                                                <button type="button" class="remove-field absolute -right-2 -top-2 size-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg">
+                                                                                                                    <span class="material-symbols-outlined text-[10px]">close</span>
+                                                                                                                </button>
+                                                                                                                <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                                                                                                                    <div class="md:col-span-5 space-y-1">
+                                                                                                                        <label class="text-[9px] font-black uppercase tracking-widest text-slate-400">Pergunta / Label</label>
+                                                                                                                        <input name="custom_fields[${fieldIndex}][label]" required class="w-full bg-white border-transparent rounded-lg px-3 py-2 text-xs font-bold" placeholder="Ex: Tamanho da Camiseta" type="text"/>
+                                                                                                                    </div>
+                                                                                                                    <div class="md:col-span-3 space-y-1">
+                                                                                                                        <label class="text-[9px] font-black uppercase tracking-widest text-slate-400">Tipo</label>
+                                                                                                                        <select name="custom_fields[${fieldIndex}][type]" required class="type-selector w-full bg-white border-transparent rounded-lg px-3 py-2 text-xs font-bold">
+                                                                                                                            <option value="text">Texto Curto</option>
+                                                                                                                            <option value="number">Número</option>
+                                                                                                                            <option value="select">Seleção (Select)</option>
+                                                                                                                            <option value="textarea">Texto Longo</option>
+                                                                                                                        </select>
+                                                                                                                    </div>
+                                                                                                                    <div class="md:col-span-3 space-y-1">
+                                                                                                                        <label class="text-[9px] font-black uppercase tracking-widest text-slate-400">Obrigatório?</label>
+                                                                                                                        <select name="custom_fields[${fieldIndex}][is_required]" class="w-full bg-white border-transparent rounded-lg px-3 py-2 text-xs font-bold">
+                                                                                                                            <option value="0">Não</option>
+                                                                                                                            <option value="1">Sim</option>
+                                                                                                                        </select>
+                                                                                                                    </div>
+                                                                                                                    <div class="options-container hidden md:col-span-12 space-y-1">
+                                                                                                                        <label class="text-[9px] font-black uppercase tracking-widest text-slate-400">Opções (Separadas por vírgula)</label>
+                                                                                                                        <input name="custom_fields[${fieldIndex}][options]" class="w-full bg-white border-transparent rounded-lg px-3 py-2 text-xs font-bold" placeholder="Ex: P, M, G, GG"/>
+                                                                                                                    </div>
                                                                                                                 </div>
                                                                                                             </div>
-                                                                                                        </div>
-                                                                                                    `;
+                                                                                                        `;
             container.insertAdjacentHTML('beforeend', html);
             fieldIndex++;
         });
@@ -607,40 +614,40 @@
         document.getElementById('add-coupon').addEventListener('click', function () {
             const container = document.getElementById('coupons-container');
             const html = `
-                                                                                                    <div class="coupon-item p-6 rounded-2xl bg-slate-50 border border-slate-100 relative group animate-in fade-in slide-in-from-top-4 duration-500">
-                                                                                                        <button type="button" class="remove-coupon absolute -right-2 -top-2 size-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg">
-                                                                                                            <span class="material-symbols-outlined text-xs">close</span>
-                                                                                                        </button>
-                                                                                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                                                                                                            <div class="space-y-1.5">
-                                                                                                                <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Código</label>
-                                                                                                                <input name="coupons[${couponIndex}][code]" required class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold uppercase" placeholder="EX: PROMO10" type="text" />
-                                                                                                            </div>
-                                                                                                            <div class="space-y-1.5">
-                                                                                                                <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Tipo</label>
-                                                                                                                <select name="coupons[${couponIndex}][type]" class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold">
-                                                                                                                    <option value="percent">Porcentagem (%)</option>
-                                                                                                                    <option value="fixed">Valor Fixo (R$)</option>
-                                                                                                                </select>
-                                                                                                            </div>
-                                                                                                            <div class="space-y-1.5">
-                                                                                                                <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Valor</label>
-                                                                                                                <input name="coupons[${couponIndex}][value]" required class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold" placeholder="0.00" step="0.01" type="number" />
-                                                                                                            </div>
-                                                                                                            <div class="space-y-1.5">
-                                                                                                                <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Limite Uso</label>
-                                                                                                                <input name="coupons[${couponIndex}][usage_limit]" class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold" placeholder="Ilimitado" type="number" />
-                                                                                                            </div>
-                                                                                                            <div class="space-y-1.5">
-                                                                                                                <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Status</label>
-                                                                                                                <select name="coupons[${couponIndex}][is_active]" class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold">
-                                                                                                                    <option value="1">Ativo</option>
-                                                                                                                    <option value="0">Inativo</option>
-                                                                                                                </select>
+                                                                                                        <div class="coupon-item p-6 rounded-2xl bg-slate-50 border border-slate-100 relative group animate-in fade-in slide-in-from-top-4 duration-500">
+                                                                                                            <button type="button" class="remove-coupon absolute -right-2 -top-2 size-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg">
+                                                                                                                <span class="material-symbols-outlined text-xs">close</span>
+                                                                                                            </button>
+                                                                                                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                                                                                                                <div class="space-y-1.5">
+                                                                                                                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Código</label>
+                                                                                                                    <input name="coupons[${couponIndex}][code]" required class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold uppercase" placeholder="EX: PROMO10" type="text" />
+                                                                                                                </div>
+                                                                                                                <div class="space-y-1.5">
+                                                                                                                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Tipo</label>
+                                                                                                                    <select name="coupons[${couponIndex}][type]" class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold">
+                                                                                                                        <option value="percent">Porcentagem (%)</option>
+                                                                                                                        <option value="fixed">Valor Fixo (R$)</option>
+                                                                                                                    </select>
+                                                                                                                </div>
+                                                                                                                <div class="space-y-1.5">
+                                                                                                                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Valor</label>
+                                                                                                                    <input name="coupons[${couponIndex}][value]" required class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold" placeholder="0.00" step="0.01" type="number" />
+                                                                                                                </div>
+                                                                                                                <div class="space-y-1.5">
+                                                                                                                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Limite Uso</label>
+                                                                                                                    <input name="coupons[${couponIndex}][usage_limit]" class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold" placeholder="Ilimitado" type="number" />
+                                                                                                                </div>
+                                                                                                                <div class="space-y-1.5">
+                                                                                                                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Status</label>
+                                                                                                                    <select name="coupons[${couponIndex}][is_active]" class="w-full bg-white border-transparent rounded-lg px-4 py-3 text-xs font-bold">
+                                                                                                                        <option value="1">Ativo</option>
+                                                                                                                        <option value="0">Inativo</option>
+                                                                                                                    </select>
+                                                                                                                </div>
                                                                                                             </div>
                                                                                                         </div>
-                                                                                                    </div>
-                                                                                                `;
+                                                                                                    `;
             container.insertAdjacentHTML('beforeend', html);
             couponIndex++;
         });
@@ -767,30 +774,30 @@
         document.getElementById('add-route').addEventListener('click', function () {
             const container = document.getElementById('routes-container');
             const html = `
-                                                                                            <div class="route-item p-6 rounded-2xl bg-slate-50 border border-slate-100 relative group animate-in slide-in-from-top-4 duration-500">
-                                                                                                <button type="button" class="remove-route absolute -right-2 -top-2 size-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg">
-                                                                                                    <span class="material-symbols-outlined text-xs">close</span>
-                                                                                                </button>
-                                                                                                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
-                                                                                                    <div class="md:col-span-5 space-y-1.5">
-                                                                                                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Nome do Trajeto</label>
-                                                                                                        <input name="routes[${routeIndex}][name]" required class="w-full bg-white border-transparent rounded-xl px-4 py-3 text-xs font-bold" placeholder="Ex: Percurso 5KM" type="text"/>
+                                                                                                <div class="route-item p-6 rounded-2xl bg-slate-50 border border-slate-100 relative group animate-in slide-in-from-top-4 duration-500">
+                                                                                                    <button type="button" class="remove-route absolute -right-2 -top-2 size-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg">
+                                                                                                        <span class="material-symbols-outlined text-xs">close</span>
+                                                                                                    </button>
+                                                                                                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+                                                                                                        <div class="md:col-span-5 space-y-1.5">
+                                                                                                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Nome do Trajeto</label>
+                                                                                                            <input name="routes[${routeIndex}][name]" required class="w-full bg-white border-transparent rounded-xl px-4 py-3 text-xs font-bold" placeholder="Ex: Percurso 5KM" type="text"/>
+                                                                                                        </div>
+                                                                                                        <div class="md:col-span-3 space-y-1.5">
+                                                                                                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Cor da Linha</label>
+                                                                                                            <input name="routes[${routeIndex}][color]" value="#0d59f2" class="route-color-input w-full h-11 bg-white border-transparent rounded-xl px-1 py-1 cursor-pointer" type="color" data-index="${routeIndex}"/>
+                                                                                                        </div>
+                                                                                                        <div class="md:col-span-4">
+                                                                                                            <button type="button" class="draw-route-btn w-full bg-slate-800 text-white py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-primary transition-all" data-index="${routeIndex}">
+                                                                                                                <span class="material-symbols-outlined text-sm">edit_location_alt</span>
+                                                                                                                Desenhar no Mapa
+                                                                                                            </button>
+                                                                                                        </div>
+                                                                                                        <input type="hidden" name="routes[${routeIndex}][path]" id="route-path-${routeIndex}" class="route-path-input"/>
+                                                                                                        <input type="hidden" name="routes[${routeIndex}][markers]" id="route-markers-${routeIndex}" class="route-markers-input"/>
                                                                                                     </div>
-                                                                                                    <div class="md:col-span-3 space-y-1.5">
-                                                                                                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Cor da Linha</label>
-                                                                                                        <input name="routes[${routeIndex}][color]" value="#0d59f2" class="route-color-input w-full h-11 bg-white border-transparent rounded-xl px-1 py-1 cursor-pointer" type="color" data-index="${routeIndex}"/>
-                                                                                                    </div>
-                                                                                                    <div class="md:col-span-4">
-                                                                                                        <button type="button" class="draw-route-btn w-full bg-slate-800 text-white py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-primary transition-all" data-index="${routeIndex}">
-                                                                                                            <span class="material-symbols-outlined text-sm">edit_location_alt</span>
-                                                                                                            Desenhar no Mapa
-                                                                                                        </button>
-                                                                                                    </div>
-                                                                                                    <input type="hidden" name="routes[${routeIndex}][path]" id="route-path-${routeIndex}" class="route-path-input"/>
-                                                                                                    <input type="hidden" name="routes[${routeIndex}][markers]" id="route-markers-${routeIndex}" class="route-markers-input"/>
                                                                                                 </div>
-                                                                                            </div>
-                                                                                        `;
+                                                                                            `;
             container.insertAdjacentHTML('beforeend', html);
 
             // Initialize polyline for this new route
