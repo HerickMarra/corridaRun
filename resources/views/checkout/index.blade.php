@@ -59,12 +59,22 @@
                                         readonly type="email" value="{{ auth()->user()->email }}" />
                                 </div>
                                 <div class="space-y-1.5">
-                                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">CPF
-                                        <span class="text-red-500">*</span></label>
-                                    <input name="cpf" id="cpf-input" required
-                                        class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all"
-                                        placeholder="000.000.000-00" type="text" value="{{ auth()->user()->cpf }}"
-                                        maxlength="14" />
+                                    <div class="relative">
+                                        <input name="cpf" id="cpf-input" required
+                                            class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all @if(auth()->user()->cpf) opacity-70 cursor-not-allowed @endif"
+                                            placeholder="000.000.000-00" type="text" value="{{ auth()->user()->cpf }}"
+                                            maxlength="14" @if(auth()->user()->cpf) readonly @endif />
+                                        @if(auth()->user()->cpf)
+                                            <div class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400"
+                                                title="CPF já cadastrado e bloqueado para edição">
+                                                <span class="material-symbols-outlined text-sm">lock</span>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    @if(auth()->user()->cpf)
+                                        <p class="text-[9px] text-slate-400 font-bold uppercase mt-1 ml-1 italic">CPF vinculado
+                                            ao seu perfil. Não é possível alterá-lo no checkout.</p>
+                                    @endif
                                     <p class="text-xs text-red-500 hidden" id="cpf-error">CPF inválido. Por favor, insira um
                                         CPF válido.</p>
                                 </div>

@@ -86,18 +86,30 @@ class CheckoutController extends Controller
         $request->validate($rules);
 
         // Limpar e validar CPF
-        $cpf = preg_replace('/\D/', '', $request->cpf);
+        $cpfClean = preg_replace('/\D/', '', $request->cpf);
 
-        if (!$this->isValidCPF($cpf)) {
+        if (!$this->isValidCPF($cpfClean)) {
             return back()->withErrors(['cpf' => 'CPF inválido. Por favor, insira um CPF válido.'])->withInput();
         }
 
-        // Atualizar CPF do usuário se diferente
-        if ($user->cpf !== $cpf) {
-            $user->update(['cpf' => $cpf]);
+        // Verifica se este CPF já está inscrito neste evento
+        $alreadyEnrolled = \App\Models\OrderItem::where('participant_cpf', $cpfClean)
+            ->whereHas('category', function ($query) use ($category) {
+                $query->where('event_id', $category->event_id);
+            })
+            ->where('status', '!=', \App\Enums\OrderStatus::Cancelled)
+            ->exists();
+
+        if ($alreadyEnrolled) {
+            return back()->withErrors(['cpf' => 'Este CPF já possui uma inscrição ativa para este evento.'])->withInput();
         }
 
-        return \DB::transaction(function () use ($request, $category, $user, $asaasService, $cpf) {
+        // Atualizar CPF do usuário se diferente
+        if ($user->cpf !== $cpfClean) {
+            $user->update(['cpf' => $cpfClean]);
+        }
+
+        return \DB::transaction(function () use ($request, $category, $user, $asaasService, $cpfClean) {
             // Reload category with lock to prevent race conditions
             $category = Category::where('id', $category->id)->lockForUpdate()->first();
 
