@@ -11,6 +11,7 @@ use App\Http\Controllers\DashboardController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/calendario', [App\Http\Controllers\CalendarController::class, 'index'])->name('calendar');
 Route::get('/seja-parceiro', [HomeController::class, 'partner'])->name('partner');
+Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 
 Route::get('/event/{slug}', [EventController::class, 'show'])->name('events.show');
 
@@ -86,7 +87,10 @@ Route::middleware(['auth'])->group(function () {
             Route::put('/corridas/{event}', [App\Http\Controllers\Admin\RaceController::class, 'update'])->name('corridas.update');
             Route::delete('/corridas/{event}', [App\Http\Controllers\Admin\RaceController::class, 'destroy'])->name('corridas.destroy');
 
-            // Admin Users Management (Apenas SuperAdmin e Admin)
+            // Newsletter Management
+            Route::get('/newsletter', [App\Http\Controllers\Admin\NewsletterController::class, 'index'])->name('newsletter.index');
+            Route::delete('/newsletter/{subscriber}', [App\Http\Controllers\Admin\NewsletterController::class, 'destroy'])->name('newsletter.destroy');
+
             Route::resource('users', App\Http\Controllers\Admin\AdminUserController::class)->names('users');
 
             // API Routes for Admin UI

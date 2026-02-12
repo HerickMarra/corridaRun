@@ -191,15 +191,61 @@
                 <div class="flex flex-col gap-4">
                     <p class="text-xs text-slate-500 leading-relaxed font-medium">Receba avisos de novas etapas e
                         pré-vendas exclusivas.</p>
-                    <div class="relative">
-                        <input
+                    <form id="newsletter-form" class="relative">
+                        @csrf
+                        <input id="newsletter-email" name="email" required
                             class="w-full bg-slate-50 border border-slate-200 rounded-full px-5 py-4 text-sm focus:ring-primary focus:border-primary transition-all placeholder:text-slate-400"
                             placeholder="Seu e-mail" type="email" />
-                        <button
-                            class="absolute right-2 top-2 bg-secondary text-white font-bold px-5 py-2 rounded-full text-[10px] uppercase tracking-widest hover:bg-black transition-all">Assinar</button>
-                    </div>
+                        <button type="submit" id="newsletter-btn"
+                            class="absolute right-2 top-2 bg-secondary text-white font-bold px-5 py-2 rounded-full text-[10px] uppercase tracking-widest hover:bg-black transition-all disabled:opacity-50">Assinar</button>
+                    </form>
+                    <p id="newsletter-message" class="text-[10px] font-bold uppercase mt-2 hidden"></p>
                 </div>
             </div>
+
+            <script>
+                document.getElementById('newsletter-form').addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const form = this;
+                    const emailInput = document.getElementById('newsletter-email');
+                    const btn = document.getElementById('newsletter-btn');
+                    const msg = document.getElementById('newsletter-message');
+                    const email = emailInput.value;
+
+                    btn.disabled = true;
+                    btn.innerText = '...';
+
+                    fetch("{{ route('newsletter.subscribe') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({ email: email })
+                    })
+                        .then(response => response.json().then(data => ({ status: response.status, body: data })))
+                        .then(res => {
+                            msg.innerText = res.body.message;
+                            msg.classList.remove('hidden', 'text-green-600', 'text-red-500');
+
+                            if (res.status === 200) {
+                                msg.classList.add('text-green-600');
+                                emailInput.value = '';
+                            } else {
+                                msg.classList.add('text-red-500');
+                            }
+                        })
+                        .catch(error => {
+                            msg.innerText = 'Ocorreu um erro. Tente novamente mais tarde.';
+                            msg.classList.remove('hidden');
+                            msg.classList.add('text-red-500');
+                        })
+                        .finally(() => {
+                            btn.disabled = false;
+                            btn.innerText = 'Assinar';
+                        });
+                });
+            </script>
         </div>
         <div
             class="max-w-[1440px] mx-auto mt-24 pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6">
