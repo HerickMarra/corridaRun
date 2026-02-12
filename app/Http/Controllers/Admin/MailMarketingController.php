@@ -11,6 +11,7 @@ use App\Models\OrderItem;
 use App\Mail\DynamicMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use App\Models\NewsletterSubscriber;
 use App\Enums\UserRole;
 
 class MailMarketingController extends Controller
@@ -57,7 +58,7 @@ class MailMarketingController extends Controller
             'subject' => $request->subject,
             'content' => $template->content,
             'template_id' => $template->id,
-            'filters' => $request->only(['event_ids', 'target_all']),
+            'filters' => $request->only(['event_ids', 'target_all', 'target_newsletter']),
             'scheduled_at' => $request->scheduled_at,
             'status' => 'draft',
             'total_recipients' => $count,
@@ -73,6 +74,10 @@ class MailMarketingController extends Controller
 
     private function buildRecipientQuery(Request $request)
     {
+        if ($request->target_newsletter) {
+            return NewsletterSubscriber::where('status', 'active');
+        }
+
         $query = User::where('role', UserRole::Client);
 
         if ($request->target_all) {

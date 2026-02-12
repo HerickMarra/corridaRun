@@ -67,6 +67,18 @@
                             </div>
                         </label>
 
+                        <label
+                            class="flex items-center gap-3 p-4 rounded-2xl bg-slate-50 border-2 border-transparent cursor-pointer hover:border-primary/20 transition-all group has-[:checked]:bg-primary/5 has-[:checked]:border-primary">
+                            <input type="checkbox" name="target_newsletter" value="1" id="targetNewsletter"
+                                class="size-5 rounded-lg border-slate-200 text-primary focus:ring-primary">
+                            <div>
+                                <p class="text-sm font-black text-slate-800 uppercase italic">Enviar para NEWSLETTER
+                                </p>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Inscritos via
+                                    rodapé do site</p>
+                            </div>
+                        </label>
+
                         <div id="eventSelection">
                             <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 block">Ou
                                 selecione as corridas específicas:</label>
@@ -142,6 +154,8 @@
             const recipientCountSpan = document.getElementById('recipientCount');
             const eventSelectionDiv = document.getElementById('eventSelection');
 
+            const targetNewsletter = document.getElementById('targetNewsletter');
+
             function updateCount() {
                 const formData = new FormData(document.getElementById('campaignForm'));
                 const params = new URLSearchParams();
@@ -163,9 +177,21 @@
 
             targetAll.addEventListener('change', function () {
                 if (this.checked) {
+                    targetNewsletter.checked = false;
                     eventSelectionDiv.classList.add('opacity-50', 'pointer-events-none');
                     eventCheckboxes.forEach(cb => cb.checked = false);
-                } else {
+                } else if (!targetNewsletter.checked) {
+                    eventSelectionDiv.classList.remove('opacity-50', 'pointer-events-none');
+                }
+                updateCount();
+            });
+
+            targetNewsletter.addEventListener('change', function () {
+                if (this.checked) {
+                    targetAll.checked = false;
+                    eventSelectionDiv.classList.add('opacity-50', 'pointer-events-none');
+                    eventCheckboxes.forEach(cb => cb.checked = false);
+                } else if (!targetAll.checked) {
                     eventSelectionDiv.classList.remove('opacity-50', 'pointer-events-none');
                 }
                 updateCount();

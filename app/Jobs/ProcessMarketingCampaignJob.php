@@ -64,8 +64,20 @@ class ProcessMarketingCampaignJob implements ShouldQueue
 
     private function getRecipients()
     {
-        $query = User::where('role', UserRole::Client);
         $filters = $this->campaign->filters;
+
+        if (isset($filters['target_newsletter']) && $filters['target_newsletter']) {
+            return \App\Models\NewsletterSubscriber::where('status', 'active')
+                ->get()
+                ->map(function ($sub) {
+                    return (object) [
+                        'name' => 'Assinante',
+                        'email' => $sub->email
+                    ];
+                });
+        }
+
+        $query = User::where('role', UserRole::Client);
 
         if (isset($filters['target_all']) && $filters['target_all']) {
             return $query->get();
