@@ -20,17 +20,20 @@ class CheckoutController extends Controller
             }
         }
 
-        // Bloqueia se o evento não estiver publicado ou se as inscrições já encerraram
+        // Bloqueia se o evento não estiver publicado ou se as inscrições já encerraram ou ainda não começaram
         $isClosed = $category->event->status->value === 'closed';
         $isExpired = $category->event->registration_end
             ? $category->event->registration_end < now()
             : $category->event->event_date < now();
+        $notStarted = $category->event->registration_start && $category->event->registration_start > now();
 
-        if ($category->event->status !== \App\Enums\EventStatus::Published || $isExpired) {
+        if ($category->event->status !== \App\Enums\EventStatus::Published || $isExpired || $notStarted) {
             $statusLabel = 'indisponíveis';
 
             if ($isExpired || $isClosed) {
                 $statusLabel = 'encerradas';
+            } elseif ($notStarted) {
+                $statusLabel = 'ainda não iniciadas';
             } elseif ($category->event->status->value === 'cancelled') {
                 $statusLabel = 'canceladas';
             }
@@ -116,10 +119,11 @@ class CheckoutController extends Controller
             $isExpired = $category->event->registration_end
                 ? $category->event->registration_end < now()
                 : $category->event->event_date < now();
+            $notStarted = $category->event->registration_start && $category->event->registration_start > now();
 
-            if ($category->event->status !== \App\Enums\EventStatus::Published || $isExpired) {
+            if ($category->event->status !== \App\Enums\EventStatus::Published || $isExpired || $notStarted) {
                 return redirect()->route('events.show', $category->event->slug)
-                    ->with('error', 'Infelizmente as inscrições para este evento não estão mais disponíveis.');
+                    ->with('error', 'Infelizmente as inscrições para este evento não estão disponíveis no momento.');
             }
 
             if ($category->available_tickets <= 0) {

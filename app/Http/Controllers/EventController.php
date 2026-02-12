@@ -9,9 +9,18 @@ class EventController extends Controller
 {
     public function show(Request $request, $slug)
     {
-        $event = Event::where('slug', $slug)
-            ->whereIn('status', [\App\Enums\EventStatus::Published, \App\Enums\EventStatus::Closed])
-            ->firstOrFail();
+        $query = Event::where('slug', $slug);
+
+        $user = auth()->user();
+        $isAdmin = $user && in_array($user->role->value, ['super-admin', 'admin', 'organizer']);
+
+        if ($isAdmin) {
+            $query->whereIn('status', [\App\Enums\EventStatus::Published, \App\Enums\EventStatus::Closed, \App\Enums\EventStatus::Draft]);
+        } else {
+            $query->whereIn('status', [\App\Enums\EventStatus::Published, \App\Enums\EventStatus::Closed]);
+        }
+
+        $event = $query->firstOrFail();
 
         $kitHash = $request->get('kit');
 
