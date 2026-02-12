@@ -80,7 +80,8 @@
                                         <div>
                                             <p class="text-xs font-bold text-slate-700 uppercase italic">{{ $event->name }}</p>
                                             <p class="text-[9px] text-slate-400 font-bold uppercase tracking-tighter">
-                                                {{ $event->event_date->format('d/m/Y') }}</p>
+                                                {{ $event->event_date->format('d/m/Y') }}
+                                            </p>
                                         </div>
                                     </label>
                                 @endforeach
@@ -103,7 +104,14 @@
                         </div>
                         <div class="flex justify-between items-center py-3 border-b border-slate-50">
                             <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Método</span>
-                            <span class="text-[10px] font-black text-slate-600 uppercase">E-mail Direto</span>
+                            <span class="text-[10px] font-black text-slate-600 uppercase">Fila Assíncrona (Job)</span>
+                        </div>
+                        <div class="space-y-1.5 pt-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Agendar para
+                                (Opcional)</label>
+                            <input type="datetime-local" name="scheduled_at" id="scheduledAt"
+                                class="w-full bg-slate-50 border-transparent rounded-xl px-4 py-3 text-xs font-bold focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all">
+                            <p class="text-[9px] text-slate-400 ml-1 font-medium">Deixe vazio para enviar agora.</p>
                         </div>
                     </div>
 
@@ -119,8 +127,8 @@
 
                     <button type="submit" id="btnSubmit"
                         class="w-full bg-primary text-white py-5 rounded-2xl text-sm font-black uppercase tracking-widest hover:bg-secondary transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2">
-                        <span class="material-symbols-outlined">send</span>
-                        Disparar Agora
+                        <span class="material-symbols-outlined" id="btnIcon">send</span>
+                        <span id="btnText">Disparar Agora</span>
                     </button>
                 </div>
             </div>
@@ -165,6 +173,18 @@
 
             eventCheckboxes.forEach(cb => {
                 cb.addEventListener('change', updateCount);
+            });
+
+            document.getElementById('scheduledAt').addEventListener('change', function () {
+                const btnText = document.getElementById('btnText');
+                const btnIcon = document.getElementById('btnIcon');
+                if (this.value) {
+                    btnText.textContent = 'Agendar Campanha';
+                    btnIcon.textContent = 'schedule';
+                } else {
+                    btnText.textContent = 'Disparar Agora';
+                    btnIcon.textContent = 'send';
+                }
             });
 
             document.getElementById('campaignForm').addEventListener('submit', function () {

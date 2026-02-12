@@ -37,7 +37,7 @@
                             </td>
                             <td class="px-8 py-6">
                                 <span class="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-black uppercase">
-                                    {{ $campaign->total_recipients }} pessoas
+                                    {{ $campaign->processed_recipients }} / {{ $campaign->total_recipients }} pessoas
                                 </span>
                             </td>
                             <td class="px-8 py-6">
@@ -45,12 +45,20 @@
                                     <span class="px-3 py-1 bg-green-100 text-green-600 rounded-lg text-[10px] font-black uppercase">Enviado</span>
                                 @elseif($campaign->status === 'sending')
                                     <span class="px-3 py-1 bg-blue-100 text-blue-600 rounded-lg text-[10px] font-black uppercase animate-pulse">Enviando...</span>
+                                @elseif($campaign->status === 'draft' && $campaign->scheduled_at)
+                                    <span class="px-3 py-1 bg-amber-100 text-amber-600 rounded-lg text-[10px] font-black uppercase">Agendado</span>
                                 @else
                                     <span class="px-3 py-1 bg-slate-100 text-slate-400 rounded-lg text-[10px] font-black uppercase">{{ $campaign->status }}</span>
                                 @endif
                             </td>
                             <td class="px-8 py-6 text-xs font-bold text-slate-400">
-                                {{ $campaign->sent_at ? $campaign->sent_at->format('d/m/Y H:i') : '---' }}
+                                @if($campaign->sent_at)
+                                    {{ $campaign->sent_at->format('d/m/Y H:i') }}
+                                @elseif($campaign->scheduled_at)
+                                    <span class="text-amber-500">{{ $campaign->scheduled_at->format('d/m/Y H:i') }} (Agendado)</span>
+                                @else
+                                    ---
+                                @endif
                             </td>
                         </tr>
                     @empty

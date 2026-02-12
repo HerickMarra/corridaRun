@@ -12,13 +12,16 @@ class MarketingCampaign extends Model
         'content',
         'template_id',
         'filters',
+        'scheduled_at',
         'status',
         'total_recipients',
+        'processed_recipients',
         'sent_at',
     ];
 
     protected $casts = [
         'filters' => 'array',
+        'scheduled_at' => 'datetime',
         'sent_at' => 'datetime',
     ];
 

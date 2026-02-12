@@ -41,12 +41,14 @@ class MailMarketingController extends Controller
             'name' => 'required|string|max:255',
             'template_id' => 'required|exists:email_templates,id',
             'subject' => 'required|string|max:255',
+            'scheduled_at' => 'nullable|date|after:now',
         ]);
 
         $template = EmailTemplate::findOrFail($request->template_id);
-        $recipients = $this->buildRecipientQuery($request)->get();
+        $recipientQuery = $this->buildRecipientQuery($request);
+        $count = $recipientQuery->count();
 
-        if ($recipients->isEmpty()) {
+        if ($count === 0) {
             return redirect()->back()->with('error', 'Nenhum destinatário encontrado para os filtros selecionados.');
         }
 
@@ -56,30 +58,17 @@ class MailMarketingController extends Controller
             'content' => $template->content,
             'template_id' => $template->id,
             'filters' => $request->only(['event_ids', 'target_all']),
-            'status' => 'sending',
-            'total_recipients' => $recipients->count(),
+            'scheduled_at' => $request->scheduled_at,
+            'status' => 'draft',
+            'total_recipients' => $count,
         ]);
 
-        // Disparo real (Simplificado para este contexto, idealmente via Queue)
-        $successCount = 0;
-        foreach ($recipients as $recipient) {
-            try {
-                Mail::to($recipient->email)->send(new DynamicMail($template, [
-                    'nome' => $recipient->name,
-                    'email' => $recipient->email,
-                ]));
-                $successCount++;
-            } catch (\Exception $e) {
-                \Log::error("Erro ao enviar marketing para {$recipient->email}: " . $e->getMessage());
-            }
+        if (!$request->scheduled_at) {
+            \App\Jobs\ProcessMarketingCampaignJob::dispatch($campaign);
+            return redirect()->route('admin.marketing.index')->with('success', "Campanha criada! O disparo começará em instantes em segundo plano.");
         }
 
-        $campaign->update([
-            'status' => 'sent',
-            'sent_at' => now(),
-        ]);
-
-        return redirect()->route('admin.marketing.index')->with('success', "Campanha enviada com sucesso para {$successCount} atletas!");
+        return redirect()->route('admin.marketing.index')->with('success', "Campanha agendada com sucesso para " . \Carbon\Carbon::parse($request->scheduled_at)->format('d/m/Y H:i') . "!");
     }
 
     private function buildRecipientQuery(Request $request)
