@@ -13,6 +13,9 @@ Route::get('/calendario', [App\Http\Controllers\CalendarController::class, 'inde
 Route::get('/seja-parceiro', [HomeController::class, 'partner'])->name('partner');
 Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 
+// AI Support
+Route::post('/ai-support/chat', [App\Http\Controllers\AiSupportController::class, 'chat'])->name('ai.support.chat');
+
 Route::get('/event/{slug}', [EventController::class, 'show'])->name('events.show');
 
 // Auth Routes - Apenas para usuários não autenticados

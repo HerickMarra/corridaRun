@@ -279,6 +279,8 @@
         </div>
     </footer>
 
+    <x-ai-support />
+
     @stack('scripts')
 </body>
 
