@@ -45,7 +45,18 @@
         </div>
     </section>
 
-    <section class="py-24 bg-white px-6 lg:px-12">
+    <section class="py-24 bg-white px-6 lg:px-12 relative">
+    @if($event->status === \App\Enums\EventStatus::Draft)
+        <div class="fixed bottom-4 right-4 z-50">
+            <div class="bg-amber-100 border-l-4 border-amber-500 text-amber-700 p-4 rounded shadow-lg max-w-sm mt-24 lg:mt-0 lg:max-w-md mx-4 lg:mx-0" role="alert">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined">visibility_off</span>
+                    <p class="font-bold">Modo Rascunho</p>
+                </div>
+                <p class="text-sm mt-1">Este evento ainda é um rascunho. Apenas você (Administrador) pode vê-lo.</p>
+            </div>
+        </div>
+    @endif
         <div class="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-20">
             <div class="lg:col-span-7">
                 <h2 class="text-4xl font-black uppercase italic tracking-tighter mb-10">
@@ -122,6 +133,38 @@
             
             <div class="lg:col-span-5">
                 <div class="sticky top-32 space-y-8">
+                    @if($userRegistration)
+                        {{-- Card de Já Inscrito --}}
+                        <div class="bg-emerald-500 rounded-3xl p-8 card-shadow relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 transition-transform group-hover:scale-110"></div>
+                            
+                            <div class="relative z-10">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="size-10 rounded-xl bg-white/20 flex items-center justify-center text-white">
+                                        <span class="material-symbols-outlined">stars</span>
+                                    </div>
+                                    <h3 class="text-xl font-black uppercase italic tracking-tight text-white">Você está <span class="opacity-80">Inscrito!</span></h3>
+                                </div>
+                                
+                                <p class="text-white/80 text-sm font-medium mb-6">
+                                    Sua vaga está garantida na categoria <strong class="text-white font-black">{{ $userRegistration->category->name }}</strong>. 
+                                    Prepare-se para o desafio!
+                                </p>
+
+                                <div class="flex flex-col gap-3">
+                                    <a href="{{ route('client.receipt', $userRegistration->ticket->id) }}" class="inline-flex items-center justify-center gap-2 bg-white text-emerald-600 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-50 transition-all">
+                                        <span class="material-symbols-outlined text-sm">qr_code</span>
+                                        Ver Comprovante
+                                    </a>
+                                    <a href="{{ route('client.dashboard') }}" class="inline-flex items-center justify-center gap-2 bg-emerald-600 text-white border border-emerald-400/30 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-700 transition-all">
+                                        <span class="material-symbols-outlined text-sm">dashboard</span>
+                                        Painel do Atleta
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     <div class="bg-background-soft rounded-3xl p-10 card-shadow" style="box-shadow: 0 10px 40px -15px rgba(0, 0, 0, 0.05);">
                         <h3 class="text-xl font-black uppercase italic tracking-tight mb-8">Informações</h3>
                         <div class="space-y-6">

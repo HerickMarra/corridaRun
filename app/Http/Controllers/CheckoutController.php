@@ -81,12 +81,33 @@ class CheckoutController extends Controller
             'cpf' => 'required|string|size:14', // Formato: 000.000.000-00
         ];
 
+        // Validação de dados cadastrais faltantes
+        if (!$user->birth_date) {
+            $rules['birth_date'] = 'required|date|before:today';
+        }
+        if (!$user->gender) {
+            $rules['gender'] = 'required|in:M,F';
+        }
+
         // Só exigir payment_method se o total for maior que 0
         if ($total > 0) {
             $rules['payment_method'] = 'required|in:pix,boleto,credit_card';
         }
 
         $request->validate($rules);
+
+        // Atualizar dados do usuário se vierem na request
+        $userDataToUpdate = [];
+        if (!$user->birth_date && $request->filled('birth_date')) {
+            $userDataToUpdate['birth_date'] = $request->birth_date;
+        }
+        if (!$user->gender && $request->filled('gender')) {
+            $userDataToUpdate['gender'] = $request->gender;
+        }
+
+        if (!empty($userDataToUpdate)) {
+            $user->update($userDataToUpdate);
+        }
 
         // Limpar e validar CPF
         $cpfClean = preg_replace('/\D/', '', $request->cpf);
@@ -95,16 +116,25 @@ class CheckoutController extends Controller
             return back()->withErrors(['cpf' => 'CPF inválido. Por favor, insira um CPF válido.'])->withInput();
         }
 
-        // Verifica se este CPF já está inscrito neste evento
+        // Verifica se este CPF já está inscrito neste evento com pagamento CONFIRMADO
         $alreadyEnrolled = \App\Models\OrderItem::where('participant_cpf', $cpfClean)
             ->whereHas('category', function ($query) use ($category) {
                 $query->where('event_id', $category->event_id);
             })
-            ->where('status', '!=', \App\Enums\OrderStatus::Cancelled)
+            ->where('status', \App\Enums\OrderStatus::Paid)
             ->exists();
 
         if ($alreadyEnrolled) {
             return back()->withErrors(['cpf' => 'Este CPF já possui uma inscrição ativa para este evento.'])->withInput();
+        }
+
+        // Verifica se o CPF já pertence a outro usuário
+        $exists = \App\Models\User::where('cpf', $cpfClean)
+            ->where('id', '!=', $user->id)
+            ->exists();
+
+        if ($exists) {
+            return back()->withErrors(['cpf' => 'Este CPF já está vinculado a outro usuário.'])->withInput();
         }
 
         // Atualizar CPF do usuário se diferente
@@ -165,9 +195,9 @@ class CheckoutController extends Controller
             $orderItem = $order->items()->create([
                 'category_id' => $category->id,
                 'participant_name' => $user->name,
-                'participant_cpf' => $cpf,
+                'participant_cpf' => $cpfClean,
                 'participant_email' => $user->email,
-                'participant_birth_date' => $user->birth_date ?? now()->subYears(20),
+                'participant_birth_date' => $user->birth_date,
                 'price' => $finalPrice,
                 'status' => $total > 0 ? \App\Enums\OrderStatus::Pending : \App\Enums\OrderStatus::Paid,
                 'custom_responses' => $request->custom_responses,
@@ -312,12 +342,29 @@ class CheckoutController extends Controller
         }
 
         $payment = $order->payments()->latest()->first();
+        $isPaid = $order->status === \App\Enums\OrderStatus::Paid ||
+            ($payment && $payment->status === \App\Enums\PaymentStatus::Approved);
+
+        // Se ainda não estiver pago no banco local, verifica no Asaas (apenas se tiver um pagamento asaas salvo)
+        if (!$isPaid && $payment && $payment->asaas_payment_id) {
+            try {
+                $asaasService = app(\App\Services\AsaasService::class);
+                $asaasPayment = $asaasService->getPayment($payment->asaas_payment_id);
+
+                if ($asaasPayment && in_array($asaasPayment['status'], ['CONFIRMED', 'RECEIVED'])) {
+                    // Confirma o pagamento localmente usando o serviço centralizado
+                    app(\App\Services\OrderPaymentService::class)->confirmPayment($order, $payment, $asaasPayment);
+                    $isPaid = true;
+                }
+            } catch (\Exception $e) {
+                \Log::error('Erro ao verificar status direto no Asaas: ' . $e->getMessage());
+            }
+        }
 
         return response()->json([
-            'order_status' => $order->status->value,
-            'payment_status' => $payment ? $payment->status->value : null,
-            'is_paid' => $order->status === \App\Enums\OrderStatus::Paid ||
-                ($payment && $payment->status === \App\Enums\PaymentStatus::Approved),
+            'order_status' => $order->refresh()->status->value,
+            'payment_status' => $payment ? $payment->refresh()->status->value : null,
+            'is_paid' => $isPaid,
         ]);
     }
 

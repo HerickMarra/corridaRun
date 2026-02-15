@@ -19,7 +19,7 @@
             </div>
 
             {{-- Comprovante Principal --}}
-            <div class="bg-white rounded-3xl card-shadow border border-slate-100 overflow-hidden mb-8" id="receipt-content">
+            <div class="bg-white card-shadow border border-slate-100 overflow-hidden mb-8" id="receipt-content">
                 {{-- Cabeçalho com Evento --}}
                 <div class="bg-gradient-to-br from-primary to-secondary p-8 md:p-12 text-white relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
@@ -93,9 +93,11 @@
                 <div class="p-8 md:p-12 bg-slate-50">
                     <div class="flex flex-col md:flex-row items-center gap-8">
                         <div class="flex-shrink-0">
-                            <div class="bg-white p-6 rounded-2xl border-2 border-slate-200">
-                                <div class="w-48 h-48 bg-slate-100 rounded-xl flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-8xl text-slate-400">qr_code_2</span>
+                            <div class="bg-white p-6 border-2 border-slate-200">
+                                <div class="w-48 h-48 bg-white flex items-center justify-center overflow-hidden">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ $ticket->ticket_number }}" 
+                                         alt="QR Code de Retirada" 
+                                         class="w-full h-full object-contain">
                                 </div>
                             </div>
                         </div>

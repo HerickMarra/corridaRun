@@ -165,6 +165,21 @@ class AsaasService
         return null;
     }
 
+    /**
+     * Get payment details by ID.
+     */
+    public function getPayment($paymentId)
+    {
+        $response = $this->request()->get("/payments/{$paymentId}");
+
+        if ($response->successful()) {
+            return $response->json();
+        }
+
+        Log::error('Asaas Get Payment Error', ['payment_id' => $paymentId, 'response' => $response->json()]);
+        return null;
+    }
+
     protected function request()
     {
         return Http::withHeaders([

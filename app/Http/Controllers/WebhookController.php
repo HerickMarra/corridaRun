@@ -72,58 +72,15 @@ class WebhookController extends Controller
 
     protected function handlePaymentConfirmed(Order $order, ?Payment $payment, array $paymentData)
     {
-        if ($payment) {
-            $payment->update([
-                'status' => \App\Enums\PaymentStatus::Approved,
-                'paid_at' => now(),
-                'transaction_id' => $paymentData['id'],
-            ]);
-        }
-
-        $order->update(['status' => \App\Enums\OrderStatus::Paid]);
-
-        // Activate Order Items / Tickets
-        foreach ($order->items as $item) {
-            $item->update(['status' => 'paid']);
-            if ($item->ticket) {
-                $item->ticket->update(['status' => \App\Enums\TicketStatus::Active]);
-            } else {
-                // Create ticket if not exists (fail-safe)
-                $item->ticket()->create([
-                    'ticket_number' => 'TKT-' . strtoupper(uniqid()),
-                    'status' => \App\Enums\TicketStatus::Active,
-                ]);
-            }
-        }
-
-        Log::info("Order #{$order->id} confirmed via Asaas Webhook.");
-
-        // Enviar E-mail de Confirmação
-        $user = $order->user;
-        $template = EmailTemplate::where('slug', 'order_confirmation')->where('is_active', true)->first();
-        if ($template && $user) {
-            try {
-                $firstItem = $order->items->first();
-                Mail::to($user->email)->send(new DynamicMail($template, [
-                    'nome' => $user->name,
-                    'prova' => $firstItem->category->event->name,
-                    'inscricao' => $order->order_number,
-                    'data' => $firstItem->category->event->event_date->format('d/m/Y'),
-                    'link_evento' => route('events.show', $firstItem->category->event->slug),
-                ]));
-            } catch (\Exception $e) {
-                \Log::error('Erro ao enviar e-mail de confirmação via Webhook: ' . $e->getMessage());
-            }
-        }
+        app(\App\Services\OrderPaymentService::class)->confirmPayment($order, $payment, $paymentData);
     }
 
     protected function handlePaymentFailed(Order $order, ?Payment $payment, array $paymentData)
     {
         if ($payment) {
-            $payment->update(['status' => \App\Enums\PaymentStatus::Rejected]); // Or Cancelled
+            $payment->update(['status' => \App\Enums\PaymentStatus::Rejected]);
         }
 
-        //$order->update(['status' => \App\Enums\OrderStatus::Cancelled]); // Optional: Determine if overdue cancels immediately
         Log::info("Order #{$order->id} payment failed/overdue/refunded via Asaas Webhook.");
     }
 }

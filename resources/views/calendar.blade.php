@@ -19,19 +19,7 @@
             <section class="mb-12">
                 <form method="GET" action="{{ route('calendar') }}"
                     class="bg-white rounded-2xl p-8 shadow-lg border border-slate-100">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="flex flex-col">
-                            <label
-                                class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-2">Estado</label>
-                            <select name="state"
-                                class="border-slate-200 rounded-lg text-sm font-medium py-3 px-4 focus:border-primary focus:ring-primary">
-                                <option value="">Todos os Estados</option>
-                                @foreach($states as $state)
-                                    <option value="{{ $state }}" {{ request('state') == $state ? 'selected' : '' }}>{{ $state }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="flex flex-col">
                             <label class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-2">Mês</label>
                             <select name="month"

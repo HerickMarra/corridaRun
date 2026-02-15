@@ -43,22 +43,24 @@
                                 </div>
                                 <h2 class="text-lg font-black uppercase italic">Identificação do Atleta</h2>
                             </div>
-                            <div class="grid md:grid-cols-2 gap-6">
-                                <div class="space-y-1.5">
-                                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Nome
-                                        Completo</label>
-                                    <input
-                                        class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all disabled:opacity-70"
-                                        readonly type="text" value="{{ auth()->user()->name }}" />
+
+                            <!-- Resumo de Dados Preenchidos -->
+                            <div class="bg-slate-50 rounded-2xl p-4 mb-6 flex flex-wrap gap-4 items-center justify-between">
+                                <div>
+                                    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Atleta</p>
+                                    <p class="text-sm font-bold text-slate-700">{{ auth()->user()->name }}</p>
                                 </div>
+                                <div>
+                                    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">E-mail</p>
+                                    <p class="text-sm font-bold text-slate-700">{{ auth()->user()->email }}</p>
+                                </div>
+                            </div>
+
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <!-- CPF (Sempre visível/readonly) -->
                                 <div class="space-y-1.5">
                                     <label
-                                        class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">E-mail</label>
-                                    <input
-                                        class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all disabled:opacity-70"
-                                        readonly type="email" value="{{ auth()->user()->email }}" />
-                                </div>
-                                <div class="space-y-1.5">
+                                        class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">CPF</label>
                                     <div class="relative">
                                         <input name="cpf" id="cpf-input" required
                                             class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all @if(auth()->user()->cpf) opacity-70 cursor-not-allowed @endif"
@@ -71,13 +73,33 @@
                                             </div>
                                         @endif
                                     </div>
-                                    @if(auth()->user()->cpf)
-                                        <p class="text-[9px] text-slate-400 font-bold uppercase mt-1 ml-1 italic">CPF vinculado
-                                            ao seu perfil. Não é possível alterá-lo no checkout.</p>
-                                    @endif
-                                    <p class="text-xs text-red-500 hidden" id="cpf-error">CPF inválido. Por favor, insira um
-                                        CPF válido.</p>
+                                    <p class="text-xs text-red-500 hidden" id="cpf-error">CPF inválido.</p>
                                 </div>
+
+                                <!-- Data de Nascimento (Condicional) -->
+                                @if(!auth()->user()->birth_date)
+                                    <div class="space-y-1.5">
+                                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Data
+                                            de Nascimento <span class="text-red-500">*</span></label>
+                                        <input name="birth_date" type="date" required
+                                            class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all" />
+                                    </div>
+                                @endif
+
+                                <!-- Gênero (Condicional) -->
+                                @if(!auth()->user()->gender)
+                                    <div class="space-y-1.5">
+                                        <label
+                                            class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Gênero
+                                            <span class="text-red-500">*</span></label>
+                                        <select name="gender" required
+                                            class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all appearance-none">
+                                            <option value="">Selecione...</option>
+                                            <option value="M">Masculino</option>
+                                            <option value="F">Feminino</option>
+                                        </select>
+                                    </div>
+                                @endif
                             </div>
                         </section>
 

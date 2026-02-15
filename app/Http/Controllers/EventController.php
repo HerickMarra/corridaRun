@@ -36,6 +36,18 @@ class EventController extends Controller
 
         $event->setRelation('categories', $categories);
 
-        return view('events.show', compact('event'));
+        // Check if user is already registered
+        $userRegistration = null;
+        if (auth()->check()) {
+            $userRegistration = \App\Models\OrderItem::where('participant_cpf', auth()->user()->cpf)
+                ->whereHas('category', function ($query) use ($event) {
+                    $query->where('event_id', $event->id);
+                })
+                ->where('status', 'paid')
+                ->with(['category', 'ticket'])
+                ->first();
+        }
+
+        return view('events.show', compact('event', 'userRegistration'));
     }
 }

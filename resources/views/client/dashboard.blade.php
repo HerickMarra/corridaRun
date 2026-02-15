@@ -259,11 +259,11 @@
                         </svg>
                     </div>
                     <div class="relative z-10">
-                        <p class="text-[10px] font-black uppercase text-primary tracking-[0.3em] mb-2">Pontos Acumulados</p>
+                        <p class="text-[10px] font-black uppercase text-white tracking-[0.3em] mb-2">Pontos Acumulados</p>
                         <p class="text-4xl font-black italic mb-6">12.450 <span
                                 class="text-xs uppercase not-italic tracking-normal text-white/40">pts</span></p>
                         <button
-                            class="text-xs font-black uppercase tracking-widest text-primary hover:text-white transition-colors">Resgatar
+                            class="text-xs font-black uppercase tracking-widest text-white hover:text-white/80 transition-colors">Resgatar
                             Benefícios →</button>
                     </div>
                 </div>

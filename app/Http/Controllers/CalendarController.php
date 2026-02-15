@@ -11,33 +11,28 @@ class CalendarController extends Controller
     {
         $query = Event::with('categories')
             ->where('status', 'published')
-            ->where('event_date', '>=', now())
             ->orderBy('event_date', 'asc');
 
-        // Filter by state
-        if ($request->filled('state')) {
-            $query->where('state', $request->state);
+        // Se não houver filtro de mês, mostra do dia atual em diante
+        if (!$request->filled('month')) {
+            $query->where('event_date', '>=', now()->startOfDay());
         }
 
-        // Filter by month
+        // Filtrar por mês
         if ($request->filled('month')) {
             $month = $request->month;
             $query->whereMonth('event_date', $month);
+            // Garante que pegue eventos do ano atual ou futuro se o mês já passou
+            $query->whereYear('event_date', '>=', now()->year);
         }
 
         $events = $query->get();
 
-        // Group events by month
+        // Agrupar eventos por mês
         $eventsByMonth = $events->groupBy(function ($event) {
             return $event->event_date->format('Y-m');
         });
 
-        // Get unique states for filter
-        $states = Event::where('status', 'published')
-            ->distinct()
-            ->pluck('state')
-            ->sort();
-
-        return view('calendar', compact('eventsByMonth', 'states'));
+        return view('calendar', compact('eventsByMonth'));
     }
 }
