@@ -107,6 +107,10 @@ Route::middleware(['auth'])->group(function () {
             // Landing Pages Management
             Route::resource('landing-pages', App\Http\Controllers\Admin\LandingPageController::class)
                 ->names('landing-pages');
+
+            // Service Fees Management
+            Route::resource('service-fees', App\Http\Controllers\Admin\ServiceFeeController::class)
+                ->names('service-fees');
         });
 
         // Pagamentos/Vendas e Detalhes Atletas (Admin, SuperAdmin)

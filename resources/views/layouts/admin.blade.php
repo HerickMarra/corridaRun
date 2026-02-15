@@ -131,6 +131,11 @@
                     <span class="material-symbols-outlined">shopping_cart</span>
                     <span class="text-sm font-semibold">Vendas</span>
                 </a>
+                <a href="{{ route('admin.service-fees.index') }}"
+                    class="flex items-center gap-4 px-6 py-4 hover:bg-white/5 transition-all {{ request()->routeIs('admin.service-fees.*') ? 'sidebar-active' : 'text-white/70 hover:text-white' }}">
+                    <span class="material-symbols-outlined">payments</span>
+                    <span class="text-sm font-semibold">Taxas de Serviço</span>
+                </a>
                 <a href="{{ route('admin.webhook-logs.index') }}"
                     class="flex items-center gap-4 px-6 py-4 hover:bg-white/5 transition-all {{ request()->routeIs('admin.webhook-logs.*') ? 'sidebar-active' : 'text-white/70 hover:text-white' }}">
                     <span class="material-symbols-outlined">webhook</span>

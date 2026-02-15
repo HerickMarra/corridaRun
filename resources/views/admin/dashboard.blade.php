@@ -85,9 +85,11 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-slate-600">
-                                    {{ $order->items->first()->category->event->name ?? 'N/A' }}</td>
+                                    {{ $order->items->first()->category->event->name ?? 'N/A' }}
+                                </td>
                                 <td class="px-6 py-4 text-sm font-bold text-slate-800">R$
-                                    {{ number_format($order->total_amount, 2, ',', '.') }}</td>
+                                    {{ number_format($order->total_amount, 2, ',', '.') }}
+                                </td>
                                 <td class="px-6 py-4">
                                     <span
                                         class="px-2.5 py-1 {{ $order->status === \App\Enums\OrderStatus::Paid ? 'bg-green-50 text-green-600' : 'bg-yellow-50 text-yellow-600' }} text-[10px] font-extrabold uppercase rounded-full tracking-wider">
@@ -119,6 +121,17 @@
                     <div>
                         <p class="text-sm font-bold text-slate-800">Novo Evento</p>
                         <p class="text-[10px] text-slate-500 font-medium">Cadastrar corrida no sistema</p>
+                    </div>
+                </a>
+                <a href="{{ route('admin.service-fees.index') }}"
+                    class="w-full flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-primary/30 hover:bg-blue-50/30 transition-all text-left group">
+                    <div
+                        class="size-10 bg-purple-50 text-purple-500 rounded-lg flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
+                        <span class="material-symbols-outlined">payments</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-slate-800">Taxas de Serviço</p>
+                        <p class="text-[10px] text-slate-500 font-medium">Configurar taxas globais</p>
                     </div>
                 </a>
                 <button

@@ -30,6 +30,7 @@ class Event extends Model
         'regulation',
         'nutrition',
         'hydration',
+        'ignore_fees',
     ];
 
     protected $casts = [
@@ -37,6 +38,7 @@ class Event extends Model
         'registration_start' => 'datetime',
         'registration_end' => 'datetime',
         'status' => \App\Enums\EventStatus::class,
+        'ignore_fees' => 'boolean',
     ];
 
     public function categories(): HasMany

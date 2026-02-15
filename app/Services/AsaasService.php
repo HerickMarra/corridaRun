@@ -123,9 +123,12 @@ class AsaasService
                 'name' => $order->user->name,
                 'email' => $order->user->email,
                 'cpfCnpj' => $order->user->cpf,
-                'postalCode' => '00000000', // Should be fetched from user address
-                'addressNumber' => '0',
+                'postalCode' => preg_replace('/\D/', '', $creditCardInfo['addressInfo']['zip_code'] ?? '00000000'),
+                'addressNumber' => $creditCardInfo['addressInfo']['address_number'] ?? '0',
+                'address' => $creditCardInfo['addressInfo']['address'] ?? '',
+                'province' => $creditCardInfo['addressInfo']['neighborhood'] ?? '',
                 'phone' => $order->user->phone ?? '00000000000',
+                'mobilePhone' => $order->user->phone ?? '00000000000',
             ];
         }
 

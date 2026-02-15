@@ -16,7 +16,7 @@
 
                     <form action="{{ route('checkout.process', $category->id) }}" method="POST" id="checkout-form">
                         @csrf
-                        <input type="hidden" name="coupon_code" id="hidden-coupon-code">
+                        <input type="hidden" name="coupon_code" id="hidden-coupon-code" value="{{ old('coupon_code') }}">
 
                         {{-- Error Messages --}}
                         @if ($errors->any())
@@ -184,14 +184,23 @@
                                     <div id="credit-card-section" class="space-y-6">
                                         <div class="space-y-1.5">
                                             <label
+                                                class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Nome
+                                                no Cartão</label>
+                                            <input name="cc_holder" id="cc_holder"
+                                                class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all"
+                                                placeholder="NOME COMO ESTÁ NO CARTÃO" type="text" />
+                                        </div>
+                                        <div class="space-y-1.5">
+                                            <label
                                                 class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Número
                                                 do Cartão</label>
                                             <div class="relative">
-                                                <input
+                                                <input name="cc_number" id="cc_number"
                                                     class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all"
-                                                    placeholder="0000 0000 0000 0000" type="text" />
+                                                    placeholder="0000 0000 0000 0000" type="text" maxlength="19" />
                                                 <div class="absolute right-5 top-1/2 -translate-y-1/2 flex gap-2">
-                                                    <div class="h-6 w-10 bg-slate-200 rounded-md"></div>
+                                                    <span
+                                                        class="material-symbols-outlined text-slate-300">credit_card</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -199,16 +208,68 @@
                                             <div class="space-y-1.5">
                                                 <label
                                                     class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Validade</label>
-                                                <input
+                                                <input name="cc_expiry" id="cc_expiry"
                                                     class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all"
-                                                    placeholder="MM/AA" type="text" />
+                                                    placeholder="MM/AA" type="text" maxlength="5" />
                                             </div>
                                             <div class="space-y-1.5">
                                                 <label
                                                     class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">CVV</label>
-                                                <input
+                                                <input name="cc_cvv" id="cc_cvv"
                                                     class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all"
-                                                    placeholder="123" type="text" />
+                                                    placeholder="123" type="text" maxlength="4" />
+                                            </div>
+                                        </div>
+
+                                        <div class="pt-4 border-t border-slate-100">
+                                            <p
+                                                class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 ml-1">
+                                                Endereço de Cobrança</p>
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <div class="md:col-span-1 space-y-1.5">
+                                                    <label
+                                                        class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">CEP</label>
+                                                    <input name="zip_code" id="zip_code"
+                                                        value="{{ auth()->user()->zip_code }}"
+                                                        class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all"
+                                                        placeholder="00000-000" type="text" />
+                                                </div>
+                                                <div class="md:col-span-2 space-y-1.5">
+                                                    <label
+                                                        class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Endereço</label>
+                                                    <input name="address" id="address" value="{{ auth()->user()->address }}"
+                                                        class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all"
+                                                        placeholder="Logradouro" type="text" />
+                                                </div>
+                                                <div class="space-y-1.5">
+                                                    <label
+                                                        class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Número</label>
+                                                    <input name="address_number" id="address_number"
+                                                        class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all"
+                                                        placeholder="S/N" type="text" />
+                                                </div>
+                                                <div class="space-y-1.5">
+                                                    <label
+                                                        class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Bairro</label>
+                                                    <input name="neighborhood" id="neighborhood"
+                                                        value="{{ auth()->user()->neighborhood }}"
+                                                        class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all"
+                                                        placeholder="Bairro" type="text" />
+                                                </div>
+                                                <div class="space-y-1.5">
+                                                    <label
+                                                        class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Cidade</label>
+                                                    <input name="city" id="city" value="{{ auth()->user()->city }}"
+                                                        class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all"
+                                                        placeholder="Cidade" type="text" />
+                                                </div>
+                                                <div class="space-y-1.5">
+                                                    <label
+                                                        class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">UF</label>
+                                                    <input name="state" id="state" value="{{ auth()->user()->state }}"
+                                                        class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold focus:bg-white transition-all uppercase"
+                                                        placeholder="UF" type="text" maxlength="2" />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -277,12 +338,27 @@
                                         class="font-medium text-green-600 uppercase tracking-widest text-[10px]">Desconto</span>
                                     <span class="font-bold text-green-600">- R$ <span id="discount-value">0,00</span></span>
                                 </div>
-                                <div class="flex justify-between items-center text-sm">
-                                    <span class="font-medium text-slate-500 uppercase tracking-widest text-[10px]">Taxa de
-                                        Serviço (7%)</span>
-                                    <span class="font-bold">R$ <span
-                                            id="service-fee-value">{{ number_format($serviceFee, 2, ',', '.') }}</span></span>
+                                <div id="fees-breakdown-container" class="space-y-4">
+                                    @if(count($feesBreakdown) > 0)
+                                        @foreach($feesBreakdown as $fee)
+                                            <div class="flex justify-between items-center text-sm">
+                                                <span
+                                                    class="font-medium text-slate-500 uppercase tracking-widest text-[10px]">{{ $fee['name'] }}</span>
+                                                <span class="font-bold text-slate-700">R$
+                                                    {{ number_format($fee['amount'], 2, ',', '.') }}</span>
+                                            </div>
+                                        @endforeach
+                                    @else
+                                        <div class="flex justify-between items-center text-sm">
+                                            <span class="font-medium text-slate-500 uppercase tracking-widest text-[10px]">Taxa
+                                                de
+                                                Serviço</span>
+                                            <span class="font-bold text-slate-700">R$ <span
+                                                    id="service-fee-value">{{ number_format($serviceFee, 2, ',', '.') }}</span></span>
+                                        </div>
+                                    @endif
                                 </div>
+                                <input type="hidden" id="service-fee-init" value="{{ $serviceFee }}">
                             </div>
 
                             <!-- Cupom de Desconto -->
@@ -291,7 +367,7 @@
                                     class="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1 mb-2 block">Cupom
                                     de Desconto</label>
                                 <div class="flex gap-2">
-                                    <input type="text" id="coupon-code" name="coupon_code" placeholder="CÓDIGO"
+                                    <input type="text" id="coupon-code" placeholder="CÓDIGO"
                                         class="flex-1 bg-white border-transparent rounded-xl px-4 py-3 text-xs font-bold uppercase focus:ring-1 focus:ring-primary/30 transition-all shadow-sm">
                                     <button type="button" id="apply-coupon"
                                         class="bg-black text-white px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-primary transition-all shadow-sm">
@@ -390,7 +466,25 @@
 
                     document.getElementById('discount-row').classList.remove('hidden');
                     document.getElementById('discount-value').innerText = data.discount.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-                    document.getElementById('service-fee-value').innerText = data.new_service_fee.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+
+                    // Re-render Fees Breakdown
+                    const feesContainer = document.getElementById('fees-breakdown-container');
+                    if (data.fees_breakdown && data.fees_breakdown.length > 0) {
+                        feesContainer.innerHTML = data.fees_breakdown.map(fee => `
+                                        <div class="flex justify-between items-center text-sm">
+                                            <span class="font-medium text-slate-500 uppercase tracking-widest text-[10px]">${fee.name}</span>
+                                            <span class="font-bold text-slate-700">R$ ${fee.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                                        </div>
+                                    `).join('');
+                    } else {
+                        feesContainer.innerHTML = `
+                                        <div class="flex justify-between items-center text-sm">
+                                            <span class="font-medium text-slate-500 uppercase tracking-widest text-[10px]">Taxa de Serviço</span>
+                                            <span class="font-bold text-slate-700">R$ <span id="service-fee-value">${data.new_service_fee.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span></span>
+                                        </div>
+                                    `;
+                    }
+
                     document.getElementById('final-total').innerText = data.new_total.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
 
                     if (data.new_total <= 0) {
@@ -416,6 +510,13 @@
                 btn.innerText = 'Aplicar';
             }
         });
+
+        // Auto-reapply coupon on page load if redirecting back from error
+        const initialCoupon = document.getElementById('hidden-coupon-code').value;
+        if (initialCoupon) {
+            document.getElementById('coupon-code').value = initialCoupon;
+            document.getElementById('apply-coupon').click();
+        }
     </script>
     <style>
         .payment-radio:checked+label {
@@ -514,6 +615,35 @@
                     alert('Por favor, insira um CPF válido antes de continuar.');
                     return false;
                 }
+            });
+        }
+        // Máscaras Adicionais
+        const ccNumber = document.getElementById('cc_number');
+        const ccExpiry = document.getElementById('cc_expiry');
+        const ccCvv = document.getElementById('cc_cvv');
+        const zipCode = document.getElementById('zip_code');
+
+        if (ccNumber) {
+            ccNumber.addEventListener('input', (e) => {
+                let v = e.target.value.replace(/\D/g, '');
+                v = v.replace(/(\d{4})(?=\d)/g, '$1 ');
+                e.target.value = v;
+            });
+        }
+
+        if (ccExpiry) {
+            ccExpiry.addEventListener('input', (e) => {
+                let v = e.target.value.replace(/\D/g, '');
+                if (v.length >= 2) v = v.substring(0, 2) + '/' + v.substring(2, 4);
+                e.target.value = v;
+            });
+        }
+
+        if (zipCode) {
+            zipCode.addEventListener('input', (e) => {
+                let v = e.target.value.replace(/\D/g, '');
+                if (v.length > 5) v = v.substring(0, 5) + '-' + v.substring(5, 8);
+                e.target.value = v;
             });
         }
     </script>

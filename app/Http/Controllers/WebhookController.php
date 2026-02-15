@@ -48,11 +48,9 @@ class WebhookController extends Controller
         $payment = Payment::where('asaas_payment_id', $paymentData['id'])->first();
 
         // If payment record not found by Asaas ID, try finding by Order ID (if it was created pending)
-        if (!$payment) {
-            $payment = $order->payments()->first();
-            if ($payment && !$payment->asaas_payment_id) {
-                $payment->update(['asaas_payment_id' => $paymentData['id']]);
-            }
+        /** @var \App\Models\Payment $payment */
+        if ($payment && !$payment->asaas_payment_id) {
+            $payment->update(['asaas_payment_id' => $paymentData['id']]);
         }
 
         switch ($event) {

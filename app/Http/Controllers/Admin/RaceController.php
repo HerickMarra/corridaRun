@@ -68,6 +68,7 @@ class RaceController extends Controller
             'regulation' => 'nullable|string',
             'nutrition' => 'nullable|in:not_informed,none,partial,complete',
             'hydration' => 'nullable|in:not_informed,none,partial,complete',
+            'ignore_fees' => 'nullable|boolean',
         ]);
 
 
@@ -104,6 +105,7 @@ class RaceController extends Controller
             'regulation' => $request->regulation,
             'nutrition' => $request->nutrition ?? 'not_informed',
             'hydration' => $request->hydration ?? 'not_informed',
+            'ignore_fees' => $request->has('ignore_fees'),
         ]);
 
         foreach ($request->categories as $index => $categoryData) {
@@ -204,6 +206,7 @@ class RaceController extends Controller
             'regulation' => 'nullable|string',
             'nutrition' => 'nullable|in:not_informed,none,partial,complete',
             'hydration' => 'nullable|in:not_informed,none,partial,complete',
+            'ignore_fees' => 'nullable|boolean',
         ]);
 
 
@@ -227,6 +230,7 @@ class RaceController extends Controller
             'regulation' => $request->regulation,
             'nutrition' => $request->nutrition ?? 'not_informed',
             'hydration' => $request->hydration ?? 'not_informed',
+            'ignore_fees' => $request->has('ignore_fees'),
         ]);
 
         // Sync Categories

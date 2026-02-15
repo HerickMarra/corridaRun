@@ -15,6 +15,7 @@ class Order extends Model
         'user_id',
         'order_number',
         'total_amount',
+        'fees_amount',
         'status',
         'payment_method',
         'payment_id',
@@ -22,6 +23,7 @@ class Order extends Model
 
     protected $casts = [
         'total_amount' => 'decimal:2',
+        'fees_amount' => 'decimal:2',
         'status' => \App\Enums\OrderStatus::class,
     ];
 

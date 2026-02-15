@@ -1,4 +1,4 @@
-# 🏃‍♂️ Corrida Final - Plataforma de Gestão de Eventos Esportivos
+# 🏃‍♂️ Sisters Esportes - Plataforma de Gestão de Eventos Esportivos
 
 Este projeto é uma plataforma completa para gestão de inscrições em corridas e eventos esportivos, com integração direta de pagamentos (Asaas) e ferramentas de marketing.
 
