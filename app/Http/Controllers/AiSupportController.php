@@ -10,10 +10,12 @@ use Illuminate\Support\Facades\Log;
 class AiSupportController extends Controller
 {
     protected $aiService;
+    protected $promptGenerator;
 
-    public function __construct(OpenRouterService $aiService)
+    public function __construct(OpenRouterService $aiService, \App\Services\AiPromptGenerator $promptGenerator)
     {
         $this->aiService = $aiService;
+        $this->promptGenerator = $promptGenerator;
     }
 
     /**
@@ -72,6 +74,10 @@ class AiSupportController extends Controller
      */
     private function getSystemPrompt()
     {
+        // 1. Get Base Prompt from Visual Builder
+        $basePrompt = $this->promptGenerator->generate();
+
+        // 2. Dynamic User Context
         $user = auth()->user();
         $userContext = "DADOS DO USUÁRIO LOGADO:\n";
         if ($user) {
@@ -80,11 +86,11 @@ class AiSupportController extends Controller
             $userContext .= "- CPF: {$user->cpf}\n";
             $userContext .= "- Telefone: {$user->phone}\n";
             $userContext .= "- Localização: {$user->city}-{$user->state}\n";
-            // More data can be added here if needed
         } else {
             $userContext .= "- Usuário não está logado.\n";
         }
 
+        // 3. Dynamic Events Context
         $upcomingEvents = Event::where('status', 'published')
             ->where('event_date', '>=', now())
             ->orderBy('event_date', 'asc')
@@ -100,30 +106,11 @@ class AiSupportController extends Controller
             }
         }
 
-        return "Você é o Assistente Virtual da Sisters Esportes. Seu papel é buscar e fornecer INFORMAÇÕES precisas.
+        // 4. Refund Policy (Hardcoded in prompt rules if needed, but keeping dynamic context separate)
 
-        CONDIÇÃO CRÍTICA DE OPERAÇÃO:
-        - Você NÃO PODE realizar ações (cancelar pedidos, alterar dados, processar reembolsos, etc.).
-        - Você fornece apenas informações. Se o usuário pedir algo que exija ação, você deve encaminhá-lo para um atendente humano.
-
-        POLÍTICA DE REEMBOLSO (REGRAS):
-        1. O reembolso pode ser solicitado em até **7 dias após a data da compra**.
-        2. A solicitação deve ocorrer, no mínimo, **48 horas antes do evento** acontecer.
-        3. O usuário deve solicitar o reembolso diretamente na **tela de inscrição da corrida** no seu painel.
-        4. Caso o usuário encontre dificuldades, ele deve solicitar ajuda a um **atendente humano**.
-
-        CONTEXTO DO USUÁRIO ATUAL:
-        {$userContext}
-
-        CONTEXTO DOS EVENTOS:
-        {$eventsContext}
-
-        REGRAS DE OURO:
-        - Seja conciso e motivador. Use Negrito para destacar pontos importantes.
-        - **IMPORTANTE SOBRE REDIRECIONAMENTO**: Você só deve escrever a frase EXATA: 'Vou redirecionar você para o atendente.' se o usuário pedir **explicitamente** para falar com um atendente OU se ele confirmar que deseja ser redirecionado após você oferecer ajuda humana. 
-        - **SE NÃO SOUBER A INFORMAÇÃO**: Diga honestamente que não tem essa informação no momento e pergunte: 'Gostaria que eu te redirecionasse para um atendente humano para te ajudar com isso?'. Se ele disser que sim, use a frase gatilho.
-        - Se o usuário pedir algo que você não pode fazer (como uma ação), explique que você é um assistente virtual e que para isso ele deve procurar um atendente, oferecendo o redirecionamento se ele desejar.
-        - Não invente informações.
-        - Responda em Português do Brasil.";
+        return $basePrompt . "\n\n" .
+            "DADOS DINÂMICOS DO SISTEMA:\n" .
+            $userContext . "\n" .
+            $eventsContext;
     }
 }

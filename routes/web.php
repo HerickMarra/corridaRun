@@ -138,6 +138,10 @@ Route::middleware(['auth'])->group(function () {
         Route::middleware(['role:super-admin'])->group(function () {
             Route::get('/configuracoes', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
             Route::put('/configuracoes', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
+
+            // Visual AI Intelligence Builder
+            Route::get('/ia-intelligence', [App\Http\Controllers\Admin\AiIntelligenceController::class, 'index'])->name('ia.intelligence.index');
+            Route::post('/ia-intelligence/save', [App\Http\Controllers\Admin\AiIntelligenceController::class, 'save'])->name('ia.intelligence.save');
         });
     });
 
