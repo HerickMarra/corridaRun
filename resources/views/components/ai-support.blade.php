@@ -1,4 +1,4 @@
-<div x-data="aiSupport()" class="fixed bottom-6 right-6 z-[9999] font-display">
+<div x-data="aiSupport()" x-show="isLoaded" x-cloak class="fixed bottom-6 right-6 z-[9999] font-display">
     <!-- Chat Button -->
     <button @click="toggleChat()"
         class="group relative size-16 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 transform hover:scale-110 active:scale-95 z-20 overflow-hidden">
@@ -38,7 +38,8 @@
                     </div>
                 </div>
             </div>
-            <button @click="clearChat()" title="Limpar Conversa" class="flex items-center gap-1.5 text-slate-400 hover:text-white transition-all bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-xl border border-white/10">
+            <button @click="clearChat()" title="Limpar Conversa"
+                class="flex items-center gap-1.5 text-slate-400 hover:text-white transition-all bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-xl border border-white/10">
                 <span class="material-symbols-outlined text-sm">delete_sweep</span>
                 <span class="text-[10px] font-black uppercase tracking-wider">Limpar</span>
             </button>
@@ -131,6 +132,10 @@
 </div>
 
 <style>
+    [x-cloak] {
+        display: none !important;
+    }
+
     .markdown-content p {
         margin-bottom: 0.5rem !important;
     }
@@ -158,6 +163,13 @@
         margin: 0.75rem 0 !important;
         border-color: rgba(0, 0, 0, 0.05) !important;
     }
+
+    .markdown-content a {
+        color: #2563eb !important;
+        /* blue-600 */
+        text-decoration: underline !important;
+        font-weight: bold !important;
+    }
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -168,7 +180,18 @@
             isLoading: false,
             userInput: '',
             messages: JSON.parse(localStorage.getItem('chat_history') || '[]'),
+            isLoaded: false,
             showWhatsApp: false,
+
+            init() {
+                if (document.readyState === 'complete') {
+                    this.isLoaded = true;
+                } else {
+                    window.addEventListener('load', () => {
+                        this.isLoaded = true;
+                    });
+                }
+            },
 
             toggleChat() {
                 this.isOpen = !this.isOpen;

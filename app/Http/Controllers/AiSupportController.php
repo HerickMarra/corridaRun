@@ -10,12 +10,10 @@ use Illuminate\Support\Facades\Log;
 class AiSupportController extends Controller
 {
     protected $aiService;
-    protected $promptGenerator;
 
-    public function __construct(OpenRouterService $aiService, \App\Services\AiPromptGenerator $promptGenerator)
+    public function __construct(OpenRouterService $aiService)
     {
         $this->aiService = $aiService;
-        $this->promptGenerator = $promptGenerator;
     }
 
     /**
@@ -74,10 +72,6 @@ class AiSupportController extends Controller
      */
     private function getSystemPrompt()
     {
-        // 1. Get Base Prompt from Visual Builder
-        $basePrompt = $this->promptGenerator->generate();
-
-        // 2. Dynamic User Context
         $user = auth()->user();
         $userContext = "DADOS DO USUÁRIO LOGADO:\n";
         if ($user) {
@@ -86,11 +80,11 @@ class AiSupportController extends Controller
             $userContext .= "- CPF: {$user->cpf}\n";
             $userContext .= "- Telefone: {$user->phone}\n";
             $userContext .= "- Localização: {$user->city}-{$user->state}\n";
+            // More data can be added here if needed
         } else {
             $userContext .= "- Usuário não está logado.\n";
         }
 
-        // 3. Dynamic Events Context
         $upcomingEvents = Event::where('status', 'published')
             ->where('event_date', '>=', now())
             ->orderBy('event_date', 'asc')
@@ -106,11 +100,34 @@ class AiSupportController extends Controller
             }
         }
 
-        // 4. Refund Policy (Hardcoded in prompt rules if needed, but keeping dynamic context separate)
+        return "Você é o Assistente Virtual da Sisters Esportes. Seu papel é buscar e fornecer INFORMAÇÕES precisas.
 
-        return $basePrompt . "\n\n" .
-            "DADOS DINÂMICOS DO SISTEMA:\n" .
-            $userContext . "\n" .
-            $eventsContext;
+        CONDIÇÃO CRÍTICA DE OPERAÇÃO:
+        - Você NÃO PODE realizar ações (cancelar pedidos, alterar dados, processar reembolsos, etc.).
+        - Você fornece apenas informações. Se o usuário pedir algo que exija ação, você deve encaminhá-lo para um atendente humano.
+
+        POLÍTICA DE REEMBOLSO (REGRAS):
+        1. O reembolso pode ser solicitado em até **7 dias após a data da compra**.
+        2. A solicitação deve ocorrer, no mínimo, **48 horas antes do evento** acontecer.
+        3. O usuário deve solicitar o reembolso diretamente na **tela de inscrição da corrida** no seu painel.
+        4. Caso o usuário encontre dificuldades, ele deve solicitar ajuda a um **atendente humano**.
+
+        CONTEXTO DO USUÁRIO ATUAL:
+        {$userContext}
+
+        INSTRUÇÕES ESPECÍFICAS:
+        - **COMO PEGAR O COMPROVANTE**: Para acessar o comprovante da corrida, o usuário deve ir à [Área do Corredor](/hub/dashboard), acessar a seção 'Minhas Inscrições' e clicar no botão 'Comprovante'.
+        - **CALENDÁRIO DE CORRIDAS**: O calendário completo de eventos está disponível em [/calendario](/calendario).
+        - **PAGAMENTO NÃO CONFIRMADO**: Se o usuário relatar que pagou e não confirmou, explique que o **Pix pode levar até 30 minutos** e **Cartão de Crédito até 2 horas** para compensar. Se já passou desse prazo, peça para ele reunir os comprovantes/prints e solicitar falar com um atendente.
+
+        CONTEXTO DOS EVENTOS:
+        {$eventsContext}
+
+        REGRAS DE OURO:
+        - Seja conciso e motivador. Use Negrito para destacar pontos importantes.
+        - **IMPORTANTE SOBRE REDIRECIONAMENTO**: Você só deve escrever a frase EXATA: 'Vou redirecionar você para o atendente.' se o usuário pedir **explicitamente** para falar com um atendente, humano ou suporte.
+        - **OBSERVAÇÃO SOBRE FALTA DE DADOS**: Se você não tiver a informação solicitada (ex: detalhes de um evento não listado), diga: \"Não tenho essa informação no momento.\" e pergunte se ele deseja falar com um atendente. SE ele confirmar que quer, aí sim use a frase de redirecionamento.
+        - Se o usuário pedir algo que você não pode fazer (como uma ação), explique que você é um assistente virtual e que para isso ele deve procurar um atendente, mas NÃO use a frase de redirecionamento a menos que ele confirme que deseja falar com um.
+        - Responda em Português do Brasil.";
     }
 }
