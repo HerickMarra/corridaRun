@@ -102,13 +102,21 @@ class AiSupportController extends Controller
                 $userContext .= "- O usuário ainda não possui nenhuma inscrição.\n";
             } else {
                 foreach ($user->orders as $order) {
-                    $statusName = match ($order->status->value) {
-                        'pending' => 'PENDENTE DE PAGAMENTO',
-                        'paid' => 'PAGA / CONFIRMADA',
-                        'cancelled' => 'CANCELADA',
-                        'refunded' => 'ESTORNADA',
-                        default => strtoupper($order->status->value)
-                    };
+                    $statusName = strtoupper($order->status->value);
+
+                    if ($order->status->value === 'pending') {
+                        if ($order->created_at < now()->subMinutes(15)) {
+                            $statusName = 'EXPIRADA (O prazo de pagamento pelo Asaas já encerrou)';
+                        } else {
+                            $statusName = 'PENDENTE DE PAGAMENTO (Ainda no prazo)';
+                        }
+                    } elseif ($order->status->value === 'paid') {
+                        $statusName = 'PAGA / CONFIRMADA';
+                    } elseif ($order->status->value === 'cancelled') {
+                        $statusName = 'CANCELADA';
+                    } elseif ($order->status->value === 'refunded') {
+                        $statusName = 'ESTORNADA';
+                    }
 
                     $userContext .= "- [Pedido #{$order->order_number}] Status: {$statusName} | Total: R$ " . number_format($order->total_amount, 2, ',', '.') . "\n";
 
@@ -160,10 +168,11 @@ Importante: Caso o usuário pergunte sobre a situação da inscrição dele, OLH
 1. RESUMO DOS PRÓXIMOS EVENTOS:
 {$eventsContext}
 
-2. DÚVIDAS SOBRE PAGAMENTO PENDENTE:
+2. DÚVIDAS SOBRE PAGAMENTO PENDENTE OU EXPIRADO:
 - Se pagar por PIX: Pode demorar de 5 até 30 minutos para compensar. Não precisa enviar comprovante por e-mail.
 - Se pagar por Cartão de Crédito: A aprovação via Asaas pode passar por antifraude e demorar até 2 horas.
-- Ação Resolutiva: Se o cliente relatar que pagou e no histórico ali em cima ainda consta 'PENDENTE', acalme-o. Diga exatamente: 'Vi que seu Pedido [Número] ainda consta como Pendente. Como os bancos repassam os valores em lotes, pode demorar alguns minutos. Fique tranquilo, se não atualizar até amanhã, nos mande o comprovante.'
+- Ação Resolutiva PENDENTE: Se o cliente relatar que pagou e no histórico ali em cima o status consta 'PENDENTE DE PAGAMENTO (Ainda no prazo)', acalme-o. Diga exatamente: 'Vi que seu Pedido [Número] ainda consta como Pendente. Como os bancos repassam os valores em lotes, pode demorar alguns minutos. Fique tranquilo, se não atualizar até amanhã, nos mande o comprovante.'
+- Ação Resolutiva EXPIRADA: Se o status constar como 'EXPIRADA', informe diretamente ao cliente de forma simpática que o prazo do banco/Pix emitiu timeout ou expirou, e peça a ele para ignorar aquele pedido antigo e apenas entrar novamente no Link da Corrida para fazer uma nova inscrição e gerar um novo QR Code de pagamento.
 
 3. ONDE ACHAR O COMPROVANTE (QR CODE) / INGRESSO:
 - O usuário deve acessar a página 'Minhas Inscrições' no Menu ou no link direto: {$appUrl}/hub/minhas-inscricoes
