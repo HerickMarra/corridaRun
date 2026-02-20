@@ -31,6 +31,7 @@ class Event extends Model
         'nutrition',
         'hydration',
         'ignore_fees',
+        'allow_user_refund',
     ];
 
     protected $casts = [
@@ -39,6 +40,7 @@ class Event extends Model
         'registration_end' => 'datetime',
         'status' => \App\Enums\EventStatus::class,
         'ignore_fees' => 'boolean',
+        'allow_user_refund' => 'boolean',
     ];
 
     public function categories(): HasMany

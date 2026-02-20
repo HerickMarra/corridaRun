@@ -69,6 +69,7 @@ class RaceController extends Controller
             'nutrition' => 'nullable|in:not_informed,none,partial,complete',
             'hydration' => 'nullable|in:not_informed,none,partial,complete',
             'ignore_fees' => 'nullable|boolean',
+            'allow_user_refund' => 'nullable|boolean',
         ]);
 
 
@@ -106,6 +107,7 @@ class RaceController extends Controller
             'nutrition' => $request->nutrition ?? 'not_informed',
             'hydration' => $request->hydration ?? 'not_informed',
             'ignore_fees' => $request->has('ignore_fees'),
+            'allow_user_refund' => $request->has('allow_user_refund'),
         ]);
 
         foreach ($request->categories as $index => $categoryData) {

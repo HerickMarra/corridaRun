@@ -152,11 +152,16 @@ class CheckoutController extends Controller
         }
 
         // Verifica se este CPF já está inscrito neste evento com pagamento CONFIRMADO
+        // Verifica se este CPF já está inscrito neste evento com pagamento CONFIRMADO ou PENDENTE
+        // Ignora inscrições canceladas ou estornadas
         $alreadyEnrolled = \App\Models\OrderItem::where('participant_cpf', $cpfClean)
             ->whereHas('category', function ($query) use ($category) {
                 $query->where('event_id', $category->event_id);
             })
-            ->where('status', \App\Enums\OrderStatus::Paid)
+            ->whereIn('status', [\App\Enums\OrderStatus::Paid, \App\Enums\OrderStatus::Pending])
+            ->whereHas('order', function ($query) {
+                $query->whereNotIn('status', [\App\Enums\OrderStatus::Cancelled, \App\Enums\OrderStatus::Refunded]);
+            })
             ->exists();
 
         if ($alreadyEnrolled) {

@@ -43,7 +43,9 @@ class EventController extends Controller
                 ->whereHas('category', function ($query) use ($event) {
                     $query->where('event_id', $event->id);
                 })
-                ->where('status', 'paid')
+                ->whereHas('order', function ($query) {
+                    $query->where('status', \App\Enums\OrderStatus::Paid);
+                })
                 ->with(['category', 'ticket'])
                 ->first();
         }

@@ -19,7 +19,8 @@
                 <p class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Faturamento Total</p>
             </div>
             <h3 class="text-2xl font-black text-slate-800 italic">R$
-                {{ number_format($stats['total_revenue'], 2, ',', '.') }}</h3>
+                {{ number_format($stats['total_revenue'], 2, ',', '.') }}
+            </h3>
             <p class="text-[9px] text-green-500 font-bold uppercase mt-2">Pedidos Pagos: {{ $stats['paid_orders_count'] }}
             </p>
         </div>
@@ -43,7 +44,8 @@
                 <p class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Ticket Médio</p>
             </div>
             <h3 class="text-2xl font-black text-slate-800 italic">R$
-                {{ number_format($stats['average_ticket'], 2, ',', '.') }}</h3>
+                {{ number_format($stats['average_ticket'], 2, ',', '.') }}
+            </h3>
             <p class="text-[9px] text-slate-400 font-bold uppercase mt-2">Baseado em pedidos pagos</p>
         </div>
 
@@ -84,7 +86,8 @@
                         <option value="">Todos os Eventos</option>
                         @foreach($events as $event)
                             <option value="{{ $event->id }}" {{ request('event_id') == $event->id ? 'selected' : '' }}>
-                                {{ $event->name }}</option>
+                                {{ $event->name }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
@@ -157,6 +160,8 @@
                             Status</th>
                         <th class="px-8 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
                             Data</th>
+                        <th class="px-8 py-5 text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                            Ações</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
@@ -180,8 +185,10 @@
                             <td class="px-8 py-6">
                                 @foreach($order->items as $item)
                                     <p class="text-xs font-bold text-slate-600 truncate max-w-[200px]">
-                                        {{ $item->category->event->name ?? 'Evento não encontrado' }}</p>
-                                    <p class="text-[9px] font-medium text-slate-400 italic">{{ $item->category->name ?? 'Categoria não encontrada' }}</p>
+                                        {{ $item->category->event->name ?? 'Evento não encontrado' }}
+                                    </p>
+                                    <p class="text-[9px] font-medium text-slate-400 italic">
+                                        {{ $item->category->name ?? 'Categoria não encontrada' }}</p>
                                 @endforeach
                             </td>
                             <td class="px-8 py-6">
@@ -211,6 +218,19 @@
                             </td>
                             <td class="px-8 py-6 text-xs font-bold text-slate-400">
                                 {{ $order->created_at->format('d/m/Y H:i') }}
+                            </td>
+                            <td class="px-8 py-6 text-right">
+                                @if($order->status === \App\Enums\OrderStatus::Paid && $order->payments->isNotEmpty())
+                                    <form action="{{ route('checkout.refund', $order->payments->first()->id) }}" method="POST"
+                                        class="inline-block"
+                                        onsubmit="return confirm('ATENÇÃO: Deseja realmente estornar este pagamento? O valor será devolvido ao cliente e a inscrição cancelada.');">
+                                        @csrf
+                                        <button type="submit"
+                                            class="text-[10px] font-black uppercase tracking-widest text-red-500 hover:text-red-700 hover:underline transition-all">
+                                            Estornar
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @empty

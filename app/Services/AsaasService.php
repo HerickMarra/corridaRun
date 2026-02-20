@@ -143,6 +143,33 @@ class AsaasService
     }
 
     /**
+     * Refund a payment.
+     * 
+     * @param string $paymentId
+     * @param float $value
+     * @param string $description
+     */
+    public function refundPayment($paymentId, $value, $description)
+    {
+        $payload = [
+            'value' => $value,
+            'description' => $description
+        ];
+
+        Log::info('Asaas Refund Request', ['payment_id' => $paymentId, 'payload' => $payload]);
+
+        $response = $this->request()->post("/payments/{$paymentId}/refund", $payload);
+
+        if ($response->successful()) {
+            Log::info('Asaas Refund Success', ['payment_id' => $paymentId, 'response' => $response->json()]);
+            return $response->json();
+        }
+
+        Log::error('Asaas Refund Error', ['payment_id' => $paymentId, 'response' => $response->json()]);
+        throw new \Exception('Erro ao realizar estorno no Asaas: ' . ($response->json('errors')[0]['description'] ?? 'Erro desconhecido'));
+    }
+
+    /**
      * Get Pix QR Code and Payload.
      */
     public function getPixQrCode($paymentId)

@@ -44,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/{category}', [CheckoutController::class, 'process'])->name('process');
         Route::get('/confirmation/{order}', [CheckoutController::class, 'confirmation'])->name('confirmation');
         Route::get('/payment-status/{order}', [CheckoutController::class, 'checkPaymentStatus'])->name('payment.status');
+        Route::post('/refund/{payment}', [App\Http\Controllers\Client\RefundController::class, 'store'])->name('refund');
     });
 
     // Admin Panel
