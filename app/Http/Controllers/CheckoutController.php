@@ -151,21 +151,20 @@ class CheckoutController extends Controller
             return back()->withErrors(['cpf' => 'CPF inválido. Por favor, insira um CPF válido.'])->withInput();
         }
 
-        // Verifica se este CPF já está inscrito neste evento com pagamento CONFIRMADO
-        // Verifica se este CPF já está inscrito neste evento com pagamento CONFIRMADO ou PENDENTE
-        // Ignora inscrições canceladas ou estornadas
-        $alreadyEnrolled = \App\Models\OrderItem::where('participant_cpf', $cpfClean)
-            ->whereHas('category', function ($query) use ($category) {
-                $query->where('event_id', $category->event_id);
+        // Check if CPF already has an ACTIVE (paid) registration for this specific event
+        $existingRegistration = \App\Models\Order::whereHas('items', function ($query) use ($category) {
+            $query->whereHas('category', function ($q) use ($category) {
+                $q->where('event_id', $category->event_id);
+            });
+        })
+            ->whereHas('user', function ($query) use ($cpfClean) {
+                $query->where('cpf', $cpfClean);
             })
-            ->whereIn('status', [\App\Enums\OrderStatus::Paid, \App\Enums\OrderStatus::Pending])
-            ->whereHas('order', function ($query) {
-                $query->whereNotIn('status', [\App\Enums\OrderStatus::Cancelled, \App\Enums\OrderStatus::Refunded]);
-            })
-            ->exists();
+            ->where('status', \App\Enums\OrderStatus::Paid) // ONLY block if the order is actually Paid/Active
+            ->first();
 
-        if ($alreadyEnrolled) {
-            return back()->withErrors(['cpf' => 'Este CPF já possui uma inscrição ativa para este evento.'])->withInput();
+        if ($existingRegistration) {
+            return back()->withErrors(['cpf' => 'Este CPF já possui uma inscrição confirmada (paga) neste evento.'])->withInput();
         }
 
         // Verifica se o CPF já pertence a outro usuário
