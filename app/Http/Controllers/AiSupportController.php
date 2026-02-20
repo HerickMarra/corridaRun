@@ -101,11 +101,33 @@ class AiSupportController extends Controller
             if ($user->orders->isEmpty()) {
                 $userContext .= "- O usuário ainda não possui nenhuma inscrição.\n";
             } else {
+                // Determine which events are already paid
+                $paidEventIds = [];
+                foreach ($user->orders as $order) {
+                    if ($order->status->value === 'paid') {
+                        foreach ($order->items as $item) {
+                            if ($item->category && $item->category->event_id) {
+                                $paidEventIds[] = $item->category->event_id;
+                            }
+                        }
+                    }
+                }
+
                 foreach ($user->orders as $order) {
                     $statusName = strtoupper($order->status->value);
 
+                    $isDuplicatePending = false;
+                    foreach ($order->items as $item) {
+                        if ($item->category && in_array($item->category->event_id, $paidEventIds)) {
+                            $isDuplicatePending = true;
+                            break;
+                        }
+                    }
+
                     if ($order->status->value === 'pending') {
-                        if ($order->created_at < now()->subMinutes(15)) {
+                        if ($isDuplicatePending) {
+                            $statusName = 'IGNORAR (USUÁRIO JÁ PAGO NESTE EVENTO EM OUTRO PEDIDO)';
+                        } elseif ($order->created_at < now()->subMinutes(15)) {
                             $statusName = 'EXPIRADA (O prazo de pagamento pelo Asaas já encerrou)';
                         } else {
                             $statusName = 'PENDENTE DE PAGAMENTO (Ainda no prazo)';
@@ -173,6 +195,7 @@ Importante: Caso o usuário pergunte sobre a situação da inscrição dele, OLH
 - Se pagar por Cartão de Crédito: A aprovação via Asaas pode passar por antifraude e demorar até 2 horas.
 - Ação Resolutiva PENDENTE: Se o cliente relatar que pagou e no histórico ali em cima o status consta 'PENDENTE DE PAGAMENTO (Ainda no prazo)', acalme-o. Diga exatamente: 'Vi que seu Pedido [Número] ainda consta como Pendente. Como os bancos repassam os valores em lotes, pode demorar alguns minutos. Fique tranquilo, se não atualizar até amanhã, nos mande o comprovante.'
 - Ação Resolutiva EXPIRADA: Se o status constar como 'EXPIRADA', informe diretamente ao cliente de forma simpática que o prazo do banco/Pix emitiu timeout ou expirou, e peça a ele para ignorar aquele pedido antigo e apenas entrar novamente no Link da Corrida para fazer uma nova inscrição e gerar um novo QR Code de pagamento.
+- Ação Resolutiva DUPLICIDADE: Se o usuário falar de pedidos pendentes, mas o status deles estiver como 'IGNORAR', acalme-o! Avise de forma alegre: 'Vi que você tentou gerar alguns pedidos antes, mas não se preocupe! Você já tem um pedido PAGO/CONFIRMADO e está confirmadíssimo(a) nesta corrida. Pode desconsiderar os pedidos pendentes antigos!'
 
 3. ONDE ACHAR O COMPROVANTE (QR CODE) / INGRESSO:
 - O usuário deve acessar a página 'Minhas Inscrições' no Menu ou no link direto: {$appUrl}/hub/minhas-inscricoes
