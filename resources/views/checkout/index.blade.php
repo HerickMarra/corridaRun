@@ -48,7 +48,8 @@
                             <div class="bg-slate-50 rounded-2xl p-4 mb-6 flex flex-wrap gap-4 items-center justify-between">
                                 <div>
                                     <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Atleta</p>
-                                    <p class="text-sm font-bold text-slate-700">{{ auth()->user()->name }}</p>
+                                    <p class="text-sm font-bold text-slate-700">{{ explode(' ', auth()->user()->name)[0] }}
+                                    </p>
                                 </div>
                                 <div>
                                     <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">E-mail</p>
@@ -471,18 +472,18 @@
                     const feesContainer = document.getElementById('fees-breakdown-container');
                     if (data.fees_breakdown && data.fees_breakdown.length > 0) {
                         feesContainer.innerHTML = data.fees_breakdown.map(fee => `
-                                        <div class="flex justify-between items-center text-sm">
-                                            <span class="font-medium text-slate-500 uppercase tracking-widest text-[10px]">${fee.name}</span>
-                                            <span class="font-bold text-slate-700">R$ ${fee.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-                                        </div>
-                                    `).join('');
+                                            <div class="flex justify-between items-center text-sm">
+                                                <span class="font-medium text-slate-500 uppercase tracking-widest text-[10px]">${fee.name}</span>
+                                                <span class="font-bold text-slate-700">R$ ${fee.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                                            </div>
+                                        `).join('');
                     } else {
                         feesContainer.innerHTML = `
-                                        <div class="flex justify-between items-center text-sm">
-                                            <span class="font-medium text-slate-500 uppercase tracking-widest text-[10px]">Taxa de Serviço</span>
-                                            <span class="font-bold text-slate-700">R$ <span id="service-fee-value">${data.new_service_fee.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span></span>
-                                        </div>
-                                    `;
+                                            <div class="flex justify-between items-center text-sm">
+                                                <span class="font-medium text-slate-500 uppercase tracking-widest text-[10px]">Taxa de Serviço</span>
+                                                <span class="font-bold text-slate-700">R$ <span id="service-fee-value">${data.new_service_fee.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span></span>
+                                            </div>
+                                        `;
                     }
 
                     document.getElementById('final-total').innerText = data.new_total.toLocaleString('pt-BR', { minimumFractionDigits: 2 });

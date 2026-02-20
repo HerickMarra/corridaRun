@@ -115,7 +115,7 @@
                             <img alt="Avatar" class="w-full h-full object-cover"
                                 src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=0052FF&color=fff" />
                         </div>
-                        <span class="text-sm font-bold hidden sm:block">{{ auth()->user()->name }}</span>
+                        <span class="text-sm font-bold hidden sm:block">{{ explode(' ', auth()->user()->name)[0] }}</span>
                     </div>
                     <form method="POST" action="{{ route('logout') }}" class="ml-4">
                         @csrf

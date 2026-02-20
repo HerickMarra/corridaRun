@@ -62,11 +62,11 @@
                 </div>
                 <div>
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1 text-nowrap">Total de Inscritos</p>
-                    <p class="text-2xl font-black text-slate-800 italic">{{ $totalInscriptions }} / {{ $event->max_participants }}</p>
+                    <p class="text-2xl font-black text-slate-800 italic">{{ $totalInscriptions }} / {{ $totalCapacity }}</p>
                 </div>
             </div>
             <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                <div class="bg-orange-500 h-full rounded-full" style="width: {{ $event->max_participants > 0 ? min(100, ($totalInscriptions / $event->max_participants) * 100) : 0 }}%"></div>
+                <div class="bg-orange-500 h-full rounded-full" style="width: {{ $totalCapacity > 0 ? min(100, ($totalInscriptions / $totalCapacity) * 100) : 0 }}%"></div>
             </div>
         </div>
 

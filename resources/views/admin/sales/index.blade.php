@@ -146,31 +146,31 @@
             <table class="w-full border-collapse">
                 <thead>
                     <tr class="bg-slate-50/50">
-                        <th class="px-8 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">#
+                        <th class="px-4 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">#
                             Pedido</th>
-                        <th class="px-8 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                        <th class="px-4 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
                             Cliente</th>
-                        <th class="px-8 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                        <th class="px-4 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
                             Evento</th>
-                        <th class="px-8 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                        <th class="px-4 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
                             Valor</th>
-                        <th class="px-8 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                        <th class="px-4 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
                             Método</th>
-                        <th class="px-8 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                        <th class="px-4 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
                             Status</th>
-                        <th class="px-8 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                        <th class="px-4 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
                             Data</th>
-                        <th class="px-8 py-5 text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                        <th class="px-4 py-5 text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
                             Ações</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
                     @forelse($orders as $order)
                         <tr class="hover:bg-slate-50/50 transition-colors group">
-                            <td class="px-8 py-6">
+                            <td class="px-4 py-6">
                                 <span class="text-xs font-black text-slate-800">{{ $order->order_number }}</span>
                             </td>
-                            <td class="px-8 py-6">
+                            <td class="px-4 py-6">
                                 <div class="flex items-center gap-3">
                                     <div
                                         class="size-8 bg-slate-100 rounded-full flex items-center justify-center text-[10px] font-black text-slate-500">
@@ -182,7 +182,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-8 py-6">
+                            <td class="px-4 py-6">
                                 @foreach($order->items as $item)
                                     <p class="text-xs font-bold text-slate-600 truncate max-w-[200px]">
                                         {{ $item->category->event->name ?? 'Evento não encontrado' }}
@@ -191,17 +191,17 @@
                                         {{ $item->category->name ?? 'Categoria não encontrada' }}</p>
                                 @endforeach
                             </td>
-                            <td class="px-8 py-6">
+                            <td class="px-4 py-6">
                                 <span class="text-xs font-black text-slate-800">R$
                                     {{ number_format($order->total_amount, 2, ',', '.') }}</span>
                             </td>
-                            <td class="px-8 py-6">
+                            <td class="px-4 py-6">
                                 <span
                                     class="px-3 py-1 bg-slate-100 rounded-full text-[9px] font-black uppercase tracking-widest text-slate-500">
                                     {{ $order->payment_method ?? 'N/A' }}
                                 </span>
                             </td>
-                            <td class="px-8 py-6">
+                            <td class="px-4 py-6">
                                 @php
                                     $statusClasses = [
                                         'paid' => 'bg-green-100 text-green-600',
@@ -216,10 +216,10 @@
                                     {{ $order->status->value }}
                                 </span>
                             </td>
-                            <td class="px-8 py-6 text-xs font-bold text-slate-400">
+                            <td class="px-4 py-6 text-xs font-bold text-slate-400">
                                 {{ $order->created_at->format('d/m/Y H:i') }}
                             </td>
-                            <td class="px-8 py-6 text-right">
+                            <td class="px-4 py-6 text-right">
                                 @if($order->status === \App\Enums\OrderStatus::Paid && $order->payments->isNotEmpty())
                                     <form action="{{ route('checkout.refund', $order->payments->first()->id) }}" method="POST"
                                         class="inline-block"
@@ -235,7 +235,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-8 py-20 text-center">
+                            <td colspan="7" class="px-4 py-20 text-center">
                                 <div class="flex flex-col items-center gap-4">
                                     <span
                                         class="material-symbols-outlined text-4xl text-slate-200">sentiment_dissatisfied</span>

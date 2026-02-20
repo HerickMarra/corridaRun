@@ -396,16 +396,34 @@ class RaceController extends Controller
 
         $event->load(['categories', 'orderItems.order', 'coupons']);
 
+        // query base para evitar repetição e garantir consistência
+        $validOrderItems = $event->orderItems()
+            ->where('order_items.status', 'paid')
+            ->whereHas('order', function ($q) {
+                $q->whereNotIn('status', [\App\Enums\OrderStatus::Refunded, \App\Enums\OrderStatus::Cancelled]);
+            });
+
         // KPIs
-        $totalInscriptions = $event->orderItems()->where('order_items.status', 'paid')->count();
-        $totalRevenue = (float) $event->orderItems()->where('order_items.status', 'paid')->sum('order_items.price');
+        // Total de inscritos (apenas pedidos válidos)
+        $totalInscriptions = (clone $validOrderItems)->count(); // Clone para não alterar a query base se reutilizada de forma errada, embora aqui seja seguro
+
+        $totalCapacity = $event->categories->sum('max_participants');
+
+        // Receita total (apenas pedidos válidos)
+        $totalRevenue = (float) (clone $validOrderItems)->sum('order_items.price');
+
         $serviceFee = $totalRevenue * 0.07;
         $avgTicket = $totalInscriptions > 0 ? ($totalRevenue / $totalInscriptions) : 0;
 
         // Sales by Day - Intelligent Dynamic Range
         $categoryIds = $event->categories->pluck('id');
+
+        // Query de vendas também deve respeitar os status
         $salesQuery = \App\Models\OrderItem::whereIn('category_id', $categoryIds)
-            ->where('order_items.status', 'paid');
+            ->where('order_items.status', 'paid')
+            ->whereHas('order', function ($q) {
+                $q->whereNotIn('status', [\App\Enums\OrderStatus::Refunded, \App\Enums\OrderStatus::Cancelled]);
+            });
 
         $firstSale = $salesQuery->min('order_items.created_at');
         $lastSale = $salesQuery->max('order_items.created_at');
@@ -423,8 +441,7 @@ class RaceController extends Controller
             $endDate = now()->endOfDay();
         }
 
-        $rawSales = \App\Models\OrderItem::whereIn('category_id', $categoryIds)
-            ->where('order_items.status', 'paid')
+        $rawSales = (clone $salesQuery) // Reutiliza a query de vendas filtrada
             ->whereBetween('order_items.created_at', [$startDate, $endDate])
             ->selectRaw('DATE(order_items.created_at) as date, count(*) as count, sum(order_items.price) as revenue')
             ->groupBy('date')
@@ -447,13 +464,21 @@ class RaceController extends Controller
 
         // Category Stats
         $categoryStats = $event->categories->map(function ($category) {
-            $sold = $category->orderItems()->where('order_items.status', 'paid')->count();
+            // Filtra itens desta categoria que não estejam cancelados ou estornados
+            $validItems = $category->orderItems()
+                ->where('order_items.status', 'paid')
+                ->whereHas('order', function ($q) {
+                    $q->whereNotIn('status', [\App\Enums\OrderStatus::Refunded, \App\Enums\OrderStatus::Cancelled]);
+                });
+
+            $sold = (clone $validItems)->count();
+
             return [
                 'name' => $category->name,
                 'sold' => $sold,
                 'max' => $category->max_participants,
                 'percent' => $category->max_participants > 0 ? min(100, ($sold / $category->max_participants) * 100) : 0,
-                'revenue' => (float) $category->orderItems()->where('order_items.status', 'paid')->sum('order_items.price')
+                'revenue' => (float) (clone $validItems)->sum('order_items.price')
             ];
         });
 
@@ -461,6 +486,9 @@ class RaceController extends Controller
         $recentInscriptions = $event->orderItems()
             ->with('order.user')
             ->where('order_items.status', 'paid')
+            ->whereHas('order', function ($q) {
+                $q->whereNotIn('status', [\App\Enums\OrderStatus::Refunded, \App\Enums\OrderStatus::Cancelled]);
+            })
             ->latest('order_items.created_at')
             ->take(10)
             ->get();
@@ -468,6 +496,7 @@ class RaceController extends Controller
         return view('admin.corridas.dashboard', compact(
             'event',
             'totalInscriptions',
+            'totalCapacity',
             'totalRevenue',
             'serviceFee',
             'avgTicket',

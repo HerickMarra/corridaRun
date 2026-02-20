@@ -194,7 +194,7 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-grow lg:ml-64 p-8">
+    <main class="flex-grow lg:ml-64 p-8 min-w-0">
         <header class="flex justify-between items-center mb-10">
             <div>
                 <h1 class="text-2xl font-bold text-slate-800">Olá, {{ auth()->user()->name }}</h1>

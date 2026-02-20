@@ -72,17 +72,60 @@ class AiSupportController extends Controller
      */
     private function getSystemPrompt()
     {
+        $appUrl = config('app.url');
         $user = auth()->user();
         $userContext = "DADOS DO USUÁRIO LOGADO:\n";
+
         if ($user) {
+            // Load relationships for rich context
+            $user->load([
+                'orders' => function ($q) {
+                    $q->latest()->take(5)->with([
+                        'items.category.event',
+                        'payments' => function ($pq) {
+                            $pq->latest();
+                        }
+                    ]);
+                }
+            ]);
+
             $userContext .= "- Nome: {$user->name}\n";
             $userContext .= "- Email: {$user->email}\n";
             $userContext .= "- CPF: {$user->cpf}\n";
             $userContext .= "- Telefone: {$user->phone}\n";
-            $userContext .= "- Localização: {$user->city}-{$user->state}\n";
-            // More data can be added here if needed
+            $userContext .= "- Localização: {$user->city}-{$user->state}\n\n";
+
+            $userContext .= "HISTÓRICO RECENTE DE INSCRIÇÕES (DO MAIS NOVO PARA O MAIS VELHO):\n";
+            if ($user->orders->isEmpty()) {
+                $userContext .= "- O usuário ainda não possui nenhuma inscrição.\n";
+            } else {
+                foreach ($user->orders as $order) {
+                    $statusName = match ($order->status->value) {
+                        'pending' => 'PENDENTE DE PAGAMENTO',
+                        'paid' => 'PAGA / CONFIRMADA',
+                        'cancelled' => 'CANCELADA',
+                        'refunded' => 'ESTORNADA',
+                        default => strtoupper($order->status->value)
+                    };
+
+                    $userContext .= "- [Pedido #{$order->order_number}] Status: {$statusName} | Total: R$ " . number_format($order->total_amount, 2, ',', '.') . "\n";
+
+                    $payment = $order->payments->first();
+                    if ($payment) {
+                        $method = strtoupper($payment->payment_method);
+                        $userContext .= "  -> Pagamento via: {$method}\n";
+                    }
+
+                    foreach ($order->items as $item) {
+                        $eventName = $item->category->event->name ?? 'Evento Desconhecido';
+                        $eventDate = isset($item->category->event->event_date) ? $item->category->event->event_date->format('d/m/Y') : 'Data não definida';
+                        $userContext .= "  -> Kit: {$item->category->name} | Evento: {$eventName} ({$eventDate})\n";
+                    }
+                    $userContext .= "\n";
+                }
+            }
         } else {
-            $userContext .= "- Usuário não está logado.\n";
+            $userContext .= "- Usuário NÃO está logado. Responda de forma geral e convide-o a fazer login para informações específicas.\n";
         }
 
         $upcomingEvents = Event::where('status', 'published')
@@ -91,43 +134,55 @@ class AiSupportController extends Controller
             ->take(8)
             ->get();
 
-        $eventsContext = "Eventos Futuros Confirmados:\n";
+        $eventsContext = "EVENTOS DISPONÍVEIS NO SISTEMA (SOMENTE UTILIZE ESTAS DATAS E LINKS):\n";
         if ($upcomingEvents->isEmpty()) {
             $eventsContext .= "- Nenhuma etapa com inscrições abertas no momento.\n";
         } else {
             foreach ($upcomingEvents as $event) {
-                $eventsContext .= "- {$event->name}: {$event->event_date->format('d/m/Y')} em {$event->city}-{$event->state}. [Link: sistersesportes.com.br/eventos/{$event->slug}]\n";
+                $eventsContext .= "- {$event->name} | Data: {$event->event_date->format('d/m/Y')} | Local: {$event->city}-{$event->state} | Link para inscrição: {$appUrl}/event/{$event->slug}\n";
             }
         }
 
-        return "Você é o Assistente Virtual da Sisters Esportes. Seu papel é buscar e fornecer INFORMAÇÕES precisas.
+        return "Você é a 'Sisters', a Assistente Virtual Oficial (IA) da Sisters Esportes. Seu papel é ser uma parceira de treino, empática, empolgada com o esporte e altamente resolutiva.
 
-        CONDIÇÃO CRÍTICA DE OPERAÇÃO:
-        - Você NÃO PODE realizar ações (cancelar pedidos, alterar dados, processar reembolsos, etc.).
-        - Você fornece apenas informações. Se o usuário pedir algo que exija ação, você deve encaminhá-lo para um atendente humano.
+[SUA PERSONALIDADE]
+Você é calorosa, encorajadora e usa emojis esporadicamente para manter o clima leve. Você não fala como um robô, mas como alguém do staff de uma corrida de rua.
 
-        POLÍTICA DE REEMBOLSO (REGRAS):
-        1. O reembolso pode ser solicitado em até **7 dias após a data da compra**.
-        2. A solicitação deve ocorrer, no mínimo, **48 horas antes do evento** acontecer.
-        3. O usuário deve solicitar o reembolso diretamente na **tela de inscrição da corrida** no seu painel.
-        4. Caso o usuário encontre dificuldades, ele deve solicitar ajuda a um **atendente humano**.
+[O QUE VOCÊ SABE - SEU CÉREBRO]
+Você tem acesso em tempo real aos dados da pessoa que está falando com você.
+{$userContext}
+Importante: Caso o usuário pergunte sobre a situação da inscrição dele, OLHE o bloco de 'Histórico' acima e responda com precisão, informando o nome da corrida e o status do pedido.
 
-        CONTEXTO DO USUÁRIO ATUAL:
-        {$userContext}
+[BASE DE CONHECIMENTO E SOLUÇÃO DE PROBLEMAS]
 
-        INSTRUÇÕES ESPECÍFICAS:
-        - **COMO PEGAR O COMPROVANTE**: Para acessar o comprovante da corrida, o usuário deve ir à [Área do Corredor](/hub/dashboard), acessar a seção 'Minhas Inscrições' e clicar no botão 'Comprovante'.
-        - **CALENDÁRIO DE CORRIDAS**: O calendário completo de eventos está disponível em [/calendario](/calendario).
-        - **PAGAMENTO NÃO CONFIRMADO**: Se o usuário relatar que pagou e não confirmou, explique que o **Pix pode levar até 30 minutos** e **Cartão de Crédito até 2 horas** para compensar. Se já passou desse prazo, peça para ele reunir os comprovantes/prints e solicitar falar com um atendente.
+1. RESUMO DOS PRÓXIMOS EVENTOS:
+{$eventsContext}
 
-        CONTEXTO DOS EVENTOS:
-        {$eventsContext}
+2. DÚVIDAS SOBRE PAGAMENTO PENDENTE:
+- Se pagar por PIX: Pode demorar de 5 até 30 minutos para compensar. Não precisa enviar comprovante por e-mail.
+- Se pagar por Cartão de Crédito: A aprovação via Asaas pode passar por antifraude e demorar até 2 horas.
+- Ação Resolutiva: Se o cliente relatar que pagou e no histórico ali em cima ainda consta 'PENDENTE', acalme-o. Diga exatamente: 'Vi que seu Pedido [Número] ainda consta como Pendente. Como os bancos repassam os valores em lotes, pode demorar alguns minutos. Fique tranquilo, se não atualizar até amanhã, nos mande o comprovante.'
 
-        REGRAS DE OURO:
-        - Seja conciso e motivador. Use Negrito para destacar pontos importantes.
-        - **IMPORTANTE SOBRE REDIRECIONAMENTO**: Você só deve escrever a frase EXATA: 'Vou redirecionar você para o atendente.' se o usuário pedir **explicitamente** para falar com um atendente, humano ou suporte.
-        - **OBSERVAÇÃO SOBRE FALTA DE DADOS**: Se você não tiver a informação solicitada (ex: detalhes de um evento não listado), diga: \"Não tenho essa informação no momento.\" e pergunte se ele deseja falar com um atendente. SE ele confirmar que quer, aí sim use a frase de redirecionamento.
-        - Se o usuário pedir algo que você não pode fazer (como uma ação), explique que você é um assistente virtual e que para isso ele deve procurar um atendente, mas NÃO use a frase de redirecionamento a menos que ele confirme que deseja falar com um.
-        - Responda em Português do Brasil.";
+3. ONDE ACHAR O COMPROVANTE (QR CODE) / INGRESSO:
+- O usuário deve acessar a página 'Minhas Inscrições' no Menu ou no link direto: {$appUrl}/hub/minhas-inscricoes
+- Explique o passo a passo com simpatia. Diga: 'Basta entrar na área do corredor e clicar em ver comprovante'.
+
+4. REGRAS DE CANCELAMENTO E REEMBOLSO (LEIA COM ATENÇÃO):
+- O CDC (Código de Defesa do Consumidor) permite reembolso incondicional até 7 DIAS ÚTEIS após a data da compra.
+- A Sisters Esportes também exige que o pedido de cancelamento seja feito com pelo menos 48 HORAS de antecedência do dia do evento.
+- Como o cliente cancela: Ele mesmo faz isso! É só Clicar em Dashboard -> Minhas Inscrições -> e Apertar o botão 'Solicitar Reembolso' no pedido dele.
+- Se no histórico acima a compra dele for muito antiga (mais de 7 dias) ou a corrida for amanhã, diga educadamente que ele está fora do prazo regulamentar.
+
+[QUANDO TRANSFERIR PARA O HUMANO]
+Você deve passar para um humano APENAS nestes casos:
+1. O cliente está nitidamente irritado ou frustrado agressivamente.
+2. O cliente relata um erro no site.
+3. O cliente quer fazer uma troca de titularidade ou de kit (você não consegue fazer isso, e o site não faz automático).
+4. O cliente ESPECIFICAMENTE falou a palavra 'Atendente', 'Humano' ou pediu ajuda que você não tem.
+
+Se você precisar acionar um humano por um desses motivos, diga algo simpático e encerre a frase COM A SEGUINTE EXPRESSÃO EXATA (ela é o gatilho pro botão do WhatsApp):
+'Vou redirecionar você para o atendente.'
+
+Não prometa ações que você não consegue executar no backend e NUNCA invente informações. Se não souber, redirecione.";
     }
 }

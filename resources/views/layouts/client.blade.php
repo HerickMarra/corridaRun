@@ -103,11 +103,12 @@
                     <span class="absolute top-0 right-0 size-2 bg-primary rounded-full border-2 border-white"></span>
                 </button>
                 <div class="flex items-center gap-3">
-                    <div class="size-10 rounded-full bg-slate-100 border border-slate-200 overflow-hidden">
-                        <img alt="Avatar" class="w-full h-full object-cover"
+                    <button id="userMenuBtn" class="flex items-center gap-3 focus:outline-none">
+                        <img class="w-10 h-10 rounded-full border-2 border-primary-500"
                             src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=0052FF&color=fff" />
-                    </div>
-                    <span class="text-sm font-bold hidden sm:block">{{ auth()->user()->name }}</span>
+                        <span
+                            class="text-sm font-bold hidden sm:block">{{ explode(' ', auth()->user()->name)[0] }}</span>
+                        <i class="fas fa-chevron-down text-xs text-slate-400"></i></button>
                 </div>
                 <form method="POST" action="{{ route('logout') }}" class="ml-4">
                     @csrf
