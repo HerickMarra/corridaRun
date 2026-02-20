@@ -52,7 +52,9 @@ class AiSupportController extends Controller
         if (!$aiResponse) {
             return response()->json([
                 'success' => false,
-                'message' => 'Desculpe, estou com dificuldades técnicas no momento. Por favor, tente novamente ou fale com nosso suporte via WhatsApp.',
+                // Resposta amigável para quando esgotarem as tentativas ou timeout base
+                'message' => 'Desculpe, estou passando por instabilidades na minha conexão no momento. 🥲 Por favor, aguarde alguns instantes e tente novamente, ou fale diretamente com a nossa equipe no botão do WhatsApp logo abaixo!',
+                'show_whatsapp' => true,
             ], 500);
         }
 
