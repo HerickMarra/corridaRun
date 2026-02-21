@@ -134,7 +134,7 @@
                         <p class="text-[10px] text-slate-500 font-medium">Configurar taxas globais</p>
                     </div>
                 </a>
-                <button
+                <a href="{{ route('admin.marketing.index') }}"
                     class="w-full flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-primary/30 hover:bg-blue-50/30 transition-all text-left group">
                     <div
                         class="size-10 bg-slate-50 text-slate-400 rounded-lg flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
@@ -144,7 +144,7 @@
                         <p class="text-sm font-bold text-slate-800">Disparar E-mail</p>
                         <p class="text-[10px] text-slate-500 font-medium">Notificar inscritos de um evento</p>
                     </div>
-                </button>
+                </a>
             </div>
         </div>
     </div>

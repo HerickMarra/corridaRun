@@ -1,8 +1,8 @@
 <!-- Task Modal -->
 <div id="task-modal"
     class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
-    <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden">
-        <div class="p-8 border-b border-slate-50 flex justify-between items-center">
+    <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div class="p-6 border-b border-slate-50 flex justify-between items-center shrink-0">
             <h3 id="task-modal-title" class="text-xl font-black uppercase italic tracking-tighter text-slate-800">Nova
                 Tarefa</h3>
             <button onclick="closeTaskModal()" class="text-slate-400 hover:text-black transition-colors">
@@ -10,7 +10,7 @@
             </button>
         </div>
 
-        <form id="task-form" method="POST" class="p-8 space-y-6">
+        <form id="task-form" method="POST" class="p-6 space-y-4 overflow-y-auto">
             @csrf
             <input type="hidden" name="_method" id="task-form-method" value="POST">
 
@@ -84,15 +84,16 @@
 <!-- Column Modal -->
 <div id="column-modal"
     class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
-    <div class="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden">
-        <div class="p-8 border-b border-slate-50 flex justify-between items-center">
+    <div class="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div class="p-6 border-b border-slate-50 flex justify-between items-center shrink-0">
             <h3 class="text-xl font-black uppercase italic tracking-tighter text-slate-800">Nova Coluna</h3>
             <button onclick="closeColumnModal()" class="text-slate-400 hover:text-black transition-colors">
                 <span class="material-symbols-outlined">close</span>
             </button>
         </div>
 
-        <form action="{{ route('admin.kanban.columns.store', $event->id) }}" method="POST" class="p-8 space-y-6">
+        <form action="{{ route('admin.kanban.columns.store', $event->id) }}" method="POST"
+            class="p-6 space-y-4 overflow-y-auto">
             @csrf
             <div class="space-y-1.5">
                 <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Nome da
