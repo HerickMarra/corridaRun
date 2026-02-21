@@ -3,120 +3,171 @@
 @section('title', 'Logs de Webhook - Asaas')
 
 @section('content')
-    <div class="container-fluid px-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3 mb-0">Logs de Webhook - Asaas</h1>
+    <div class="mb-8 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+        <div>
+            <h2 class="text-2xl font-black text-slate-800 uppercase italic tracking-tighter">
+                Logs de <span class="text-primary">Webhook</span>
+            </h2>
+            <p class="text-slate-500 text-sm font-medium">Monitoramento de eventos recebidos da API do Asaas.</p>
+        </div>
+
+        <div>
             <form action="{{ route('admin.webhook-logs.destroy-all') }}" method="POST"
-                onsubmit="return confirm('Tem certeza que deseja deletar TODOS os logs?')">
+                onsubmit="return confirm('ATENÇÃO: Tem certeza que deseja deletar TODOS os logs do banco de dados?')">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn btn-danger">
-                    <i class="fas fa-trash"></i> Limpar Todos
+                <button type="submit"
+                    class="bg-red-50 text-red-600 px-5 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-red-100 transition-all flex items-center gap-2 border border-red-100">
+                    <span class="material-symbols-outlined text-sm">delete_sweep</span>
+                    Limpar Todos
                 </button>
             </form>
         </div>
+    </div>
 
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <!-- Filters Section -->
+    <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm mb-8">
+        <form method="GET" action="{{ route('admin.webhook-logs.index') }}"
+            class="flex flex-col md:flex-row items-end gap-4">
+            <div class="flex-1 w-full">
+                <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1 mb-2 block">Evento
+                    Asaas</label>
+                <div class="relative">
+                    <select name="event"
+                        class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold text-slate-700 focus:bg-white focus:border-primary/20 transition-all appearance-none cursor-pointer">
+                        <option value="">Todos os eventos</option>
+                        @foreach($events as $event)
+                            <option value="{{ $event }}" {{ request('event') == $event ? 'selected' : '' }}>
+                                {{ $event }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <span
+                        class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+                </div>
             </div>
-        @endif
 
-        <!-- Filtros -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <form method="GET" action="{{ route('admin.webhook-logs.index') }}" class="row g-3">
-                    <div class="col-md-4">
-                        <label class="form-label">Evento</label>
-                        <select name="event" class="form-select">
-                            <option value="">Todos os eventos</option>
-                            @foreach($events as $event)
-                                <option value="{{ $event }}" {{ request('event') == $event ? 'selected' : '' }}>
-                                    {{ $event }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Data</label>
-                        <input type="date" name="date" class="form-control" value="{{ request('date') }}">
-                    </div>
-                    <div class="col-md-4 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary me-2">Filtrar</button>
-                        <a href="{{ route('admin.webhook-logs.index') }}" class="btn btn-secondary">Limpar</a>
-                    </div>
-                </form>
+            <div class="flex-1 w-full">
+                <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1 mb-2 block">Data dos
+                    Eventos</label>
+                <input type="date" name="date"
+                    class="w-full bg-slate-50 border-transparent rounded-2xl px-5 py-4 text-sm font-bold text-slate-700 focus:bg-white focus:border-primary/20 transition-all"
+                    value="{{ request('date') }}">
             </div>
+
+            <div class="flex gap-2 w-full md:w-auto">
+                <button type="submit"
+                    class="flex-1 md:flex-none bg-slate-800 text-white px-6 py-4 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-slate-200">
+                    <span class="material-symbols-outlined text-sm">filter_list</span>
+                    Filtrar
+                </button>
+                <a href="{{ route('admin.webhook-logs.index') }}"
+                    class="flex-1 md:flex-none bg-slate-100 text-slate-500 px-6 py-4 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-200 transition-all flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-sm">clear_all</span>
+                    Limpar
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table Section -->
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-slate-50 border-b border-slate-100">
+                        <th class="px-6 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">ID
+                        </th>
+                        <th class="px-6 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                            Evento Webhook</th>
+                        <th class="px-6 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                            Payment ID</th>
+                        <th class="px-6 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                            Ordem vinculada</th>
+                        <th class="px-6 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                            Status HTTP</th>
+                        <th class="px-6 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                            Data/Hora</th>
+                        <th class="px-6 py-5 text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                            Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    @forelse($logs as $log)
+                        <tr class="hover:bg-slate-50/50 transition-colors group">
+                            <td class="px-6 py-4 text-xs font-black text-slate-400">#{{ $log->id }}</td>
+                            <td class="px-6 py-4">
+                                <span
+                                    class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[9px] font-black uppercase tracking-widest">
+                                    {{ $log->event }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-xs font-bold text-slate-600 truncate max-w-[150px]">
+                                {{ $log->payment_id ?? '-' }}
+                            </td>
+                            <td class="px-6 py-4">
+                                @if($log->order_id)
+                                    <a href="{{ route('admin.sales.show', $log->order_id) }}"
+                                        class="text-xs font-black text-primary hover:underline flex items-center gap-1 w-fit">
+                                        <span class="material-symbols-outlined text-[14px]">link</span>
+                                        {{ $log->order->order_number ?? $log->order_id }}
+                                    </a>
+                                @else
+                                    <span class="text-xs font-bold text-slate-400">-</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4">
+                                @if($log->status_code == 200)
+                                    <span class="flex items-center gap-1 text-xs font-black text-emerald-500">
+                                        <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                                        200 OK
+                                    </span>
+                                @else
+                                    <span class="flex items-center gap-1 text-xs font-black text-red-500">
+                                        <span class="material-symbols-outlined text-[14px]">error</span>
+                                        {{ $log->status_code }} Fail
+                                    </span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 text-xs font-bold text-slate-400">
+                                {{ $log->created_at->format('d/m/Y H:i:s') }}
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <div class="flex items-center justify-end gap-3">
+                                    <a href="{{ route('admin.webhook-logs.show', $log->id) }}"
+                                        class="text-[10px] font-black uppercase tracking-widest text-primary hover:text-blue-800 hover:underline transition-all">
+                                        Explorar
+                                    </a>
+
+                                    <form action="{{ route('admin.webhook-logs.destroy', $log->id) }}" method="POST"
+                                        class="inline-block"
+                                        onsubmit="return confirm('Tem certeza que deseja deletar permanentemente este log?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                            class="text-[10px] font-black uppercase tracking-widest text-red-500 hover:text-red-700 hover:underline transition-all">
+                                            Excluir
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="px-6 py-20 text-center">
+                                <div class="flex flex-col items-center gap-4">
+                                    <span class="material-symbols-outlined text-4xl text-slate-200">webhook</span>
+                                    <p class="text-sm font-bold text-slate-400">Ainda não há eventos webhook registrados.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
 
-        <!-- Tabela de Logs -->
-        <div class="card">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Evento</th>
-                                <th>Payment ID</th>
-                                <th>Order ID</th>
-                                <th>Status</th>
-                                <th>Data/Hora</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($logs as $log)
-                                <tr>
-                                    <td>{{ $log->id }}</td>
-                                    <td>
-                                        <span class="badge bg-info">{{ $log->event }}</span>
-                                    </td>
-                                    <td>{{ $log->payment_id ?? '-' }}</td>
-                                    <td>
-                                        @if($log->order_id)
-                                            <a href="{{ route('admin.corridas.dashboard', ['event' => $log->order?->items?->first()?->category?->event_id ?? 0]) }}"
-                                                class="text-decoration-none">
-                                                #{{ $log->order_id }}
-                                            </a>
-                                        @else
-                                            -
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <span class="badge {{ $log->status_code == 200 ? 'bg-success' : 'bg-danger' }}">
-                                            {{ $log->status_code }}
-                                        </span>
-                                    </td>
-                                    <td>{{ $log->created_at->format('d/m/Y H:i:s') }}</td>
-                                    <td>
-                                        <a href="{{ route('admin.webhook-logs.show', $log->id) }}" class="btn btn-sm btn-info">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <form action="{{ route('admin.webhook-logs.destroy', $log->id) }}" method="POST"
-                                            class="d-inline" onsubmit="return confirm('Deletar este log?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="7" class="text-center text-muted">Nenhum log encontrado</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="mt-3">
-                    {{ $logs->links() }}
-                </div>
-            </div>
+        <div class="px-6 py-6 border-t border-slate-100 bg-slate-50/50">
+            {{ $logs->links() }}
         </div>
     </div>
 @endsection

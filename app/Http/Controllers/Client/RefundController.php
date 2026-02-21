@@ -73,7 +73,9 @@ class RefundController extends Controller
 
             // Cancel associated tickets
             foreach ($order->items as $item) {
-                $item->tickets()->delete(); // Soft delete tickets
+                if ($item->ticket) {
+                    $item->ticket()->delete();
+                }
             }
 
             return back()->with('success', 'Reembolso realizado com sucesso!');

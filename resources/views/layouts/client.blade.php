@@ -95,6 +95,8 @@
                         Corredor</a>
                     <a class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors"
                         href="{{ route('client.registrations') }}">Minhas Inscrições</a>
+                    <a class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors"
+                        href="{{ route('client.orders') }}">Meus Pedidos</a>
                 </nav>
             </div>
             <div class="flex items-center gap-6">
@@ -130,8 +132,10 @@
                 href="{{ route('partner') }}">Seja um Parceiro</a>
             <a class="text-base font-bold text-slate-600 hover:text-primary transition-colors py-2 border-b border-slate-50"
                 href="{{ route('client.dashboard') }}">Área do Corredor</a>
-            <a class="text-base font-bold text-slate-600 hover:text-primary transition-colors py-2"
+            <a class="text-base font-bold text-slate-600 hover:text-primary transition-colors py-2 border-b border-slate-50"
                 href="{{ route('client.registrations') }}">Minhas Inscrições</a>
+            <a class="text-base font-bold text-slate-600 hover:text-primary transition-colors py-2"
+                href="{{ route('client.orders') }}">Meus Pedidos</a>
         </div>
     </header>
 

@@ -51,6 +51,16 @@ class AdminUserController extends Controller
         return redirect()->route('admin.users.index')->with('success', 'Administrador criado com sucesso!');
     }
 
+    public function show(User $user)
+    {
+        // Redireciona de forma silenciosa para evitar erros de browser cache/URL legada
+        if ($user->role === UserRole::Client) {
+            return redirect()->route('admin.athletes.index', ['search' => $user->email]);
+        }
+
+        return redirect()->route('admin.users.edit', $user->id);
+    }
+
     public function edit(User $user)
     {
         if ($user->role === UserRole::Client) {

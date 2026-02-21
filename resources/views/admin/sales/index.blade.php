@@ -220,17 +220,11 @@
                                 {{ $order->created_at->format('d/m/Y H:i') }}
                             </td>
                             <td class="px-4 py-6 text-right">
-                                @if($order->status === \App\Enums\OrderStatus::Paid && $order->payments->isNotEmpty())
-                                    <form action="{{ route('checkout.refund', $order->payments->first()->id) }}" method="POST"
-                                        class="inline-block"
-                                        onsubmit="return confirm('ATENÇÃO: Deseja realmente estornar este pagamento? O valor será devolvido ao cliente e a inscrição cancelada.');">
-                                        @csrf
-                                        <button type="submit"
-                                            class="text-[10px] font-black uppercase tracking-widest text-red-500 hover:text-red-700 hover:underline transition-all">
-                                            Estornar
-                                        </button>
-                                    </form>
-                                @endif
+                                <div class="flex items-center justify-end gap-3">
+                                    <a href="{{ route('admin.sales.show', $order->id) }}" class="text-[10px] font-black uppercase tracking-widest text-primary hover:text-blue-800 hover:underline transition-all">
+                                        Ver Detalhes
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     @empty

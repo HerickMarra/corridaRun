@@ -125,6 +125,8 @@ Route::middleware(['auth'])->group(function () {
             Route::put('/atletas/{athlete}', [App\Http\Controllers\Admin\AthleteController::class, 'update'])->name('athletes.update');
             Route::post('/atletas/{athlete}/send-email', [App\Http\Controllers\Admin\AthleteController::class, 'sendEmail'])->name('athletes.send-email');
             Route::get('/vendas', [App\Http\Controllers\Admin\SalesController::class, 'index'])->name('sales.index');
+            Route::get('/vendas/{order}', [App\Http\Controllers\Admin\SalesController::class, 'show'])->name('sales.show');
+            Route::post('/vendas/{order}/cancel', [App\Http\Controllers\Admin\SalesController::class, 'cancel'])->name('sales.cancel');
 
             // Mail Marketing
             Route::prefix('marketing')->name('marketing.')->group(function () {
@@ -150,6 +152,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'client'])->name('dashboard');
         Route::get('/minhas-inscricoes', [DashboardController::class, 'registrations'])->name('registrations');
         Route::get('/comprovante/{ticket}', [DashboardController::class, 'receipt'])->name('receipt');
+        Route::get('/orders', [DashboardController::class, 'orders'])->name('orders');
     });
 });
 

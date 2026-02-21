@@ -135,4 +135,27 @@ class DashboardController extends Controller
 
         return view('client.registrations', compact('activeRegistrations'));
     }
+
+    public function orders(Request $request)
+    {
+        $user = auth()->user();
+        $query = \App\Models\Order::where('user_id', $user->id)
+            ->with(['items.category.event', 'payments'])
+            ->latest();
+
+        if ($request->filled('status')) {
+            $status = $request->status;
+            if ($status === 'completed') {
+                $query->where('status', \App\Enums\OrderStatus::Paid);
+            } elseif ($status === 'pending') {
+                $query->whereIn('status', [\App\Enums\OrderStatus::Pending]);
+            } elseif ($status === 'cancelled') {
+                $query->where('status', \App\Enums\OrderStatus::Cancelled);
+            }
+        }
+
+        $orders = $query->paginate(10);
+
+        return view('client.orders', compact('orders'));
+    }
 }

@@ -115,4 +115,43 @@ class SalesController extends Controller
             ]
         ];
     }
+
+    public function show(Order $order)
+    {
+        $order->load(['user', 'items.category.event.customFields', 'payments']);
+        return view('admin.sales.show', compact('order'));
+    }
+
+    public function cancel(Order $order)
+    {
+        try {
+            DB::transaction(function () use ($order) {
+                // Update Order and Items Status
+                $order->update(['status' => \App\Enums\OrderStatus::Cancelled]);
+                $order->items()->update(['status' => \App\Enums\OrderStatus::Cancelled]);
+
+                // Update Payments to cancelled if they are pending
+                foreach ($order->payments as $payment) {
+                    if ($payment->status === \App\Enums\PaymentStatus::Pending) {
+                        $payment->update(['status' => \App\Enums\PaymentStatus::Rejected]); // Rejected/Cancelled
+                    }
+                }
+
+                // Restore tickets
+                foreach ($order->items as $item) {
+                    if ($item->category) {
+                        $item->category->increment('available_tickets');
+                    }
+                    if ($item->ticket) {
+                        $item->ticket()->delete();
+                    }
+                }
+            });
+
+            return back()->with('success', 'Inscrição cancelada com sucesso. As vagas foram retornadas.');
+        } catch (\Exception $e) {
+            \Log::error('Erro ao cancelar inscrição manualmente: ' . $e->getMessage());
+            return back()->with('error', 'Ocorreu um erro ao cancelar a inscrição.');
+        }
+    }
 }

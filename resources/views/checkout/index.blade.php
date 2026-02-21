@@ -157,10 +157,10 @@
                             </div>
 
                             <div id="payment-methods-wrapper">
-                                <div id="payment-selection-container">
+                                <div id="payment-selection-container" class="{{ $total <= 0 ? 'hidden' : '' }}">
                                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                                         <div>
-                                            <input checked class="hidden payment-radio" id="credit" name="payment_method"
+                                            <input {{ $total > 0 ? 'checked' : 'disabled' }} class="hidden payment-radio" id="credit" name="payment_method"
                                                 type="radio" value="credit_card" />
                                             <label
                                                 class="flex flex-col items-center justify-center gap-3 p-6 border-2 border-slate-100 rounded-2xl cursor-pointer hover:border-primary/30 transition-all"
@@ -172,7 +172,7 @@
                                         </div>
                                         <div>
                                             <input class="hidden payment-radio" id="pix" name="payment_method" type="radio"
-                                                value="pix" />
+                                                value="pix" {{ $total <= 0 ? 'disabled' : '' }} />
                                             <label
                                                 class="flex flex-col items-center justify-center gap-3 p-6 border-2 border-slate-100 rounded-2xl cursor-pointer hover:border-primary/30 transition-all"
                                                 for="pix">
@@ -291,14 +291,14 @@
                                 </div>
 
                                 <div id="free-registration-section"
-                                    class="hidden py-10 bg-green-50 rounded-2xl border border-dashed border-green-200 text-center">
+                                    class="{{ $total > 0 ? 'hidden' : '' }} py-10 bg-green-50 rounded-2xl border border-dashed border-green-200 text-center">
                                     <div class="flex flex-col items-center">
                                         <span class="material-symbols-outlined text-green-600 text-5xl mb-4">redeem</span>
                                         <p class="text-sm font-bold text-green-700">Inscrição 100% Gratuita!</p>
                                         <p class="text-[10px] uppercase font-black tracking-widest text-green-500 mt-2">
                                             Clique em finalizar para garantir sua vaga sem custos.</p>
                                         <input type="hidden" name="payment_method" value="free" id="free-method-input"
-                                            disabled>
+                                            {{ $total > 0 ? 'disabled' : '' }}>
                                     </div>
                                 </div>
                         </section>

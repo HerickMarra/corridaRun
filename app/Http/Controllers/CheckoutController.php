@@ -52,7 +52,7 @@ class CheckoutController extends Controller
         $serviceFee = 0;
         $feesBreakdown = [];
 
-        if (!$event->ignore_fees) {
+        if ($category->price > 0 && !$event->ignore_fees) {
             $activeFees = \App\Models\ServiceFee::where('is_active', true)->get();
             foreach ($activeFees as $fee) {
                 $amount = 0;
@@ -98,7 +98,7 @@ class CheckoutController extends Controller
         $finalPrice = max(0, $originalPrice - $discountValue);
 
         $feesAmount = 0;
-        if (!$category->event->ignore_fees) {
+        if ($finalPrice > 0 && !$category->event->ignore_fees) {
             $activeFees = \App\Models\ServiceFee::where('is_active', true)->get();
             foreach ($activeFees as $fee) {
                 if ($fee->type === 'fixed') {
@@ -226,7 +226,7 @@ class CheckoutController extends Controller
                     }
                 }
 
-                $finalPrice = round($originalPrice - $discountValue, 2);
+                $finalPrice = round(max(0, $originalPrice - $discountValue), 2);
 
                 \Log::info('Price Calculation DEBUG', [
                     'originalPrice' => $originalPrice,
@@ -235,7 +235,7 @@ class CheckoutController extends Controller
                 ]);
 
                 $feesAmount = 0;
-                if (!$category->event->ignore_fees) {
+                if ($finalPrice > 0 && !$category->event->ignore_fees) {
                     $activeFees = \App\Models\ServiceFee::where('is_active', true)->get();
                     foreach ($activeFees as $fee) {
                         $amount = 0;
@@ -529,11 +529,11 @@ class CheckoutController extends Controller
         }
 
         $discount = $coupon->calculateDiscount($category->price);
-        $newPrice = $category->price - $discount;
+        $newPrice = max(0, $category->price - $discount);
 
         $newFeesAmount = 0;
         $feesBreakdown = [];
-        if (!$category->event->ignore_fees) {
+        if ($newPrice > 0 && !$category->event->ignore_fees) {
             $activeFees = \App\Models\ServiceFee::where('is_active', true)->get();
             foreach ($activeFees as $fee) {
                 $amount = 0;
